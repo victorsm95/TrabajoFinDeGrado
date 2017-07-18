@@ -1,0 +1,38 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Confirm Share Board" %}{% endblock %}
+
+
+{% block nav %}
+	<ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+   	</ul>
+   	<ul class="nav navbar-nav navbar-right">
+      	<li class="dropdown">
+        	<a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+        	<ul class="dropdown-menu">
+          		<li><a href="/profile">Profile</a></li>
+          		<li><a href="/accounts/logout">Logout</a></li>
+        	</ul>
+      </li>
+    </ul>
+{% endblock %}
+
+{% block jumbotron %}
+	<div class="well">
+		<center>
+			<h2>Are you sure to share the board <strong> "{{ board_shared.title }}" </strong> with <strong>{{ username }}</strong>?</h2>
+			<h4>If you share the board, other users will be able to see the study of their data</h4>
+			<p></p>
+			<form id="confirm_shared" method="post" action="/boards/confirmShare" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ form.non_field_errors }}
+				<input type="hidden" name = "id_board_confirmShare" value = "{{ board_shared.id_board }}">
+				<input type="hidden" name = "user" value = "{{ username }}">
+				<input type="submit" class="btn btn-success" value = "Confirm">
+			</form>
+		</center>
+	</div>
+{% endblock %}

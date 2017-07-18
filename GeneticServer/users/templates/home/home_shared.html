@@ -1,0 +1,129 @@
+{% extends "home/base.html" %}
+
+{% load i18n %}
+{% load account %} 
+
+{% block head_title %}{% trans "Home" %}{% endblock %}
+
+{% block nav %}
+	<ul class="nav navbar-nav">
+    <li class="active"><a href="/">Home</a></li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="profile">Profile</a></li>
+        <li><a href="/accounts/logout">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block extra_content %}
+	<div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <ul class="nav nav-sidebar">
+        <li><a href="/">My boards</a></li>
+        <li class="active"><a href="shared">Shared with me</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <h1 class="page-header">Shared with me</h1>
+      <div class="row placeholders">
+        <div class = "list-group">
+          {% for a_board in board %}
+            <div class="panel panel-info">
+              <a class="list-group-item" href="/boards/analysis?filt=MN&id_board_analysis={{ a_board.board.id_board }}">
+                  <div class="panel-heading">
+                    <h2><span class="text-primary">{{ a_board.board.title }}</span></h2>
+                    <span class="text-muted">{{ a_board.board.date }}</span>
+                    <form class="form-horizontal" role="form" method="POST" action="/boards/deleteBoardShared" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <input type = "hidden" name="id_board_delete" value="{{ a_board.id_board }}">
+                      <input type="image" src = "/static/images/eliminar.jpg" width="20" height="20">
+                    </form>
+                  </div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <h4><span class="text-success"> Dimensions of the data set</span></h4>
+                        <p>
+                        <table class="table table-bordered">
+                          <tr>
+                            <td>Number of samples</td>
+                            <td>Number of genes</td>
+                            <td>Number of genes filtered</td>
+                          </tr>
+                          <tr>
+                            <td>{{ a_board.board.n_samples}}</td>
+                            <td>{{ a_board.board.n_genes }}</td>
+                            <td>{{ a_board.board.n_genes_initial}}</td>
+                          </tr>
+                        </table>
+                      </div>
+                      <div class="col-md-6">
+                        <center>
+                          <h4><span class="text-success"> Distribution of samples</span></h4>
+                          <p>
+                          <div id="{{ a_board.id_board }}" style="height:300px; width: 300px"></div>
+                        </center>
+                      </div>      
+                    </div>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>  
+      </div>
+		  <footer>
+        <p>&copy; 2017 Trabajo Fin de Grado.</p>
+      </footer>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+
+  var numElement = [];
+  var i;
+  var numHistology;
+  var lista = [];
+  var types;
+  var histology = [];
+
+    {% for a_board in board %}
+
+            types = '{{ a_board.board.types }}';
+            histology = types.split(",");
+            numHistology = parseInt('{{ a_board.board.n_types }}');
+            for(i=0;i<numHistology;i++) {
+              numElement[i] = 0;
+            }
+            histology.map(function(item){
+              numElement[parseInt(item)] = numElement[parseInt(item)] + 1;
+            });
+
+            for(i = 0; i < numHistology; i++) {
+                lista.push([i.toString(), numElement[i]]);
+            }
+
+            var chart = c3.generate({
+                bindto: '#{{ a_board.id_board }}',
+                data: {
+                  columns: lista,
+                  type : 'donut',
+                  onclick: function (d, i) { console.log("onclick", d, i); },
+                  onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+                  onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+                },
+                donut: {
+                  title: "Sample classifier"
+                }
+            });
+
+            lista.length = 0;
+         
+      
+    {% endfor %}
+  </script>
+{% endblock %}

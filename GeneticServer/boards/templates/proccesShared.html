@@ -1,0 +1,43 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Procces Shard" %}{% endblock %}
+{% block nav %}
+  	<ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="/accounts/logout">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+{% endblock %}
+
+{% block jumbotron %}
+  <center>
+    <h3>Do you accept the board sharing request?</h3>
+    <div class="well">
+      {% if borrado %}
+        <p>The board has already been deleted by the owner of the board or by you, or it has expired for a time limit</p>
+      {% else %}
+        {% if not confirmation %}
+          <p>Please confirm if you want the suario victor to share the cancer board with you</p>
+          <form method="post" action="/boards/proccesShared">
+            {% csrf_token %}
+            <input type = "hidden" name="id_board_proccess" value = "{{ id_board }}">
+            <input type="radio" name="option" value="accept"> Accept<br>
+            <input type="radio" name="option" value="refuse"> Refuse<br>
+            <p></p><button type="submit" class = "btn btn-primary">{% trans 'Confirm' %}</button>
+          </form>
+        {% else %}
+          <p>This shared-board confirmation link expired or is invalid. You may have already accepted the board or rejected it.</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </center>
+{% endblock %}

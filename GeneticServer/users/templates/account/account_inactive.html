@@ -1,0 +1,20 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Account Inactive" %}{% endblock %}
+
+{% block nav %} 
+    <ul class="nav navbar-nav">
+	    <li><a href="/">Home</a></li>
+        <li><a href="/accounts/login">Sign in</a></li>
+        <li><a href="/accounts/signup">Sign up</a></li>
+        <li><a href="/contact">Contact</a></li>
+    </ul>
+{% endblock %}
+
+{% block jumbotron %}
+<h1>{% trans "Account Inactive" %}</h1>
+
+<p>{% trans "This account is inactive." %}</p>
+{% endblock %}

@@ -1,0 +1,60 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,600);
+
+/* data table styles */
+  #grid { height: 500px; overflow: auto}
+  .row-div, .header { clear: left; font-size: 11px; line-height: 24px; height: 24px; width:2500px; }
+  .row-div:nth-child(odd) { background: rgba(0,0,0,0.05);}
+  .header { font-weight: bold;}
+  .cell { float: left; overflow: hidden; white-space: nowrap; width: 130px; height: 18px; }
+  .col-0 { width: 130px; }
+
+  
+/* parcoords styles */
+.parcoords > svg, .parcoords > canvas { 
+  font: 11px "Source Code Pro", Consolas, monaco, monospace;
+  position: absolute;
+}
+.parcoords > canvas {
+  pointer-events: none;
+}
+
+.parcoords text.label {
+  cursor: default;
+}
+
+.parcoords rect.background {
+  fill: transparent;
+}
+.parcoords rect.background:hover {
+  fill: rgba(120,120,120,0.2);
+}
+.parcoords .resize rect {
+  fill: rgba(0,0,0,0.1);
+}
+.parcoords rect.extent {
+  fill: rgba(255,255,255,0.25);
+  stroke: rgba(0,0,0,0.6);
+}
+.parcoords .axis line, .parcoords .axis path {
+  fill: none;
+  stroke: #454545;
+  shape-rendering: crispEdges;
+}
+.parcoords canvas {
+  opacity: 1;
+  -moz-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+}
+.parcoords canvas.faded {
+  opacity: 0.25;
+}
+.parcoords {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+

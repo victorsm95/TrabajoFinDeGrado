@@ -1,0 +1,52 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Share Board" %}{% endblock %}
+
+{% block nav %}
+	<ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+   	</ul>
+   	<ul class="nav navbar-nav navbar-right">
+      	<li class="dropdown">
+        	<a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+        	<ul class="dropdown-menu">
+          		<li><a href="/profile">Profile</a></li>
+          		<li><a href="/accounts/logout">Logout</a></li>
+       		</ul>
+      	</li>
+    </ul>
+{% endblock %} 
+
+{% block jumbotron %}
+	<center>
+		<h2>Share Board</h2>
+		<div class="well">
+			<p></p>
+			<form class = "form-inline" role = "form" method="POST" action="/boards/searchUser">
+				{% csrf_token %}
+				{{ searchForm.non_field_errors }}
+				<label>Enter the name or initials of the user with whom you want to share the board</label>
+				{{ searchForm.username.errors }}
+				<input type = "hidden" name="id_board_searchUser" value = "{{ board_share.id_board }}">
+        		<p></p><input id = "username" name = "username" type="text" class="form-control" placeholder="Search username...">
+			</form>
+			<form id="share_board" method="post" action="/boards/analysisShare" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ sharedForm.non_field_errors }}
+				<input type="hidden" name = "id_board_shared" value = "{{ board_share.id_board }}">
+				<p></p>
+				<div class = "form-group">
+					{{ sharedForm.user.errors }}
+					<select name = "user">
+						{% for username in users %}
+							<option value = "{{ username }}">{{ username }}
+						{% endfor %}
+					</select>
+					<input type="submit" class="btn btn-primary" value = "Share board">
+				</div>
+			</form>
+		</div>
+	</center>
+{% endblock %}

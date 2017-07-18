@@ -1,0 +1,45 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account %} 
+
+{% block head_title %}{% trans "Genetic Analysis" %}{% endblock %}
+{% block nav %} 
+  <ul class="nav navbar-nav">
+    <li class="active"><a href="/">Home</a></li>
+    <li><a href="/accounts/login">Sign in</a></li>
+    <li><a href="/accounts/signup">Sign up</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+{% endblock %}
+	
+{% block jumbotron %}
+	<h1>Welcome to GenResearch Platform,</h1>
+  <p>A web application for the analysis of genetic expression data sets.
+	<p><a class="btn btn-primary btn-lg" role="button" href="/info">Read more</a>
+{% endblock %}
+
+{% block container %}
+	<div class="row">
+    <div class="col-md-6">
+      <h2>Boards</h2>
+      <p>The information of datasets uploaded to the server is grouped into boards. Each board contains genetic information to manage, giving the possibility of sharing boards between different users. </p>
+    </div>
+    <div class="col-md-6">
+      <h2>Parcoords</h2>
+        <p>The application offers a visualization of the genetic expression relating the genes resulting from the different filters, in order to be able to see in detail the relationship between them and the patients. </p>
+        
+    </div>
+    <div class="col-md-6">
+      <h2>Filters</h2>
+        <p>The platform presents three important processes of feature selection, through which a selection of the most descriptive and important genes for the study</p>
+        
+    </div>
+    <div class="col-md-6">
+      <h2>Gene information</h2>
+        <p>The application has a powerful database in which to consult each of the genes belonging to the datasets, being able to be based on its functions to add or remove genes of the visualization</p>
+        
+    </div>
+  </div>
+  <hr>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Add Board" %}{% endblock %}
+
+{% block nav %}
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/accounts/logout">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block jumbotron %}
+  <center>
+    <h2>{% trans "Add Board" %}</h2>
+    <div class="well">
+      <p>{% blocktrans %}<font size = 3>Enter the following data to add a board to your dashboard{% endblocktrans %}</p>
+      <form id="add_board" method="post" action="/boards/addBoard" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ addBoardForm.non_field_errors }}
+        <p><label>Name:</label>
+        <br>{{ addBoardForm.title.errors }}
+        {{ addBoardForm.title }}
+        <hr>
+        <p><label>Asocciated file dataset:</label>
+        <br>{{ addBoardForm.dataFile.errors }}
+        {{ addBoardForm.dataFile }}
+        <hr>
+        <p><label>Initial number of filtered genes (1-15)</label>
+        <br>{{ addBoardForm.n_genes_initial.errors }}
+        {{ addBoardForm.n_genes_initial }}
+        <hr>
+        <p><label>Choose the used delimiter:</label>
+        <br>{{ addBoardForm.delimiter.errors }}
+        {{ addBoardForm.delimiter }}
+        <hr>
+        <p><p><button type="submit" class="btn btn-primary">{% trans "Save Dataset" %}</button>
+      </form>
+      <div align="right">
+        <a href="/boards/infoBoard"><span class="glyphicon glyphicon-info-sign"></span></a>
+      </div>
+      {% if warning %}<div class="alert alert-warning">{{ warning }}</div>{% endif %}
+    </div>
+  </center>
+
+{% endblock %}

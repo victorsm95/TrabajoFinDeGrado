@@ -1,0 +1,104 @@
+{% extends "home/base.html" %}
+
+{% load i18n %}
+{% load account %} 
+
+{% block head_title %}{% trans "Profile" %}{% endblock %}
+{% block nav %}
+	<ul class="nav navbar-nav">
+      	<li><a href="/">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li class="active"><a href="profile">Profile</a></li>
+          <li><a href="/accounts/logout">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+{% endblock %}
+
+{% block extra_content %}
+	<div class="jumbotron">
+  		<div class="container">
+			<center><h2>Profile data {{ user.username }}</h2></center>
+				<div class="well">
+					<center>
+						<a><img src="{% if not user.profile.image %}/static/images/no_Photo.jpeg{% else %}/static/{{ user.profile.image.url }}{% endif %}"  width="200" height="200"></a>
+						<p></p>
+						<a href="/profile/imageDelete" class="btn btn-success btn-xs btn-md">Clear Image</a>
+						<p><br><span class="glyphicon glyphicon-envelope"></span> {{ user.email }}</p>
+					</center>
+				</div>
+				<div class="row">
+					<div class="col-md-6" align="left">
+						<form class="form-horizontal" role="form" method="POST" action="profile" enctype="multipart/form-data">
+							{% csrf_token %}
+							{{ userForm.non_field_errors }}
+							{{ profileForm.non_field_errors }}
+						
+							<p><p><p><label>Select Image</label>
+							<br>{{ profileForm.image.errors }}
+							<input id="{{ profileForm.image.id_for_label }}" class ="btn btn-link" name="{{ profileForm.image.html_name }}" type="file"/>
+							<p><p><label>First name</label>
+							<br>{{ userForm.first_name.errors }}
+						    	{{ userForm.first_name }}
+							<p><label>Last name</label>
+							<br>{{ userForm.last_name.errors }}
+						 	   	{{ userForm.last_name }}
+							<p><label>Bio</label>
+							<br>{{ profileForm.bio.errors }}
+						   	 	{{ profileForm.bio }}
+							<p><input class="btn btn-primary" type = "submit" value = "Save">
+						</form>
+						<p><p><a href="{% url 'account_change_password' %}">Change Password?</a>
+					</div>
+					<div class="col-md-6" align="right">
+						<p><strong>Own boards</strong></p> 
+						<p>{{ ownBoards }}</p>
+						<hr>
+						<p><strong>Boards shared</strong></p>
+						<p>{{ boardsShared }}</p>
+						<hr>
+						<p><strong>Boards shared with me</strong></p>
+						<p>{{ boardsWithMe }}</p>
+						<hr>
+						<p><strong>Confirmation pending boards <span class="glyphicon glyphicon-warning-sign"></span></strong></p>
+						<p>{{ numUnconfirmedBoards }} </p>
+						<p>{% if numUnconfirmedBoards > 0 %}
+							<table class="table table-bordered">
+								{% for board in unconfirmedBoards %}
+									<tr>
+										<td><center>{{ board.board.owner }}</center></td>
+										<td><center>{{ board.board.id_board }}</center></td>
+										<td><center><a href="/boards/renderEmail?id_board={{ board.id_board }}" class="glyphicon glyphicon-transfer"></a></center></td>
+									</tr>
+								{% endfor %}
+							</table>
+					   	</p>{% endif %}
+						<hr>
+						<p><strong>Sharing boards that have not yet been accepted </strong></p>
+						<p>{{ numBoardsSharedUnconfirm }}</p>
+						<p>{% if numBoardsSharedUnconfirm > 0 %}
+							<table class="table table-bordered">
+								{% for board in boardsSharedUnconfirm %}
+									<tr>
+										<td><center>{{ board.board.id_board }}</center></td>
+										<td><center>{{ board.user }}</center></td>
+									</tr>
+								{% endfor %}
+							</table>
+					   	</p>{% endif %}
+						<p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<footer>
+        		<p>&copy; 2017 Trabajo Fin de Grado.</p>
+    		</footer>
+		</div>
+{% endblock %}
+	

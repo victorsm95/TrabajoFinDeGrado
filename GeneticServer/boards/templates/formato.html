@@ -1,0 +1,89 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% block head_title %}{% trans "Info Dataset" %}{% endblock %}
+
+{% block nav %}
+  <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/accounts/logout">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block jumbotron %}
+  <center>
+    <h2>Dataset format</h2>
+    <div class="well">
+      <table class="table table-bordered">
+        <tr class="active">
+  	     <td>IDENTIFIER</td>
+  	     <td>PATIENT 1</td>
+  	     <td>PATIENT 2</td>
+  	     <td>PATIENT 3</td>
+  	     <td>PATIENT 4</td>
+  	     <td>...</td>
+        </tr>
+        <tr class="warning">
+  	     <td>HISTOLOGY</td>
+  	     <td>0</td>
+  	     <td>0</td>
+  	     <td>1</td>
+  	     <td>1</td>
+  	     <td>...</td>
+        </tr>
+        <tr class="danger">
+  	     <td>GEN_NAME_1</td>
+  	     <td>valor1</td>
+  	     <td>valor2</td>
+  	     <td>valor3</td>
+  	     <td>valor4</td>
+  	     <td>...</td>
+        </tr>
+        <tr class="danger">
+  	     <td>GEN_NAME_2</td>
+  	     <td>valor1</td>
+  	     <td>valor2</td>
+  	     <td>valor3</td>
+  	     <td>valor4</td>
+  	     <td>...</td>
+        </tr>
+        <tr class="danger">
+  	     <td>GEN_NAME_3</td>
+  	     <td>valor1</td>
+  	     <td>valor2</td>
+  	     <td>valor3</td>
+  	     <td>valor4</td>
+  	     <td>...</td>
+        </tr>
+        <tr class="danger">
+  	     <td>...</td>
+  	     <td>...</td>
+  	     <td>...</td>
+  	     <td>...</td>
+  	     <td>...</td>
+  	     <td>...</td>
+        </tr>
+      </table>
+    </div>
+
+    <h2>Specifications</h2>
+    <div class = "well">
+      <ul class="list-group">
+        <li class="list-group-item">First row with patient identifiers (first column with no value to use).</li>
+        <li class="list-group-item">Second row with each patient's class, the dependent variable that classifies each participant in the sample (as in the previous case, the first column will be neglected).</li>
+        <li class="list-group-item">The subsequent rows will take into account all the columns, the first representing the name of a gene and the later the values of genetic expression in each participant, respectively.</li>
+        <li class="list-group-item">The separator used to distinguish each column from each row will be one of those indicated in the form field.</li>
+        <li class="list-group-item">If there are filaments with repeated gene names, the platform is left with the first appearance of said gene, being the responsibility of the user this aspect, already being made an arithmetic mean of the repeated rows or any other desired method.</li>
+      </ul>
+    </div>
+  </center>
+	
+{% endblock %}
