@@ -40,7 +40,10 @@
 	    <p><p><p><label>Select Image</label>
 	    <br>{{ profileForm.image.errors }}
 	    <input id="{{ profileForm.image.id_for_label }}" class ="btn btn-link" name="{{ profileForm.image.html_name }}" type="file"/>
-	    <p><p><label>First name</label>
+	    <p><p><label>Username</label>
+            <br>{{ userForm.username.errors }}
+	    {{ userForm.username }}
+            <p><p><label>First name</label>
             <br>{{ userForm.first_name.errors }}
             {{ userForm.first_name }}
 	    <p><label>Last name</label>

@@ -84,6 +84,7 @@ def profile(request):
 			# Se actualizan los datos del usuario de acuerdo a los datos de los formulario
 			request.user.first_name = userForm.cleaned_data["first_name"]
 			request.user.last_name = userForm.cleaned_data["last_name"]
+			request.user.username = userForm.cleaned_data["username"]
 			# Se actualizan los datos del perfil del usuario de acuerdo a los datos del formulario 
 			# Tratamiento de la imagen
 			imagen_modificada = profileForm.cleaned_data["image"]
@@ -129,7 +130,7 @@ def profile(request):
 		# Calculo de los boards compartidos al usuario, pero sin confirmar por el mismo
 		unconfirmedBoards = BoardShared.objects.filter(user=request.user, confirmation=False)
 		# Presentacion del formulario con los datos correspondientes
-		userForm = UserForm(initial={'first_name': request.user.first_name, 'last_name': request.user.last_name, 'email': request.user.email})
+		userForm = UserForm(initial={'first_name': request.user.first_name, 'last_name': request.user.last_name, 'username':request.user.username})
 		# Aseguracion de la existencia del perfil asociado al usuario
 		profile = Profile.objects.filter(user = request.user)
 		if len(profile):
@@ -140,17 +141,18 @@ def profile(request):
 
 		profileForm = ProfileForm(initial={'bio': profile.bio, 'image': profile.image})
 
-		context = Context({ 'userForm': userForm, 
-							'profileForm': profileForm,
-							'ownBoards': len(ownBoards),
-							'boardsShared': len(boardsShared),
-							'boardsWithMe': len(boardsWithMe),
-							'boardsSharedUnconfirm': boardsSharedUnconfirm,
-							'numBoardsSharedUnconfirm': len(boardsSharedUnconfirm),
-							'unconfirmedBoards': unconfirmedBoards,
-							'numUnconfirmedBoards': len(unconfirmedBoards),
-							'numBoardsSharedUnconfirm': len(boardsSharedUnconfirm),
-							'boardsSharedUnconfirm': boardsSharedUnconfirm})
+		context = Context({ 
+				'userForm': userForm, 
+				'profileForm': profileForm,
+				'ownBoards': len(ownBoards),
+				'boardsShared': len(boardsShared),
+				'boardsWithMe': len(boardsWithMe),
+				'boardsSharedUnconfirm': boardsSharedUnconfirm,
+				'numBoardsSharedUnconfirm': len(boardsSharedUnconfirm),
+				'unconfirmedBoards': unconfirmedBoards,
+				'numUnconfirmedBoards': len(unconfirmedBoards),
+				'numBoardsSharedUnconfirm': len(boardsSharedUnconfirm),
+				'boardsSharedUnconfirm': boardsSharedUnconfirm})
 
 		return render(request, 'home/profile.html', context)
 
