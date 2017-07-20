@@ -5,37 +5,36 @@
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
 {% block nav %} 
-          <ul class="nav navbar-nav">
-	    <li><a href="/">Home</a></li>
-            <li><a href="/accounts/login">Sign in</a></li>
-            <li class="active"><a href="/accounts/signup">Sign up</a></li>
-            <li><a href="/contact">Contact</a></li>
-          </ul>
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/accounts/login">Sign in</a></li>
+    <li class="active"><a href="/accounts/signup">Sign up</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
 {% endblock %}
 
 {% block jumbotron %}
-<center>
-<h2>{% trans "Sign Up" %}</h2>
-<div class="well">
-<p>{% blocktrans %}<font size = 3>Already have an account? Then please <a href="{{ login_url }}">sign in</font></a>.{% endblocktrans %}</p>
-
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <p>{{ form.username.errors }}
-     {{ form.username }}
-  <p>{{ form.email.errors }}
-     {{ form.email }}
-  <p>{{ form.password1.errors }}
-     {{ form.password1 }}
-  <p>{{ form.password2.errors }}
-     {{ form.password2 }}
-  <p>{% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
-</form>
-</div>
-</center>
+  <center>
+    <h2>{% trans "Sign Up" %}</h2>
+    <div class="well">
+      <p>{% blocktrans %}<font size = 3>Already have an account? Then please <a href="{{ login_url }}">sign in</font></a>.{% endblocktrans %}</p>
+      <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <p>{{ form.username.errors }}
+        {{ form.username }}</p>
+        <p>{{ form.email.errors }}
+        {{ form.email }}</p>
+        <p>{{ form.password1.errors }}
+        {{ form.password1 }}</p>
+        <p>{{ form.password2.errors }}
+        {{ form.password2 }}</p>
+        <p>{% if redirect_field_value %}</p>
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}</p>
+        <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
+      </form>
+    </div>
+  </center>
 
 {% endblock %}

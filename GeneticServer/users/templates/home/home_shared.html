@@ -6,7 +6,7 @@
 {% block head_title %}{% trans "Home" %}{% endblock %}
 
 {% block nav %}
-	<ul class="nav navbar-nav">
+  <ul class="nav navbar-nav">
     <li class="active"><a href="/">Home</a></li>
   </ul>
   <ul class="nav navbar-nav navbar-right">
@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block extra_content %}
-	<div class="row">
+  <div class="row">
     <div class="col-sm-3 col-md-2 sidebar">
       <ul class="nav nav-sidebar">
         <li><a href="/">My boards</a></li>
@@ -76,7 +76,7 @@
           {% endfor %}
         </div>  
       </div>
-		  <footer>
+      <footer>
         <p>&copy; 2017 Trabajo Fin de Grado.</p>
       </footer>
     </div>
@@ -91,39 +91,33 @@
   var types;
   var histology = [];
 
-    {% for a_board in board %}
+  {% for a_board in board %}
+    types = '{{ a_board.board.types }}';
+    histology = types.split(",");
+    numHistology = parseInt('{{ a_board.board.n_types }}');
+    for(i=0;i<numHistology;i++) {
+      numElement[i] = 0;
+    }
+    histology.map(function(item){
+    numElement[parseInt(item)] = numElement[parseInt(item)] + 1;});
+    for(i = 0; i < numHistology; i++) {
+      lista.push([i.toString(), numElement[i]]);
+    }
+    var chart = c3.generate({
+      bindto: '#{{ a_board.id_board }}',
+      data: {
+        columns: lista,
+        type : 'donut',
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+      },
+      donut: {
+        title: "Sample classifier"
+      }});
 
-            types = '{{ a_board.board.types }}';
-            histology = types.split(",");
-            numHistology = parseInt('{{ a_board.board.n_types }}');
-            for(i=0;i<numHistology;i++) {
-              numElement[i] = 0;
-            }
-            histology.map(function(item){
-              numElement[parseInt(item)] = numElement[parseInt(item)] + 1;
-            });
-
-            for(i = 0; i < numHistology; i++) {
-                lista.push([i.toString(), numElement[i]]);
-            }
-
-            var chart = c3.generate({
-                bindto: '#{{ a_board.id_board }}',
-                data: {
-                  columns: lista,
-                  type : 'donut',
-                  onclick: function (d, i) { console.log("onclick", d, i); },
-                  onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-                  onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-                },
-                donut: {
-                  title: "Sample classifier"
-                }
-            });
-
-            lista.length = 0;
-         
-      
+      lista.length = 0;
+        
     {% endfor %}
   </script>
 {% endblock %}

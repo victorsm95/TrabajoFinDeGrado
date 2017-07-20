@@ -105,11 +105,7 @@ def profile(request):
 			# Se guardan ambos objetos en la base de datos	
 			profile.save()
 			request.user.save()
-			# Se envia un email al usuario de aviso de modificacion de los datos
-			mensaje = "Your profile data has been successfully changed:" + "\n First Name: " + request.user.first_name + "\n Last Name: " + request.user.last_name + "\n Bio: " + profile.bio 
 
-			send_mail('Changing profile data', mensaje, 'geneticserver@gmail.com', [request.user.email], fail_silently=False,)
-			
 			return HttpResponseRedirect('/')
 
 	# Si el metodo es GET se presentan al usuario el formulario para cambiar sus datos y las estadisticas de sus recursos
@@ -173,5 +169,5 @@ def image_delete(request):
 @receiver(password_changed)
 def notificationChangePassword(sender, **kwargs):
 	# Se envia un email infromativo al usuario
-	mensaje = "The password has been successfully changed to account" + kwargs['request']
+	mensaje = "The password has been successfully changed to account" + kwargs['request'].user.username
 	send_mail('Password changed', mensaje, settings.EMAIL_HOST_USER, [kwargs['request'].user.email], fail_silently=False)

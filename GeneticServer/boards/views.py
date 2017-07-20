@@ -281,14 +281,14 @@ def filt(request):
 				'gene_names':gene_names,
 				'searchForm':searchForm,
 				'addForm':addGenForm,
-				'filt': Specifications	
+				'filt': filt	
 			}
 		)
 
 	else:
 		# Si se ha introducido un filtro incorrecto se muestran los errores al usuario
 		idBoard = searchForm.cleaned_data["id_board_searchGen"]
-		especificaciones = searchForm.cleaned_data["filtrado"]
+		especificaciones = searchForm.cleaned_data["filt"]
 		context = Context(
 			{
 				'id_board': idBoard,
@@ -335,7 +335,7 @@ def addGen(request):
 		y = np.asarray(histology)
 		gene_names_filtered.append(nameGen)
 		# Escritura en fichero csv
-		expresion = []
+		expression = []
 		n_genes = n_genes + 1	
 		for name in gene_names_filtered:
 			cursor = db["" + idBoard].find({'gene_name' : name})

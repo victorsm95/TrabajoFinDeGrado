@@ -4,47 +4,47 @@
 
 {% block head_title %}{% trans "Add Gen" %}{% endblock %}
 {% block nav %}
-	<ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-        	<li><a href="profile">Profile</a></li>
-        	<li><a href="/accounts/logout">Logout</a></li>
-        </ul>
-      </li>
-    </ul>
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="profile">Profile</a></li>
+        <li><a href="/accounts/logout">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
 {% endblock %}
 
 {% block jumbotron %}
-	<center>
-		<h3>Select the gene you want to add</h3>
-		<div class="well">
-			<form class = "form-inline" role = "form" method="POST" action="/boards/analysisSearch">
-				{% csrf_token %}
-				{{ searchForm.non_field_errors }}
-				<input type = "hidden" name="id_board_searchGen" value = "{{ id_board }}">
-				<input type = "hidden" name="filtrado" value = "{{ filtrado }}">
-				<label>Enter the name or initials of the dataset gene to be added and press enter to filter</label>
-				{{ searchForm.name_gen.errors }}
-        		<p></p><input id = "id_name_gen" name = "name_gen" type="text" class="form-control" placeholder="Search gen to add...">
-			</form>
-			<p></p>
-			<form class = "form-inline" role = "form" method="POST" action="/boards/analysisAdd">
-				{% csrf_token %}
-				{{ addForm.non_field_errors }}
-				<input type = "hidden" name="id_board_addGen" value = "{{ id_board }}">
-				<input type = "hidden" name="filtrado" value = "{{ filtrado }}">
-				{{ addForm.name_gen.errors }}
-				<select name = "name_gen">
-					{% for name in gene_names %}
-						<option value = "{{ name }}">{{ name }}</option>
-					{% endfor %}
-				</select>
-				<input type="submit" class="btn btn-success" value = "Add gen">
-			</form>
-		</div>
-	</center>
+  <center>
+    <h3>Select the gene you want to add</h3>
+    <div class="well">
+      <form class = "form-inline" role = "form" method="POST" action="/boards/analysisSearch">
+        {% csrf_token %}
+	{{ searchForm.non_field_errors }}
+	<input type = "hidden" name="id_board_searchGen" value = "{{ id_board }}">
+	<input type = "hidden" name="filt" value = "{{ filt }}">
+	<label>Enter the name or initials of the dataset gene to be added and press enter to filter</label>
+	{{ searchForm.name_gen.errors }}
+        <p></p><input id = "id_name_gen" name = "name_gen" type="text" class="form-control" placeholder="Search gen to add...">
+      </form>
+      <p></p>
+      <form class = "form-inline" role = "form" method="POST" action="/boards/analysisAdd">
+        {% csrf_token %}
+	{{ addForm.non_field_errors }}
+	<input type = "hidden" name="id_board_addGen" value = "{{ id_board }}">
+	<input type = "hidden" name="filt" value = "{{ filt }}">
+	{{ addForm.name_gen.errors }}
+	<select name = "name_gen">
+	  {% for name in gene_names %}
+	    <option value = "{{ name }}">{{ name }}</option>
+	    {% endfor %}
+        </select>
+	<input type="submit" class="btn btn-success" value = "Add gen">
+      </form>
+    </div>
+  </center>
 {% endblock %}

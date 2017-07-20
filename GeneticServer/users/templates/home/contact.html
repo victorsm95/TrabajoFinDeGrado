@@ -5,39 +5,41 @@
 
 {% block head_title %}{% trans "Contact information" %}{% endblock %}
 {% block nav %} 
-	<ul class="nav navbar-nav">
-		<li><a href="/">Home</a></li>
-		<li><a href="/accounts/login">Sign in</a></li>
-		<li><a href="/accounts/signup">Sign up</a></li>
-		<li class="active"><a href="/contact">Contact</a></li>
-    </ul>
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/accounts/login">Sign in</a></li>
+    <li><a href="/accounts/signup">Sign up</a></li>
+    <li class="active"><a href="/contact">Contact</a></li>
+  </ul>
 {% endblock %}
 	
 {% block jumbotron %}
-	<center>
-		<h2>Contact Information</h2>
-		<div class="well">
-			<a href = "#"><img src="/static/images/admin.jpg"  width="150" height="150"></a>
-			<p></p>
-			<div class="panel panel-info">
-				<div class="panel-heading">Name</div>
-  				<div class="panel-body">Víctor Sánchez Martín</div>
-			</div>
-			<p></p>
-			<div class="panel panel-info">
-				<div class="panel-heading">Contact e-mail</div>
-  				<div class="panel-body">geneticserver@gmail.com</div>
-			</div>
-			<p></p>
-			<div class="panel panel-info">
-				<div class="panel-heading">Info</div>
-  				<div class="panel-body">Student of the degree in Computer Engineering at the University of Salamanca.
-				<br>Currently working in company <a href="https://www.sidisel.com/es/">SIDISEL Electronica, S.L.</a></div>
-			</div>
-			<div class="panel panel-info">
-				<div class="panel-heading">Workplace</div>
-  				<div class="panel-body"><a href="https://pcs.usal.es/"> Science park </a>, building M3. Office PB04-I</div>
-			</div>
-		</div>
-	</center>
+  <center>
+    <h2>Contact Information</h2>
+    <div class="well">
+      <a href = "#"><img src="/static/images/admin.jpg"  width="150" height="150"></a>
+      <p></p>
+      <div class="panel panel-info">
+        <div class="panel-heading">Name</div>
+  	<div class="panel-body">Víctor Sánchez Martín</div>
+      </div>
+      <p></p>
+      <div class="panel panel-info">
+        <div class="panel-heading">Contact e-mail</div>
+  	<div class="panel-body">geneticserver@gmail.com</div>
+      </div>
+      <p></p>
+      <div class="panel panel-info">
+        <div class="panel-heading">Info</div>
+  	<div class="panel-body">
+          Student of the degree in Computer Engineering at the University of Salamanca.
+	  <br>Currently working in company <a href="https://www.sidisel.com/es/">SIDISEL Electronica, S.L.</a>
+        </div>
+      </div>
+      <div class="panel panel-info">
+        <div class="panel-heading">Workplace</div>
+  	<div class="panel-body"><a href="https://pcs.usal.es/"> Science park </a>, building M3. Office PB04-I</div>
+      </div>
+    </div>
+  </center>
 {% endblock %}

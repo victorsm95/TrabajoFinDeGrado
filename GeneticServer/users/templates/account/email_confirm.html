@@ -7,35 +7,29 @@
 
 {% block nav %} 
     <ul class="nav navbar-nav">
-	    <li><a href="/">Home</a></li>
-        <li><a href="/accounts/login">Sign in</a></li>
-        <li><a href="/accounts/signup">Sign up</a></li>
-        <li><a href="/contact">Contact</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/accounts/login">Sign in</a></li>
+      <li><a href="/accounts/signup">Sign up</a></li>
+      <li><a href="/contact">Contact</a></li>
     </ul>
 {% endblock %}
 
 {% block jumbotron %}
-	<center>
-		<h2>{% trans "Confirm E-mail Address" %}</h2>
-		<div class="well">
-			{% if confirmation %}
-
-				{% user_display confirmation.email_address.user as user_display %}
-
-				<p>{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
-
-				<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-					{% csrf_token %}
-    				<button type="submit" class = "btn btn-primary">{% trans 'Confirm' %}</button>
-				</form>
-
-			{% else %}
-
-				{% url 'account_email' as email_url %}
-
-				<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
-
-			{% endif %}
-		</div>
-	</center>
+  <center>
+    <h2>{% trans "Confirm E-mail Address" %}</h2>
+    <div class="well">
+      {% if confirmation %}
+        {% user_display confirmation.email_address.user as user_display %}
+        <p>{% blocktrans with confirmation.email_address.email as email %}
+	Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+	  {% csrf_token %}
+    	  <button type="submit" class = "btn btn-primary">{% trans 'Confirm' %}</button>
+	</form>
+      {% else %}
+        {% url 'account_email' as email_url %}
+	<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+      {% endif %}
+    </div>
+  </center>
 {% endblock %}

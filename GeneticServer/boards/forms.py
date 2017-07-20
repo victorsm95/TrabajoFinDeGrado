@@ -39,23 +39,23 @@ class AddBoardForm(ModelForm):
 class SearchGenForm(Form):
 	id_board_searchGen = forms.CharField()
 	name_gen = forms.CharField()
-	filtrado = forms.CharField()
+	filt = forms.CharField()
 
 # Formulario para añadir un gen
 class AddGenForm(Form):
 	id_board_addGen = forms.CharField()
-	filtrado = forms.CharField()
+	filt = forms.CharField()
 	name_gen = forms.CharField()
 	
 	# No puede haber mas de 15 genes en la visualización  
 	def clean_name_gen(self):
 		idBoard = self.cleaned_data['id_board_addGen']
 		name = self.cleaned_data['name_gen']
-		especificaciones = self.cleaned_data['filtrado']
+		filt = self.cleaned_data['filt']
 		
 		client = MongoClient()
 		db = client.geneticserverdb
-		cursor = db["" + idBoard].find({'name' : "especificaciones" + especificaciones})
+		cursor = db["" + idBoard].find({'name' : "Specifications" + filt})
 		for document in cursor:
 			n_genes = document['n_genes_selected']
 
@@ -67,18 +67,18 @@ class AddGenForm(Form):
 # Formulario para eliminar un gen	
 class DeleteGenForm(Form):
 	id_board_deleteGen = forms.CharField()
-	filtrado = forms.CharField()
+	filt = forms.CharField()
 	name_gen = forms.CharField()
 
 	# No puede haber menos de un gen en la visualización
 	def clean_name_gen(self):
 		idBoard = self.cleaned_data['id_board_deleteGen']
 		name = self.cleaned_data['name_gen']
-		especificaciones = self.cleaned_data['filtrado']
+		filt = self.cleaned_data['filt']
 		
 		client = MongoClient()
 		db = client.geneticserverdb
-		cursor = db["" + idBoard].find({'name' : "especificaciones" + especificaciones})
+		cursor = db["" + idBoard].find({'name' : "Specifications" + filt})
 		for document in cursor:
 			n_genes = document['n_genes_selected']
 
@@ -129,4 +129,4 @@ class SearchUserForm(Form):
 class SaveStateForm(Form):
 	id_board_save = forms.CharField()
 	brushed = forms.CharField()	
-	filtrado = forms.CharField()
+	filt = forms.CharField()

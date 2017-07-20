@@ -5,435 +5,394 @@
 {% block head_title %}{% trans "Genetic Analysis - Parcoords" %}{% endblock %}
 
 {% block extra_head %}
-	<meta http-equiv="Expires" content="0">
- 	<meta http-equiv="Last-Modified" content="0">
- 	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
- 	<meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Last-Modified" content="0">
+  <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+  <meta http-equiv="Pragma" content="no-cache">
 
-	<link href="/static/css/c3.css" type="text/css"  rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/static/css/w3.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/d3.parcoords.css">
-	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+  <link href="/static/css/c3.css" type="text/css"  rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/static/css/w3.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/d3.parcoords.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 
-	<script type="text/javascript" src="/static/js/d3/d3.min.js"></script>
-	<script type="text/javascript" src="/static/js/parcoords/d3.parcoords.js"></script>
-	<script type="text/javascript" src="/static/js/parcoords/divgrid.js"></script>
-	<script type="text/javascript" src="/static/js/c3/c3.min.js"></script>
-	<script type="text/javascript" src="/static/js/searchDatabase.js"></script>
+  <script type="text/javascript" src="/static/js/d3/d3.min.js"></script>
+  <script type="text/javascript" src="/static/js/parcoords/d3.parcoords.js"></script>
+  <script type="text/javascript" src="/static/js/parcoords/divgrid.js"></script>
+  <script type="text/javascript" src="/static/js/c3/c3.min.js"></script>
+  <script type="text/javascript" src="/static/js/searchDatabase.js"></script>
 {% endblock %}
 
 {% block nav %}
-	<ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li>
-   	</ul>
-   	<ul class="nav navbar-nav navbar-right">
-      	<li class="dropdown">
-        	<a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
-        	<ul class="dropdown-menu">
-          		<li><a href="/profile">Profile</a></li>
-          		<li><a href="/accounts/logout">Logout</a></li>
-        	</ul>
-      	</li>
-    </ul>
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/accounts/logout">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
 {% endblock %}
 
 {% block jumbotron %}
-	<center>
-		<h1> {{ board_analysis.title }} </h1>
-	</center>
-	<div class="well">
-		<div class="btn-group">
-  			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-    			Participants <span class="caret"></span>
-  			</button>
- 			<ul class="dropdown-menu" role="menu">
-				{% for participant in participants %}
-					<li><a>{{ participant }}</a><li>
-				{% endfor %}
-				<li><a><strong>{{ board_analysis.owner.username }}</strong></a></li>
- 		 	</ul>
+  <center>
+    <h1> {{ board_analysis.title }} </h1>
+  </center>
+    <div class="well">
+      <div class="btn-group">	
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+    	  Participants <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          {% for participant in participants %}
+            <li><a>{{ participant }}</a><li>
+          {% endfor %}
+	  <li><a><strong>{{ board_analysis.owner.username }}</strong></a></li>
+ 	</ul>
+      </div>
+      <p></p>
+      <div class="list-group">
+        {% if filt == "MN" %}
+	  <a class="list-group-item active">
+	    <div class="row">
+	      <div class="col-md-6">
+	        <h4 class="list-group-item-heading">Wilcoxon-Mann-Whitney</h4>
+		<h5>Number of initial filtering genes: {{ board_analysis.n_genes_initial}}</h5>
+	      </div>
+	      <div class="col-md-6" align="right" id="showButton">
+	        <button class="btn-success" onclick="showGraphic(1);">Show details<span class="glyphicon glyphicon-arrow-down"></span></button>
+	      </div>
+	    </div>
+    	  </a>
+	{% else %}
+	  <a class="list-group-item" href="/boards/analysis?filt=MN&id_board_analysis={{ board_analysis.id_board  }}">
+	    <h4 class="list-group-item-heading">Wilcoxon-Mann-Whitney</h4>
+	    <h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
+	  </a>
+	{% endif %}
+    	<br></br>
+    	<div id="infoGraphic1"></div>
+    	<div id="chart1"></div>
+  	{% if filt == "GBR" %}
+          <a class="list-group-item active">
+	    <div class="row">
+	      <div class="col-md-6">
+	        <h4 class="list-group-item-heading">Gradient-Boosting-Regressor</h4>
+	        <h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
+	      </div>
+	      <div class="col-md-6" align="right" id="showButton">
+	        <button class="btn-success" onclick="showGraphic(2);">Show details<span class="glyphicon glyphicon-arrow-down"></span></button>
+	      </div>
+	    </div>
+    	  </a>
+	{% else %}
+	  <a class="list-group-item" href="/boards/analysis?filt=GBR&id_board_analysis={{ board_analysis.id_board }}">
+	    <h4 class="list-group-item-heading">Gradient-Boosting-Regressor</h4>
+	    <h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
+	  </a>
+	{% endif %}
+    	<br></br>
+    	<div id="infoGraphic2"></div>
+    	<div id="chart2"></div>
+  	{% if filt == "Boruta" %}
+          <a class="list-group-item active">
+	    <div class="row">
+	      <div class="col-md-6">
+	        <h4 class="list-group-item-heading">Boruta</h4>
+		<h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
+	      </div>
+	      <div class="col-md-6" align="right" id="showButton">
+		<button class="btn-success" onclick="showGraphic(3);">Show details<span class="glyphicon glyphicon-arrow-down"></span></button>
+	      </div>
+            </div>
+    	  </a>
+	{% else %}
+	  <a class="list-group-item" href="/boards/analysis?filt=Boruta&id_board_analysis={{ board_analysis.id_board  }}">
+	    <h4 class="list-group-item-heading">Boruta</h4>
+            <h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
+	  </a>
+	{% endif %}
+    	<br></br>
+    	<div id="infoGraphic3"></div>
+    	<div id="chart3"></div>
+      </div>
+     
+      <div class="row">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+ 	  <ul class="list-group">
+ 	    <li class="list-group-item"><center><strong>Info Genes</strong></center></li>
+	    {% for name in namesDel %}
+	      <li class="list-group-item">
+	        <div class="row">
+	          <div class="col-md-8">
+                    <center>
+                      <a target="_blank" href="http://www.uniprot.org/uniprot/?query={{ name }}&sort=score" onmouseover="showInfoGen('{{ name }}');" onmouseout="hiddenInfoGen();">{{ name }}</a>
+                    </center>
+		  </div>
+		  {% if board_analysis.owner == user %}
+		    <div class="col-md-4">
+		      <form class = "form-inline" role = "form" method="POST" action="/boards/analysisDelete">
+		        {% csrf_token %}
+		        {{ deleteForm.non_fields_errors }}
+			<input type = "hidden" name="filt" value = "{{ filt }}">
+			<input type = "hidden" name="id_board_deleteGen" value = "{{ board_analysis.id_board }}">
+			<input type = "hidden" name="name_gen" value = "{{ name }}">
+			<input type="image" src = "/static/images/eliminar.jpg"  width="20" height="20">
+		      </form>
+		    </div>
+		  {% endif %}
 		</div>
-	
-		<p>
-
-		<div class="list-group">
-			{% if filt == "MN" %}
-				<a class="list-group-item active">
-					<div class="row">
-						<div class="col-md-6">
-							<h4 class="list-group-item-heading">Wilcoxon-Mann-Whitney</h4>
-							<h5>Number of initial filtering genes: {{ board_analysis.n_genes_initial}}</h5>
-						</div>
-						<div class="col-md-6" align="right" id="showButton">
-							<button class="btn-success" onclick="showGraphic(1);">Show details<span class="glyphicon glyphicon-arrow-down"></span></button>
-						</div>
-					</div>
-    			</a>
-			{% else %}
-				<a class="list-group-item" href="/boards/analysis?filt=MN&id_board_analysis={{ board_analysis.id_board  }}">
-					<h4 class="list-group-item-heading">Wilcoxon-Mann-Whitney</h4>
-					<h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
-				</a>
-			{% endif %}
-    		<br>
-    		<div id="infoGraphic1"></div>
-    		<div id="chart1"></div>
-  		
-  			{% if filt == "GBR" %}
-				<a class="list-group-item active">
-					<div class="row">
-						<div class="col-md-6">
-							<h4 class="list-group-item-heading">Gradient-Boosting-Regressor</h4>
-							<h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
-						</div>
-						<div class="col-md-6" align="right" id="showButton">
-							<button class="btn-success" onclick="showGraphic(2);">Show details<span class="glyphicon glyphicon-arrow-down"></span></button>
-						</div>
-					</div>
-    			</a>
-			{% else %}
-				<a class="list-group-item" href="/boards/analysis?filt=GBR&id_board_analysis={{ board_analysis.id_board }}">
-					<h4 class="list-group-item-heading">Gradient-Boosting-Regressor</h4>
-					<h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
-				</a>
-			{% endif %}
-    		<br>
-    		<div id="infoGraphic2"></div>
-    		<div id="chart2"></div>
-  		
-  			{% if filt == "Boruta" %}
-				<a class="list-group-item active">
-					<div class="row">
-						<div class="col-md-6">
-							<h4 class="list-group-item-heading">Boruta</h4>
-							<h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
-						</div>
-						<div class="col-md-6" align="right" id="showButton">
-							<button class="btn-success" onclick="showGraphic(3);">Show details<span class="glyphicon glyphicon-arrow-down"></span></button>
-						</div>
-					</div>
-    			</a>
-			{% else %}
-				<a class="list-group-item" href="/boards/analysis?filt=Boruta&id_board_analysis={{ board_analysis.id_board  }}">
-					<h4 class="list-group-item-heading">Boruta</h4>
-					<h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
-				</a>
-			{% endif %}
-    			<br>
-    			<div id="infoGraphic3"></div>
-    			<div id="chart3"></div>
-    	</div>
-
-		<div class="row">
-			<div class="col-md-2 col-sm-2 col-xs-2">
- 				<ul class="list-group">
- 					<li class="list-group-item"><center><strong>Info Genes</strong></center></li>
-					{% for name in namesDel %}
-						<li class="list-group-item">
-							<div class="row">
-								<div class="col-md-8">
-									<center><a target="_blank" href="http://www.uniprot.org/uniprot/?query={{ name }}&sort=score" onmouseover="showInfoGen('{{ name }}')" onmouseout="hiddenInfoGen()">{{ name }}</a></center>
-								</div>
-								{% if board_analysis.owner == user %}
-									<div class="col-md-4">
-										<form class = "form-inline" role = "form" method="POST" action="/boards/analysisDelete">
-											{% csrf_token %}
-											{{ deleteForm.non_fields_errors }}
-											<input type = "hidden" name="filt" value = "{{ filt }}">
-											<input type = "hidden" name="id_board_deleteGen" value = "{{ board_analysis.id_board }}">
-											<input type = "hidden" name="name_gen" value = "{{ name }}">
-											<input type="image" src = "/static/images/eliminar.jpg"  width="20" height="20">
-										</form>
-									</div>
-								{% endif %}
-							</div>
-						</li>
-					{% endfor %}
-  				</ul>
-			</div>
-
-			<div id = "infoGenes" class="col-md-4"></div>
-			<div class="col-md-6">
-				{% if board_analysis.owner == user %}
-					<h5>Do you want to add a gene to the selected ones?</h5>
-					<a href="/boards/analysisRequestAdd?filt={{ filt }}&id_board_requestAdd={{ board_analysis.id_board }}">
-						<button class="btn btn-success">Add gen</button>
-					</a>
-					<p>
-				{% endif %}
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						Legend Parcoords {{ filt }}<p>{{ n_genes }} genes selected
-					</div>
-  					<table class="table">
-						<tr>
-  							<td><strong>Type</strong></td>
-							<td><strong>Color</strong></td>
-						</tr>
-						<tr>
-  							<td>0</td>
-  							<td>Red</td>
-						</tr>
- 						<tr>
-  							<td>1</td>
-  							<td>Blue</td>
-						</tr>
-  					</table>
-				</div>
-			</div>
-		</div>
-			
-		<p>
-		<div id="example" class="parcoords" style="height:500px"></div>
-		<p>
-		<div align="right"><a href="/static/boardCSV/{{ board_analysis.id_board }}Filtered{{ filt }}.csv">Download Filtered File <span class="glyphicon glyphicon-download"></span></a></div>
-		<p>
-		<p>
-		<center><div id="grid"></div></center> 	
-		<p>
-		<div class="row">
-  			<div class="col-md-4 col-xs-4">
-				{% if board_analysis.owner == user %}
-					<form class="form-horizontal" role="form" method="POST" action="/boards/analysisSave" enctype="multipart/form-data" name="form">
-						{% csrf_token %}
-						{{ saveForm.non_fields_errors }}
-						<input type = "hidden" name="id_board_save" value = "{{ board_analysis.id_board }}">
-						<input type = "hidden" name="brushed">
-						<input type = "hidden" name="filt" value = " {{ filt }}">
-						<button class="btn btn-success" onclick="sendForm();">Save State</button>
-					</form>
-				{% endif %}
-			</div>
-			<div class="col-md-4 col-xs-4" id="restaurarDiv">
-				<center><button class="btn btn-succes" onclick="restore();" disabled>Restore last saved state</button></center>
-			</div>
-  			<div class="col-md-4 col-xs-4" align="right">
-				{% if board_analysis.owner == user %}
-					<form class="form-horizontal" role="form" method="POST" action="/boards/analysisShare" enctype="multipart/form-data">
-						{% csrf_token %}
-						{{ shareForm.non_fields_errors }}
-						<input type = "hidden" name="id_board_share" value = "{{ board_analysis.id_board }}">
-						<input type = "submit" class="btn btn-warning" value="Share Board">
-					</form>
-				{% endif %}
-			</div>
-		</div>
+	      </li>
+	    {% endfor %}
+  	  </ul>
 	</div>
+        <div id = "infoGenes" class="col-md-4 col-sm-4 col-xs-4"></div>
+	<div class="col-md-6 col-sm-6 col-xs-6">
+	  {% if board_analysis.owner == user %}
+	    <h5>Do you want to add a gene to the selected ones?</h5>
+	    <a href="/boards/analysisRequestAdd?filt={{ filt }}&id_board_requestAdd={{ board_analysis.id_board }}">
+	      <button class="btn btn-success">Add gen</button>
+	    </a>
+	    <p></p>
+	  {% endif %}
+	  <div class="panel panel-default">
+	    <div class="panel-heading">
+	      Legend Parcoords {{ filt }}<p>{{ n_genes }} genes selected
+	    </div>
+  	    <table class="table">
+	      <tr>
+  	        <td><strong>Type</strong></td>
+		<td><strong>Color</strong></td>
+	      </tr>
+	      <tr>
+  	        <td>0</td>
+  		<td>Red</td>
+	      </tr>
+ 	      <tr>
+  	        <td>1</td>
+  		<td>Blue</td>
+	      </tr>
+  	    </table>
+	  </div>
+	</div>
+      </div>
 
-	<script type="text/javascript">
-		// Ejecutamos el script de visualizacion después de cargar la pagina html
-		window.onload = visualization();
-		
-		// Asignamos el color de las coordenadas paralelas para cada tipo de muestra 
-		var green_to_blue = d3.scale.linear()
-  			.domain([{{ min_domain }} , {{ max_domain }}])
-  			.range(["#FF0000", "#00B0DD"])
- 			.interpolate(d3.interpolateLab);
+      <p></p>
+      <div id="example" class="parcoords" style="height:500px"></div>
+      <p></p>
+      <div align="right"><a href="/static/boardCSV/{{ board_analysis.id_board }}Filtered{{ filt }}.csv">Download Filtered File <span class="glyphicon glyphicon-download"></span></a></div>
+      <p></p>
+      <p></p>
+      <center><div id="grid"></div></center> 	
+      <p></p>
+      <div class="row">
+        <div class="col-md-4 col-xs-4">
+	  {% if board_analysis.owner == user %}
+	    <form class="form-horizontal" role="form" method="POST" action="/boards/analysisSave" enctype="multipart/form-data" name="form">
+	      {% csrf_token %}
+	      {{ saveForm.non_fields_errors }}
+	      <input type = "hidden" name="id_board_save" value = "{{ board_analysis.id_board }}">
+	      <input type = "hidden" name="brushed">
+	      <input type = "hidden" name="filt" value = " {{ filt }}">
+	      <button class="btn btn-success" onclick="sendForm();">Save State</button>
+	    </form>
+	  {% endif %}
+	</div>
+	<div class="col-md-4 col-xs-4" id="restaurarDiv">
+	  <center><button class="btn btn-succes" onclick="restore();" disabled>Restore last saved state</button></center>
+	</div>
+        <div class="col-md-4 col-xs-4" align="right">
+	  {% if board_analysis.owner == user %}
+	    <form class="form-horizontal" role="form" method="POST" action="/boards/analysisShare" enctype="multipart/form-data">
+	      {% csrf_token %}
+	      {{ shareForm.non_fields_errors }}
+	      <input type = "hidden" name="id_board_share" value = "{{ board_analysis.id_board }}">
+	      <input type = "submit" class="btn btn-warning" value="Share Board">
+	    </form>
+	  {% endif %}
+	</div>
+      </div>
+    </div>
 
- 		// Coordenadas paralelas d3
-		var parcoords = d3.parcoords()("#example")
-  			.alpha(0.4);
+<script type="text/javascript">
+  // Ejecutamos el script de visualizacion después de cargar la pagina html
+  window.onload = visualization();	
+  // Asignamos el color de las coordenadas paralelas para cada tipo de muestra 
+  var green_to_blue = d3.scale.linear()
+    .domain([{{ min_domain }} , {{ max_domain }}])
+    .range(["#FF0000", "#00B0DD"])
+    .interpolate(d3.interpolateLab);
+  // Coordenadas paralelas d3
+  var parcoords = d3.parcoords()("#example")
+    .alpha(0.4);
+  // Tabla enlazada con las coordenadas paralelas d3
+  var grid = d3.divgrid();
+  // Datos del fichero .csv
+  var information;
+  function visualization(){
+    // Recojemos los datos del fichero csv para mostrarlos a traves de las coordenadas paralelas	
+    d3.csv('/static/boardCSV/'.concat('{{ board_analysis.id_board }}'.concat('Filtered'.concat('{{ filt }}'.concat('.csv?{{ instant }}')))) , function(data) {
+      // Datos del fichero filtrado
+      information = data;
+      // Estado de las coordenadas paralelas (si el usuario ha seleccionado muestras y las ha guardado previamente, se recojen y mantienen)
+      var brushedMostrar = [];
+      // Si existe un estado guardado con pacientes seleccionados, lo cargamos en el array brushedMostrar
+      {% if brushed != 'false' %}
+        var arrayBrushed = '{{ brushed }}'.split(";");
+	arrayBrushed.map(function(element) {
+       	  arrayJSON = element.split(",");
+	  var object = {};
+	  arrayJSON.map(function(elementJSON) {
+	    var arrayAñadir = elementJSON.split(":");
+	    object[arrayAñadir[0]] = arrayAñadir[1];});
+          brushedMostrar.push(object);});
+      {% endif %}
+      //El color de cada linea (paciente) vendrá dado por la histologia, es deci el tipo de muestra, pero esta no aparecera en la visualizacion, 
+      //asique la eliminamos del diccionario
+      var color = [];
+      var i = -1;
+      var j = 0;
+      parcoords
+        .data(data.map(function(row){
+	  color.push(row['Histology']);
+	  j = j + 1;
+	  delete row['Histology'];
+	  return row;}))
+    	.color(function(d) {i = i + 1; if( i < j){ d['Histology'] = color[i];} return green_to_blue(d['Histology']); })
+    	.render()
+    	.brushMode("1D-axes");
+      //Creamos la tabla enlazada 
+      // Manteniendo la coherencia con las coordenadas paralelas, en relación a si se ha guardado un estado con las muestras seleccionadas por el usuario o no
+      {% if brushed != 'false' %}
+        parcoords
+          .brushed(brushedMostrar)
+	  .render();
+      	  d3.select("#grid")
+     	    .datum(brushedMostrar)
+      	    .call(grid)
+      	    .selectAll(".row-div")
+      	    .on({
+              "mouseover": function(brushedMostrar) { parcoords.highlight([brushedMostrar]) },
+              "mouseout": parcoords.unhighlight});	
+      {% else %}
+        d3.select("#grid")
+    	  .datum(data)
+    	  .call(grid)
+    	  .selectAll(".row-div")
+    	  .on({
+      	    "mouseover": function(d) { parcoords.highlight([d]) },
+      	    "mouseout": parcoords.unhighlight});
+      {% endif %}
+      //Definimos las acciones para actualizar la tabla y el boton de restaurar el estado cuando se produzca el evento brushed en las coordenadas paralelas
+      parcoords.on("brush", function(d) {   
+        d3.select("#grid")
+      	  .datum(d)
+      	  .call(grid)
+      	  .selectAll(".row-div")
+      	  .on({
+            "mouseover": function(d) { parcoords.highlight([d]) },
+            "mouseout": parcoords.unhighlight});
+        {%  if brushed != 'false' %}
+    	  document.getElementById("restaurarDiv").innerHTML = '<center><button class="btn btn-succes" onclick="restaurar()">Restore last saved state</button></center>';
+    	{% endif %}}); });}
 
-  		// Tabla enlazada con las coordenadas paralelas d3
-		var grid = d3.divgrid();
+  //Funcion que se encarga en enviar el formulario cuando el usuario quiere guardar el estado de las coordenadas paralelas
+  function sendForm() {
+    var str = "";
+    var j = 0;
+    var arrayObjects = parcoords.brushed();
+    //Si el usuario no ha seleccionado nigun paciente, marcamos false
+    if (arrayObjects.length != parcoords.data().length){
+      arrayObjects.map(function(objeto){
+        var i = 0;
+        if (j != 0) {
+          str = str.concat(";");
+        }
+        j = j + 1;
+        Object.keys(objeto).map(function(clave){
+          if (i == 0){
+            str = str.concat(String(clave).concat(":".concat(String(objeto[clave]))));
+          }
+          else {
+            str = str.concat("," + clave + ":" + objeto[clave]);
+          }
+          i = i + 1;})
+        return objeto;});
+      document.form.brushed.value = str;}
+    else {
+      document.form.brushed.value = 'false';
+    }
+    document.form.submit();}
 
-		// Datos del fichero .csv
-		var information;
+  // Funcion que se encarga de restaurar el ultimo estado guardado
+  function restaurar(){
+    parcoords.brushReset();
+    visualizacion();
+    document.getElementById("restaurarDiv").innerHTML = '<center><button class="btn btn-succes" onclick="restaurar()" disabled>Restore last saved state</button></center>';
+  }
 
-		function visualization(){
-			// Recojemos los datos del fichero csv para mostrarlos a traves de las coordenadas paralelas	
-			d3.csv('/static/boardCSV/'.concat('{{ board_analysis.id_board }}'.concat('Filtered'.concat('{{ filt }}'.concat('.csv?{{ instant }}')))) , function(data) {
-  				information = data;
-  				// Estado de las coordenadas paralelas (si el usuario ha seleccionado muestras y las ha guardado previamente, se recojen y mantienen)
-  				var brushedMostrar = [];
-  				// Si existe un estado guardado con pacientes seleccionados, lo cargamos en el array brushedMostrar
-  				{% if brushed != 'false' %}
-					var arrayBrushed = '{{ brushed }}'.split(";");
-					arrayBrushed.map(function(element) {
-       					arrayJSON = element.split(",");
-						var object = {};
-						arrayJSON.map(function(elementJSON) {
-							var arrayAñadir = elementJSON.split(":");
-							object[arrayAñadir[0]] = arrayAñadir[1];				
-						})
-						brushedMostrar.push(object);
- 					})
-  				{% endif %}
-  				//El color de cada linea (paciente) vendrá dado por la histologia, es deci el tipo de muestra, pero esta no aparecera en la visualizacion, asique la eliminamos del diccionario
-  				var color = [];
-  				var i = -1;
- 				var j = 0;
-  				parcoords
-    				.data(data.map(function(row){
-						color.push(row['Histology']);
-						j = j + 1;
-						delete row['Histology'];
-						return row;
-						}))
-    				.color(function(d) {i = i + 1; if( i < j){ d['Histology'] = color[i];} return green_to_blue(d['Histology']); })
-    				.render()
-    				.brushMode("1D-axes");
+  // Funcion encargada de mostrar el gráfico de importancia de los diferentes filtrados realizados 
+  function showGraphic(number) {
+    document.getElementById("showButton").innerHTML = '<button class="btn-success" onclick="hideGraphic(' + number.toString() +');">Hide details <span class="glyphicon glyphicon-arrow-up"></span></button>';
+    switch(number) {
+      case 1:
+	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, ordered from highest to lowest variance</strong><br>OY: Variance of each gene<br>OX: Genes sorted from highest to lowest variance</center>';
+	break;
+      case 2:
+	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, ordered from highest to lowest rawweight GBR</strong><br>OY: Rawweight of each gene<br>OX: Genes sorted from highest to lowest variance rawweight</center>';
+	break;
+      case 3:
+	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, one being confirmed, two tentative and greater than two rejected, according to GBR filtering</strong><br>OY: Gene classification(1:confirmed, 2:tentative, >2:rejected)<br>OX: Highest ranked genes(confirmed > tentative > rejected)</center>';
+	break;}
+    graphic(number);}
 
- 				//Creamos la tabla enlazada 
- 				// Manteniendo la coherencia con las coordenadas paralelas, en relación a si se ha guardado un estado con las muestras seleccionadas por el usuario o no
-   				{% if brushed != 'false' %}
-     				parcoords
-        				.brushed(brushedMostrar)
-						.render();
-      				d3.select("#grid")
-     					.datum(brushedMostrar)
-      					.call(grid)
-      					.selectAll(".row-div")
-      					.on({
-        					"mouseover": function(brushedMostrar) { parcoords.highlight([brushedMostrar]) },
-        					"mouseout": parcoords.unhighlight
-      					});	
-      			{% else %}
-      				d3.select("#grid")
-    				.datum(data)
-    				.call(grid)
-    				.selectAll(".row-div")
-    				.on({
-      					"mouseover": function(d) { parcoords.highlight([d]) },
-      					"mouseout": parcoords.unhighlight
-    				});
-   				{% endif %}
+  // Funcion encargada de ocultar el gráfico de importancia de los diferentes filtrados realizados
+  function hideGraphic(number) {
+    document.getElementById("showButton").innerHTML = '<button class="btn-success" onclick="showGraphic(' + number.toString() +');">Show details <span class="glyphicon glyphicon-arrow-down"></span></button>';
+    document.getElementById("infoGraphic" + number.toString()).innerHTML = '';
+    document.getElementById("chart" + number.toString()).innerHTML = '';}
 
- 				//Definimos las acciones para actualizar la tabla y el boton de restaurar el estado cuando se produzca el evento brushed en las coordenadas paralelas
-  				parcoords.on("brush", function(d) {   
-    				d3.select("#grid")
-      					.datum(d)
-      					.call(grid)
-      					.selectAll(".row-div")
-      					.on({
-        					"mouseover": function(d) { parcoords.highlight([d]) },
-        					"mouseout": parcoords.unhighlight
-     					 });
-    				{%  if brushed != 'false' %}
-    					document.getElementById("restaurarDiv").innerHTML = '<center><button class="btn btn-succes" onclick="restaurar()">Restore last saved state</button></center>';
-    				{% endif %}
+  // Funcion encargada de construir el gráfico de importancia de los diferentes filtrados
+  function graphic(number) {
+    switch(number) {
+      case 1:
+	var variance = ['Variance'];
+	{% for element in variance %}
+	  variance.push('{{ element }}');
+	{% endfor %}
+        var chart = c3.generate({
+    	  bindto: '#chart1',
+    	  data: {
+     	    columns: [variance],
+      	    regions: {'Variance': [{'start': {{ n_genes_initial }} - 1}]}}});
+        break;
 
-   				}); 
-			});
-		}
+      case 2:
+	var rawweights = ['Rawweights'];
+	{% for element in rawweights %}
+	  rawweights.push('{{ element }}');
+	{% endfor %}
+        var chart = c3.generate({
+    	  bindto: '#chart2',
+    	  data: {
+     	    columns: [rawweights],
+      	    regions: {'Rawweights': [{'start': {{ n_genes_initial }} - 1}]}}});
+	break;
 
-		//Funcion que se encarga en enviar el formulario cuando el usuario quiere guardar el estado de las coordenadas paralelas
-		function sendForm() {
-			var str = "";
-			var j = 0;
-			var arrayObjects = parcoords.brushed();
-			//Si el usuario no ha seleccionado nigun paciente, marcamos false
-			if (arrayObjects.length != parcoords.data().length){
-				arrayObjects.map(function(objeto){
-					var i = 0;
-					if (j != 0) {
-						str = str.concat(";");
-					}
-					j = j + 1;
-					Object.keys(objeto).map(function(clave){
-						if (i == 0){
-							str = str.concat(String(clave).concat(":".concat(String(objeto[clave]))));
-						}
-						else {
-							str = str.concat("," + clave + ":" + objeto[clave]);
-						}
-						i = i + 1;
-						})
-				return objeto;
-				});
-				document.form.brushed.value = str;
-			}
-			else {
-				document.form.brushed.value = 'false';
-			}
-			document.form.submit();
-		}
-
-		// Funcion que se encarga de restaurar el ultimo estado guardado
-		function restaurar(){
-			parcoords.brushReset();
-			visualizacion();
-			document.getElementById("restaurarDiv").innerHTML = '<center><button class="btn btn-succes" onclick="restaurar()" disabled>Restore last saved state</button></center>';
-		}
-
-		// Funcion encargada de mostrar el gráfico de importancia de los diferentes filtrados realizados 
-		function showGraphic(number) {
-			document.getElementById("showButton").innerHTML = '<button class="btn-success" onclick="hideGraphic(' + number.toString() +');">Hide details <span class="glyphicon glyphicon-arrow-up"></span></button>';
-			switch(number) {
-				case 1:
-					document.getElementById("infoGraphic" + number.toString()).innerHTML = 
-					'<center><strong>Highest ranked genes, ordered from highest to lowest variance</strong><br>OY: Variance of each gene<br>OX: Genes sorted from highest to lowest variance</center>';
-					break;
-				case 2:
-					document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, ordered from highest to lowest rawweight GBR</strong><br>OY: Rawweight of each gene<br>OX: Genes sorted from highest to lowest variance rawweight</center>';
-					break;
-				case 3:
-					document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, one being confirmed, two tentative and greater than two rejected, according to GBR filtering</strong><br>OY: Gene classification(1:confirmed, 2:tentative, >2:rejected)<br>OX: Highest ranked genes(confirmed > tentative > rejected)</center>';
-					break;
-			}
-			
-			graphic(number);
-
-		}
-
-		// Funcion encargada de ocultar el gráfico de importancia de los diferentes filtrados realizados
-		function hideGraphic(number) {
-			document.getElementById("showButton").innerHTML = '<button class="btn-success" onclick="showGraphic(' + number.toString() +');">Show details <span class="glyphicon glyphicon-arrow-down"></span></button>';
-			document.getElementById("infoGraphic" + number.toString()).innerHTML = '';
-			document.getElementById("chart" + number.toString()).innerHTML = '';
-		}
-
-
-		// Funcion encargada de construir el gráfico de importancia de los diferentes filtrados
-		function graphic(number) {
-			switch(number) {
-				case 1:
-					var variance = ['Variance'];
-					{% for element in variance %}
-						variance.push('{{ element }}');
-					{% endfor %}
-
-					var chart = c3.generate({
-    					bindto: '#chart1',
-    					data: {
-     						columns: [variance],
-      						regions: {
-            					'Variance': [{'start': {{ n_genes_initial }} - 1}]}
-    					}
-					});
-
-					break;
-
-				case 2:
-					var rawweights = ['Rawweights'];
-					{% for element in rawweights %}
-						rawweights.push('{{ element }}');
-					{% endfor %}
-
-					var chart = c3.generate({
-    					bindto: '#chart2',
-    					data: {
-     						columns: [rawweights],
-      						regions: {'Rawweights': [{'start': {{ n_genes_initial }} - 1}]}
-    					}
-					});
-					break;
-
-				case 3:
-					var ranking = ['Rankin (1 confirmed; 2 tentative)']
-					{% for element in ranking %}
-						ranking.push('{{ element }}');
-					{% endfor %}
-				
-					var chart = c3.generate({
-    					bindto: '#chart3',
-    					data: {
-     						columns: [ranking],
-      						regions: {'Rankin (1 confirmed; 2 tentative)': [{'start': {{ n_genes_initial }} - 1}]}
-    					}
-					});
-					break;
-			}
-		}		
-	</script>
+      case 3:
+	var ranking = ['Rankin (1 confirmed; 2 tentative)']
+	{% for element in ranking %}
+	  ranking.push('{{ element }}');
+	{% endfor %}
+	var chart = c3.generate({
+    	  bindto: '#chart3',
+    	  data: {
+     	    columns: [ranking],
+      	    regions: {'Rankin (1 confirmed; 2 tentative)': [{'start': {{ n_genes_initial }} - 1}]}}});
+	break;}
+  }		
+</script>
 {% endblock %}

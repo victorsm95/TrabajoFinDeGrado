@@ -5,17 +5,16 @@
 {% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
 
 {% block nav %} 
-    <ul class="nav navbar-nav">
-	    <li><a href="/">Home</a></li>
-        <li><a href="/accounts/login">Sign in</a></li>
-        <li><a href="/accounts/signup">Sign up</a></li>
-        <li><a href="/contact">Contact</a></li>
-    </ul>
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/accounts/login">Sign in</a></li>
+    <li><a href="/accounts/signup">Sign up</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
 {% endblock %}
 
 {% block jumbotron %}
-    <h1>{% trans "Verify Your E-mail Address" %}</h1>
-
-    <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
-
+  <h1>{% trans "Verify Your E-mail Address" %}</h1>
+  <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. 
+     Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
 {% endblock %}
