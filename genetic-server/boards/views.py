@@ -16,14 +16,14 @@ from signals import board_signal_shared, board_signal_save
 from models import Board, BoardShared
 from django.contrib.auth.models import User
 # Formularios a presentar y manejar
-from forms import DeleteBoardForm, AddBoardForm, SearchGenForm, AddGenForm, DeleteGenForm, SharedBoardForm, ShareBoardForm, SharedBoardConfirmForm, SaveStateForm, SearchUserForm, ProccesSharedForm
+from forms import DeleteBoardForm, AddBoardForm, SearchGenForm, AddGenForm, DeleteGenForm, SharedBoardForm, ShareBoardForm, SharedBoardConfirmForm, SaveStateForm, SearchUserForm, ProccesSharedForm, RefilterForm
 # Envio de emails
 from django.core.mail import send_mail
 # Tratamiento de ficheros
 from django.core.files import File
 # Configuracion del proyecto
-from GeneticServer import settings
-from GeneticServer.settings import IP_ADDRESS
+from geneticserver import settings
+from geneticserver.settings import IP_ADDRESS
 # Filtrados estadisticos y manejo de datos genéticos (matrices)
 import numpy as np
 from dataSetMongo import saveDataSet, deleteDataSet
@@ -41,6 +41,10 @@ import threading
 import csv
 # Tiempo: hora y fecha actual del servidor en milisegundos
 import time
+# Modulo del sistema
+import os
+# Excepcion Http404 para capturar errores
+from django.http import Http404
 # Funcion para obtener los milisegundos de la hora actual del servidor para que el navegador lea los cambios
 # del fichero de filtrado cada vez que la pagina de anlasis genetico carga
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -89,9 +93,9 @@ def add_board(request):
 			elif board.delimiter == 'ESPACIO':
 				separator = ' '
 			elif board.delimiter == 'OTRO':
-				dialect = csv.Sniffer().sniff(board.dataFile.read())
+				dialect = csv.Sniffer().sniff(board.dataFile.read(10000))
 				separator = dialect.delimiter
-			
+
 			data = np.loadtxt(board.dataFile, delimiter=separator, dtype=np.str)
 			# Obtencion de todos los tipos de las muestras (histologia del dataset)
 			board.types = ",".join(data[1,1:])
@@ -105,12 +109,11 @@ def add_board(request):
 					num_types.append(item)
 
 			board.n_types = len(num_types)
-			# Guardado del board en la base de datos si confirmar
+			# Guardado del board en la base de datos sin confirmar
 			board.save()
 
 			# Guardado del dataset del board en la base de datos mongo y realizacion de los filtrados en un hilo a parte
 			tr = threading.Timer(0,function=saveDataSet, args=(board,data))
-			tr.setName(request.user.username)
 			tr.start()
 			# Redireccion al sitio home del usuario, mientras el servidor trabaja en los filtrados
 			return HttpResponseRedirect('/')
@@ -164,7 +167,7 @@ def analysis(request):
 	searchForm = SearchGenForm()
 	addGenForm = AddGenForm()
 	deleteGenForm = DeleteGenForm()
-	shareForm = ShareBoardForm()	
+	shareForm = ShareBoardForm()
 	# Obtención del board solicitado para presentar sus datos al usuario y del filtrado solicitado
 	idBoard = request.GET['id_board_analysis']
 	board_analysis = Board.objects.get(id_board = idBoard)
@@ -175,6 +178,9 @@ def analysis(request):
 	participants = []
 	for board in board_shared:
 		participants.append(board.user.username)
+	# Seguridad
+	if ((request.user != board_analysis.owner) and (participants.count(request.user) == 0)):
+		raise Http404
 	# Obtencion de la informacion a visualizar de la base de datos mongo	
 	client = MongoClient()
 	db = client.geneticserverdb
@@ -225,6 +231,69 @@ def analysis(request):
 	)
 	return render(request, 'genExpression.html',context)
 
+# FUNCION ENCARGADA DE HACER UN NUEVO FILTRADO CON EL NUMERO DE GENES INDICADO
+@login_required
+@require_http_methods(['POST', 'GET'])
+def refilterBoard(request):
+	# Si el metodo es POST se procesan los datos del formulario
+	if request.method == 'POST':
+		# Formulario a procesar
+		refilterForm = RefilterForm(request.POST)
+		# Si el formulario es valido se realiza el refiltrado
+		if refilterForm.is_valid():
+			idBoard = refilterForm.cleaned_data['id_board_refilter']
+			n_genes_refilter = refilterForm.cleaned_data['n_genes_refilter']
+			board_refilter = Board.objects.get(id_board = idBoard)
+
+			# Lectura del dataset y cargado del mismo en una matriz numpy para su uso
+			if board_refilter.delimiter == 'COMA':
+				separator = ','
+			elif board_refilter.delimiter == 'TABULACION':
+				separator = '	'
+			elif board_refilter.delimiter == 'PUNTO Y COMA':
+				separator = ';'
+			elif board_refilter.delimiter == 'ESPACIO':
+				separator = ' '
+			elif board_refilter.delimiter == 'OTRO':
+				dialect = csv.Sniffer().sniff(board_refilter.dataFile.read(10000))
+				separator = dialect.delimiter
+
+			data = np.loadtxt(board_refilter.dataFile, delimiter=separator, dtype=np.str)
+
+			board_refilter.n_genes_initial = n_genes_refilter
+			board_refilter.confirmed = False
+
+			# Guardado del board en la base de datos sin confirmar
+			board_refilter.save()
+
+			# Guardado del dataset del board en la base de datos mongo y realizacion de los filtrados en un hilo a parte
+			tr = threading.Timer(0,function=saveDataSet, args=(board_refilter,data))
+			tr.start()
+			# Redireccion al sitio home del usuario, mientras el servidor trabaja en los filtrados
+			return HttpResponseRedirect('/')
+
+		# Si el formulario no es válido, se muestran los errores al usuario
+		else:
+			idBoard = refilterForm.cleaned_data["id_board_refilter"]
+			board_refilter = Board.objects.get(id_board = idBoard)
+			if (request.user != board_refilter.owner):
+				raise Http404
+			context = Context({'refilterForm':refilterForm})
+			return render(request, 'refilter.html', context)
+	# Si el metodo es GET se presenta el formulario al usuario
+	elif request.method == 'GET':
+		# Formulario a resentar
+		refilterForm = RefilterForm()
+		idBoard = request.GET["id_board_refilter"]
+		board_refilter = Board.objects.get(id_board = idBoard)
+		# Seguridad
+		if (request.user != board_refilter.owner):
+			raise Http404
+		context = Context({'refilterForm':refilterForm, 'board_refilter':board_refilter})
+		return render(request, 'refilter.html', context)
+
+
+
 # ACCESO A LA PAGINA DE ADICCION DE GENES Y FILTRADO POR NOMBRE DE LOS MISMOS
 @login_required
 @require_http_methods(['GET'])
@@ -233,6 +302,10 @@ def requestAddGen(request):
 	searchForm = SearchGenForm()
 	addGenForm = AddGenForm()
 	idBoard = request.GET["id_board_requestAdd"]
+	board_analysis = Board.objects.get(id_board = idBoard)
+	# Seguridad
+	if (request.user != board_analysis.owner):
+				raise Http404
 	filt = request.GET["filt"]
 	context = Context(
 		{
@@ -420,7 +493,7 @@ def delGen(request):
 		# Escritura en fichero csv
 		expression = []
 		n_genes = n_genes - 1
-				
+		print(gene_names_filtered)	
 		for name in gene_names_filtered:
 			cursor = db["" + idBoard].find({'gene_name' : name})
 			for document in cursor:
@@ -546,8 +619,11 @@ def confirm(request):
 @login_required
 @require_http_methods(['GET'])
 def resend(request):
-	# Obtencion del boar que aceptar o no
+	# Obtencion del board que aceptar o no
 	board = BoardShared.objects.get(id_board = request.GET['id_board'])
+	# Seguridad
+	if (request.user != board.user):
+			raise Http404
 	# A traves de una señal se envia un email al usuario, para que este lo acepte o no
 	board_signal_shared.send(sender = BoardShared, board=board)
 	return HttpResponseRedirect('/profile')
@@ -646,8 +722,8 @@ def notificationAddBoard(sender, **kwargs):
 		for board_confirmed in board:
 			board_confirmed.confirmed = True
 		
-			board_confirmed.dataFilteredMN = "" + kwargs['board'].id_board + "FilteredMN" + ".csv"
-			board_confirmed.dataFilteredGBR = "" + kwargs['board'].id_board + "FilteredGBR" + ".csv"
-			board_confirmed.dataFilteredBoruta = "" + kwargs['board'].id_board + "FilteredBoruta" + ".csv"
+			board_confirmed.dataFilteredMN = "boardCSV/" + kwargs['board'].id_board + "FilteredMN" + ".csv"
+			board_confirmed.dataFilteredGBR = "boardCSV/" + kwargs['board'].id_board + "FilteredGBR" + ".csv"
+			board_confirmed.dataFilteredBoruta = "boardCSV/" + kwargs['board'].id_board + "FilteredBoruta" + ".csv"
 
 			board_confirmed.save()

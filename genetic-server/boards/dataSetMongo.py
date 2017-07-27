@@ -146,8 +146,17 @@ def saveDataSet(board, data):
 	# Obtencion de los indices de los n_genes mejor clasificados
 	selectedGenesIndexesBoruta = []
 	for i in range(len(pref.selectedGenesIndexesPrefilter.tolist())):
-		if (filtBoruta.ranking_[i] == True) and (len(selectedGenesIndexesBoruta) < board.n_genes_initial):
+		if (filtBoruta.ranking_[i] == 1) and (len(selectedGenesIndexesBoruta) < board.n_genes_initial):
 			selectedGenesIndexesBoruta.append(pref.selectedGenesIndexesPrefilter[i])
+	if (len(selectedGenesIndexesBoruta) < board.n_genes_initial):
+		for i in range(len(pref.selectedGenesIndexesPrefilter.tolist())):
+			if (filtBoruta.ranking_[i] == 2) and (len(selectedGenesIndexesBoruta) < board.n_genes_initial):
+				selectedGenesIndexesBoruta.append(pref.selectedGenesIndexesPrefilter[i])
+	if (len(selectedGenesIndexesBoruta) < board.n_genes_initial):
+		for i in range(len(pref.selectedGenesIndexesPrefilter.tolist())):
+			if (filtBoruta.ranking_[i] > 2) and (len(selectedGenesIndexesBoruta) < board.n_genes_initial):
+				selectedGenesIndexesBoruta.append(pref.selectedGenesIndexesPrefilter[i])
+
 	XfilteredBoruta = Xcorregido[selectedGenesIndexesBoruta, :]
 	gene_names_filtered = np.asarray(gene_names_unicos)[selectedGenesIndexesBoruta]
 

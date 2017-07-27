@@ -130,3 +130,14 @@ class SaveStateForm(Form):
 	id_board_save = forms.CharField()
 	brushed = forms.CharField()	
 	filt = forms.CharField()
+
+# Refiltrado, para poder hacer tantos filtros como se desee
+class RefilterForm(Form):
+	id_board_refilter = forms.CharField()
+	n_genes_refilter= forms.IntegerField()
+
+	def clean_n_genes_refilter(self):
+		n_genes = self.cleaned_data['n_genes_refilter']
+		if n_genes < 1 or n_genes > 15:
+			raise ValidationError("The number of genes must be between 1 and 15")
+		return n_genes

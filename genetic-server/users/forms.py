@@ -14,7 +14,7 @@ import os
 class UserForm(ModelForm):
 	class Meta:
 		model = User
-		fields = ['username','first_name', 'last_name']
+		fields = ['first_name', 'last_name']
 
 # Formulario para poder cambiar la biografia e imagen del usuraio
 class ProfileForm(ModelForm):

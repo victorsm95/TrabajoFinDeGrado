@@ -13,11 +13,11 @@ function requestInfoGen(name) {
 
 //MUESTRA LA FUNCION DEL GEN CUYO NOMBRE SE PASA COMO PARAMETRO
 function showInfoGen(name) {
-  
   requestInfoGen(name);
 }
 
 //OCULTA LA FUNCION DEL GEN
 function hiddenInfoGen() {
+  
   document.getElementById("infoGenes").innerHTML = '';
 }

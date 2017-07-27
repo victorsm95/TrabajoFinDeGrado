@@ -25,4 +25,6 @@ urlpatterns = [
 	url(r'^infoBoard$', views.infoBoard),
 	url(r'^searchUser$', views.searchUser),
 	url(r'^proccesShared$', views.proccesShared),
-	url(r'^renderEmail$', views.resend)]
+	url(r'^renderEmail$', views.resend),
+	url(r'^refilterBoard$', views.refilterBoard)
+	]

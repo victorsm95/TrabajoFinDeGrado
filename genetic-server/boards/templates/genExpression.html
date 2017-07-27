@@ -42,16 +42,25 @@
     <h1> {{ board_analysis.title }} </h1>
   </center>
     <div class="well">
-      <div class="btn-group">	
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-    	  Participants <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          {% for participant in participants %}
-            <li><a>{{ participant }}</a><li>
-          {% endfor %}
-	  <li><a><strong>{{ board_analysis.owner.username }}</strong></a></li>
- 	</ul>
+      <div class = "row">
+        <div class= "col-md-6">
+          <div class="btn-group">	
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+    	      Participants <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              {% for participant in participants %}
+                <li><a>{{ participant }}</a><li>
+              {% endfor %}
+	      <li><a><strong>{{ board_analysis.owner.username }}</strong></a></li>
+ 	    </ul>
+          </div>
+        </div>
+        <div class = "col-md-6" align="right">
+          {% if board_analysis.owner == user %}
+            <a href="/boards/refilterBoard?id_board_refilter={{ board_analysis.id_board }}" class = "btn btn-warning"">Re-filter Board <span class="glyphicon glyphicon-retweet"></span></a>
+          {% endif %}
+        </div>
       </div>
       <p></p>
       <div class="list-group">
@@ -121,65 +130,43 @@
       </div>
      
       <div class="row">
-        <div class="col-md-2 col-sm-2 col-xs-2">
- 	  <ul class="list-group">
- 	    <li class="list-group-item"><center><strong>Info Genes</strong></center></li>
-	    {% for name in namesDel %}
-	      <li class="list-group-item">
-	        <div class="row">
-	          <div class="col-md-8">
-                    <center>
-                      <a target="_blank" href="http://www.uniprot.org/uniprot/?query={{ name }}&sort=score" onmouseover="showInfoGen('{{ name }}');" onmouseout="hiddenInfoGen();">{{ name }}</a>
-                    </center>
-		  </div>
-		  {% if board_analysis.owner == user %}
-		    <div class="col-md-4">
-		      <form class = "form-inline" role = "form" method="POST" action="/boards/analysisDelete">
-		        {% csrf_token %}
-		        {{ deleteForm.non_fields_errors }}
-			<input type = "hidden" name="filt" value = "{{ filt }}">
-			<input type = "hidden" name="id_board_deleteGen" value = "{{ board_analysis.id_board }}">
-			<input type = "hidden" name="name_gen" value = "{{ name }}">
-			<input type="image" src = "/static/images/eliminar.jpg"  width="20" height="20">
-		      </form>
-		    </div>
-		  {% endif %}
-		</div>
-	      </li>
-	    {% endfor %}
-  	  </ul>
-	</div>
-        <div id = "infoGenes" class="col-md-4 col-sm-4 col-xs-4"></div>
-	<div class="col-md-6 col-sm-6 col-xs-6">
+        <div class="col-md-7 col-sm-2 col-xs-2">
+          <div class="panel panel-primary">
+            <div class="panel-heading"><center>Info genes</center></div>
+            <div class="panel-body" id="infoGenesTable"></div>
+          </div>
+        </div>
+        
+	<div class="col-md-5 col-sm-6 col-xs-6">
 	  {% if board_analysis.owner == user %}
-	    <h5>Do you want to add a gene to the selected ones?</h5>
-	    <a href="/boards/analysisRequestAdd?filt={{ filt }}&id_board_requestAdd={{ board_analysis.id_board }}">
-	      <button class="btn btn-success">Add gen</button>
-	    </a>
-	    <p></p>
+	    
 	  {% endif %}
 	  <div class="panel panel-default">
-	    <div class="panel-heading">
-	      Legend Parcoords {{ filt }}<p>{{ n_genes }} genes selected
-	    </div>
+	    <div class="panel-heading"><div class="row"><div class="col-md-8"><h5>{{ filt }} {{ n_genes }} genes selected</h5></div><div class="col-md-4" align="right"><a href="/boards/analysisRequestAdd?filt={{ filt }}&id_board_requestAdd={{ board_analysis.id_board }}">
+	      <button class="btn btn-success">Add gen</button>
+	    </a></div></div></div>
   	    <table class="table">
 	      <tr>
   	        <td><strong>Type</strong></td>
 		<td><strong>Color</strong></td>
 	      </tr>
 	      <tr>
-  	        <td>0</td>
+  	        <td>{{ min_domain}}</td>
   		<td>Red</td>
 	      </tr>
+              <tr>
+  	        <td> ... </td>
+                <td> ... </td>
+	      </tr>
  	      <tr>
-  	        <td>1</td>
+  	        <td>{{ max_domain }}</td>
   		<td>Blue</td>
 	      </tr>
   	    </table>
 	  </div>
 	</div>
       </div>
-
+      <div id = "infoGenes"></div>
       <p></p>
       <div id="example" class="parcoords" style="height:500px"></div>
       <p></p>
@@ -202,7 +189,9 @@
 	  {% endif %}
 	</div>
 	<div class="col-md-4 col-xs-4" id="restaurarDiv">
-	  <center><button class="btn btn-succes" onclick="restore();" disabled>Restore last saved state</button></center>
+          {% if board_analysis.owner == user %}	
+	    <center><button class="btn btn-succes" onclick="restore();" disabled>Restore last saved state</button></center>
+          {% endif %}
 	</div>
         <div class="col-md-4 col-xs-4" align="right">
 	  {% if board_analysis.owner == user %}
@@ -219,7 +208,12 @@
 
 <script type="text/javascript">
   // Ejecutamos el script de visualizacion después de cargar la pagina html
-  window.onload = visualization();	
+  window.onload = handler();	
+  
+  function handler() {
+    createTableInfoGenes();
+    visualization();
+  }
   // Asignamos el color de las coordenadas paralelas para cada tipo de muestra 
   var green_to_blue = d3.scale.linear()
     .domain([{{ min_domain }} , {{ max_domain }}])
@@ -393,6 +387,39 @@
      	    columns: [ranking],
       	    regions: {'Rankin (1 confirmed; 2 tentative)': [{'start': {{ n_genes_initial }} - 1}]}}});
 	break;}
+  }
+  
+  // Funcion para crear la tabla de la informacion de los genes
+  function createTableInfoGenes(){
+    var i = 0;
+    var table = '<table class = "table table-bordered">';
+    {% for name in namesDel %}
+      if (i == 0){
+        {% if board_analysis.owner == user %}
+          table = table + "<tr><td><div class='row'><div class='col-md-8'><a target='_blank' href='http://www.uniprot.org/uniprot/?query={{ name }}&sort=score' onmouseover='showInfoGen(\"{{ name }}\");' onmouseout='hiddenInfoGen();'>{{ name }}</a></div><div class='col-md-4'><form class = 'form-inline' role = 'form' method='POST' action='/boards/analysisDelete'>{% csrf_token %}{{ deleteForm.non_fields_errors }}<input type = 'hidden' name='filt' value = '{{ filt }}'><input type = 'hidden' name='id_board_deleteGen' value = '{{ board_analysis.id_board }}'><input type = 'hidden' name='name_gen' value = '{{ name }}'><input type='image' src = '/static/images/eliminar.jpg'  width='20' height='20'></form></div></div></td>";
+        {% else %}
+          table = table + '<tr><td><center><a target="_blank" href="http://www.uniprot.org/uniprot/?query={{ name }}&sort=score" onmouseover="showInfoGen(\'{{ name }}\');" onmouseout="hiddenInfoGen();">{{ name }}</a></center></td>';
+        {% endif %}
+      }
+      else if (i == 2){
+        {% if board_analysis.owner == user %}
+          table = table + "<td><div class='row'><div class='col-md-8'><a target='_blank' href='http://www.uniprot.org/uniprot/?query={{ name }}&sort=score' onmouseover='showInfoGen(\"{{ name }}\");' onmouseout='hiddenInfoGen();'>{{ name }}</a></div><div class='col-md-4'><form class = 'form-inline' role = 'form' method='POST' action='/boards/analysisDelete'>{% csrf_token %}{{ deleteForm.non_fields_errors }}<input type = 'hidden' name='filt' value = '{{ filt }}'><input type = 'hidden' name='id_board_deleteGen' value = '{{ board_analysis.id_board }}'><input type = 'hidden' name='name_gen' value = '{{ name }}'><input type='image' src = '/static/images/eliminar.jpg'  width='20' height='20'></form></div></div></td></tr>";
+        {% else %}
+          table = table + '<td><center><a target="_blank" href="http://www.uniprot.org/uniprot/?query={{ name }}&sort=score" onmouseover="showInfoGen(\'{{ name }}\');" onmouseout="hiddenInfoGen();">{{ name }}</a></center></td></tr>';
+        {% endif %}
+        i = -1;
+      }
+      else {
+        {% if board_analysis.owner == user %}
+          table = table + "<td><div class='row'><div class='col-md-8'><a target='_blank' href='http://www.uniprot.org/uniprot/?query={{ name }}&sort=score' onmouseover='showInfoGen(\"{{ name }}\");' onmouseout='hiddenInfoGen();'>{{ name }}</a></div><div class='col-md-4'><form class = 'form-inline' role = 'form' method='POST' action='/boards/analysisDelete'>{% csrf_token %}{{ deleteForm.non_fields_errors }}<input type = 'hidden' name='filt' value = '{{ filt }}'><input type = 'hidden' name='id_board_deleteGen' value = '{{ board_analysis.id_board }}'><input type = 'hidden' name='name_gen' value = '{{ name }}'><input type='image' src = '/static/images/eliminar.jpg'  width='20' height='20'></form></div></div></td>";
+        {% else %}
+          table = table + '<td><center><a target="_blank" href="http://www.uniprot.org/uniprot/?query={{ name }}&sort=score" onmouseover="showInfoGen(\'{{ name }}\');" onmouseout="hiddenInfoGen();">{{ name }}</a></center></td>';
+        {% endif %}
+      }
+      i++;
+    {% endfor %}
+    table = table +'</table>'
+    document.getElementById('infoGenesTable').innerHTML = table;
   }		
 </script>
 {% endblock %}

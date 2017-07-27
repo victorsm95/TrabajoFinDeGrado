@@ -33,7 +33,7 @@
       {% if state %}
         <a href = "/boards/addBoard"><img src="/static/images/añadir.png" width="40" height="40"></a>
       {% else %}
-        <div class="alert alert-warning"><strong>By performing the filtering of the newly added dataset, this operation may take a few minutes, in the meantime you will not be able to add new boards</strong></div>
+        <div class="alert alert-warning"><strong>The server is working in filtering of the dataset, this operation may take a few minutes, in the meantime you will not be able to add new boards</strong></div>
       {% endif %}
       <p></p>
       <br></br>
@@ -123,7 +123,7 @@
         onmouseout: function (d, i) { console.log("onmouseout", d, i); }
       },
       donut: {
-        title: "Sample classifier"
+        title: "Samples Distribution"
       }});
 
       lista.length = 0;

@@ -33,7 +33,7 @@ class Board(models.Model):
 	dataFilteredGBR = models.FileField(upload_to = 'boardCSV', null = True)
 	dataFilteredBoruta = models.FileField(upload_to = 'boardCSV', null = True)
 
-	delimiter = models.CharField(max_length = 20,choices = TYPE_OF_DELIMITER, default = COMA)
+	delimiter = models.CharField(max_length = 20, choices = TYPE_OF_DELIMITER, default = COMA)
 
 	n_genes_initial = models.IntegerField(default = 8)
 	n_samples = models.PositiveIntegerField(default = 0)

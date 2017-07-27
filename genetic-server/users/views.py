@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 # Tratamiento de ficheros
 import os
 # Configuracion del proyecto
-from GeneticServer import settings
+from geneticserver import settings
 # Formularios a presentar y manejar
 from forms import UserForm, ProfileForm
 # Modelos de datos a manejar
@@ -39,6 +39,7 @@ def home(request):
 	# Si el usuario esta autenticado se devuelve la pagina home con los boards del usuario
 	if request.user.is_authenticated() and request.user.profile.account_verified():
 		board = Board.objects.filter(owner=request.user, confirmed = True)
+		board.order_by("date")
 		# Si hay algun board procesandose se impide subir otro hmediante el estado igual a false
 		if len(Board.objects.filter(owner=request.user, confirmed = False)) > 0:
 			state = False
@@ -66,6 +67,7 @@ def contact(request):
 def home_shared(request):
 	# Obtencion de los boards compartidos con el usuario
 		boardShared = BoardShared.objects.filter(user=request.user, confirmation=True)
+		boardShared.order_by("date")
 		context = Context({'board': boardShared})
 		return render(request, 'home/home_shared.html', context)
 
@@ -84,7 +86,7 @@ def profile(request):
 			# Se actualizan los datos del usuario de acuerdo a los datos de los formulario
 			request.user.first_name = userForm.cleaned_data["first_name"]
 			request.user.last_name = userForm.cleaned_data["last_name"]
-			request.user.username = userForm.cleaned_data["username"]
+			
 			# Se actualizan los datos del perfil del usuario de acuerdo a los datos del formulario 
 			# Tratamiento de la imagen
 			imagen_modificada = profileForm.cleaned_data["image"]
@@ -104,10 +106,14 @@ def profile(request):
 				else:
 					profile = Profile(user=request.user, bio = profileForm.cleaned_data["bio"])
 			# Se guardan ambos objetos en la base de datos	
+			
 			profile.save()
 			request.user.save()
-
 			return HttpResponseRedirect('/')
+		else:
+			return render(request, 'home/profile.html', context)
+
+			
 
 	# Si el metodo es GET se presentan al usuario el formulario para cambiar sus datos y las estadisticas de sus recursos
 	else:
@@ -130,7 +136,7 @@ def profile(request):
 		# Calculo de los boards compartidos al usuario, pero sin confirmar por el mismo
 		unconfirmedBoards = BoardShared.objects.filter(user=request.user, confirmation=False)
 		# Presentacion del formulario con los datos correspondientes
-		userForm = UserForm(initial={'first_name': request.user.first_name, 'last_name': request.user.last_name, 'username':request.user.username})
+		userForm = UserForm(initial={'first_name': request.user.first_name, 'last_name': request.user.last_name})
 		# Aseguracion de la existencia del perfil asociado al usuario
 		profile = Profile.objects.filter(user = request.user)
 		if len(profile):

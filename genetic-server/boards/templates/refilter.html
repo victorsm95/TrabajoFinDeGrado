@@ -1,0 +1,39 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Refilter Board" %}{% endblock %}
+
+{% block nav %}
+  <ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown">Settings  <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/accounts/logout">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block jumbotron %}
+  <center>
+    <h2>{% trans "Re-filter Board " %}{{ board_refilter.title }}</h2>
+    <div class="well">
+      <p>{% blocktrans %}<font size = 3>Enter the following data to refilter Board {% endblocktrans %}</p>
+      <form id="refilter_board" method="post" action="/boards/refilterBoard" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ refilterForm.non_field_errors }}
+	<input type = "hidden" name="id_board_refilter" value = "{{ board_refilter.id_board  }}">
+        <p><label>Number of genes to re-feilter (1-15):</label>
+        <br>{{ refilterForm.n_genes_refilter.errors }}
+        {{ refilterForm.n_genes_refilter }}
+        <p><p><button type="submit" class="btn btn-primary">{% trans "Refilter Board" %}</button>
+      </form>
+    </div>
+  </center>
+
+{% endblock %}
