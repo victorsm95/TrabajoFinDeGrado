@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python encargado de realizar el filtrado GBR, cojiendo como datos de iniciación
-el resultado del prefiltrado Mann-Whitney
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module in charge of performing the GBR filtering, taking the result of the Mann-Whitney prefilter as the initiation data.
 '''
 
 from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin
@@ -17,6 +16,25 @@ import operator
 import numpy as np
 
 class GBRT_CBR(BaseEstimator, ClassifierMixin):
+    """
+    Improved Python implementation of the GBRT_CBR filter.
+
+    CBR with GBRT-based feature selection as described in the paper:
+          "A CBR framework with gradient boosting based feature selection for lung cancer subtype classification"
+          https://doi.org/10.1016/j.compbiomed.2017.05.010
+
+    Parameters
+    ----------
+
+    n_estimators: int, default = 400
+        Sets the number of estimators in the chosen ensemble method.
+
+    learning_rate: float, default = 0.5
+    
+    n_neighbors: int, default = 5
+
+    selectedGenesIndexes: list, datasets indexes of genes selected
+    """
     n_estimators = None
     learning_rate = None
     rawweights = None
@@ -34,7 +52,18 @@ class GBRT_CBR(BaseEstimator, ClassifierMixin):
 
         
     def fit(self, X, y=None):
-        
+        """
+        Fits the GBR feature selection with the provided estimator.
+
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, n_genes]
+            The training input samples.
+
+        y : array-like, shape = [n_samples]
+            The target values.
+        """
+               
         clf = GradientBoostingClassifier(n_estimators=self.n_estimators, learning_rate=self.learning_rate, criterion="mse", max_depth=self.max_depth).fit(X, y)
         
         self.rawweights = clf.feature_importances_/np.sum(clf.feature_importances_)

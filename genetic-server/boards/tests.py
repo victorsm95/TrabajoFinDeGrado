@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python utilizado para la realizacion de diferentes testeos de la plataforma
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module used to perform different platform tests.
 '''
 from django.test import TestCase
 

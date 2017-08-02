@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 # Tratamiento de ficheros
 import os
 # Configuracion del proyecto
-from geneticserver import settings
+from genplatform import settings
 # Formularios a presentar y manejar
 from forms import UserForm, ProfileForm
 # Modelos de datos a manejar

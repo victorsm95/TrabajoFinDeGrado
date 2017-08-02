@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python encargado de dos tareas fundamentales:
-    1. Realizar un prefiltrado de los genes que pasesn un valor de varianza por encima del punto medio de la misma
-    2. Realizar un filtrado independiente para presentar al usuario, utilizando el punto de corte adecuado para el 
-       numero de gene introducido.
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module in charge of two fundamental tasks:
+    1. Carry out a pre-filter of the genes that pass a value of 
+       variance above the midpoint of the same
+    2. Perform an independent filtering to present to the user, 
+       using the appropriate cut-off point for the gene number entered.
 '''
 
 from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin
@@ -18,6 +19,10 @@ import numpy as np
 
 # Funcion para la obtencion del p-valor de cada uno de los genes
 def mw(X, Y):
+    """
+    Statistical Prefilter Mann Whitney calculates the p-value 
+    of all genes to subsequently stay with those with a p-value less than 0.05.
+    """
     pvalues = []    
     for i in range(X.shape[0]):
         try:
@@ -28,7 +33,28 @@ def mw(X, Y):
 
 # Prefiltrado que servirá además como entrada al resto de filtrados (GBR y Boruta)
 class Prefilter(BaseEstimator, TransformerMixin):
+    """
+    Improved Python implementation or the Mann-Whitney filter.
 
+    Parameters
+    ----------
+    selectedGenesIndexes: list
+        List containing the n best genes according 
+        to the Mann-Whitney filter combined with variance.
+
+    selectedGenesIndexesPrefilter: list
+        List containing the genes with a variance above the 
+        midpoint, calculated from the genes that surpass the Mann-Whitney 
+        test.
+
+    X_filt: Numpy matrix
+        Matrix with the resulting filtering genes.
+
+    varianza: Numpy matrix
+        Matrix with the variance of the genes that surpass the 
+        test of Mann Whitney.
+
+    """
     selectedGenesIndexes = None
     selectedGenesIndexesPrefilter = None
     X_filt = None
@@ -41,6 +67,17 @@ class Prefilter(BaseEstimator, TransformerMixin):
 
     # Filtrado de los genes 
     def fit(self, X, y=None):
+        """
+        Fits the Mann-Whitney genes selection.
+
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, n_genes]
+            The training input samples.
+
+        y : array-like, shape = [n_samples]
+            The target values.
+        """
         # Obtencion del p-valor de cada uno de los genes
         pvalues = mw(X[y==0].T, X[y==1].T)
        
@@ -74,9 +111,41 @@ class Prefilter(BaseEstimator, TransformerMixin):
         return self
     
     def transform(self, X, y=None):
+        """
+        Reduces the input X to the genes selected by Mann-Whitney.
+
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, n_genes]
+            The training input samples.
+
+
+        Returns
+        -------
+        X : array-like, shape = [n_samples, n_genes_]
+            The input matrix X's columns are reduced to the genes which were
+            selected by Mann-Whitney.
+        """
         X = np.asarray(X)
         return X[:, self.selectedGenesIndexes]
 
     def fit_transform(self, X, y=None):
+        """
+        Fits Mann-Whitney, then reduces the input X to the selected genes.
+
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, n_genes]
+            The training input samples.
+
+        y : array-like, shape = [n_samples]
+            The target values.
+
+        Returns
+        -------
+        X : array-like, shape = [n_samples, n_genes_]
+            The input matrix X's columns are reduced to the genes which were
+            selected by Mann-Whitney.
+        """
         self.fit(X,y)
         return self.transform(X,y)

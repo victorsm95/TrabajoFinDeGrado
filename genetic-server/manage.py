@@ -1,9 +1,17 @@
+"""
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module responsible for carrying out all the respective 
+administration and configuration actions to the django web framework, 
+as well as the server launch.
+
+"""
 #!/usr/bin/env python
 import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "geneticserver.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "genplatform.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

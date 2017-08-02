@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-VISTA
-Modulo python que define las funciones vistas que gestionan la aplicacion y sirven las plantillas 
-necesarias para el uso de las funcionalidades ofrecidas por la misma.
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+VIEW
+
+Python module that defines the view functions that manage 
+the application and serve the templates necessary for the use 
+of the functionalities offered by it.
 '''
+
 # Renderizar vistas
 from django.shortcuts import render, HttpResponseRedirect
 from django.template import Context
@@ -22,8 +25,8 @@ from django.core.mail import send_mail
 # Tratamiento de ficheros
 from django.core.files import File
 # Configuracion del proyecto
-from geneticserver import settings
-from geneticserver.settings import IP_ADDRESS
+from genplatform import settings
+from genplatform.settings import IP_ADDRESS
 # Filtrados estadisticos y manejo de datos genéticos (matrices)
 import numpy as np
 from dataSetMongo import saveDataSet, deleteDataSet
@@ -55,6 +58,32 @@ current_milli_time = lambda: int(round(time.time() * 1000))
 @login_required
 @require_http_methods(['POST', 'GET'])
 def add_board(request):
+	"""
+	Function view in charge of adding a new board to the platform.
+
+	Http Methods:
+	   * GET
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Tratamiento para el metodo POST (Añadir un board con los datos del formulario)
 	if request.method == 'POST':
 		addBoardForm = AddBoardForm(request.POST, request.FILES)
@@ -132,6 +161,31 @@ def add_board(request):
 @login_required
 @require_http_methods(['POST'])
 def delete_board(request):
+	"""
+	Function view in charge of deleting a new board to the platform.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	deleteBoard = DeleteBoardForm(request.POST)
 	if deleteBoard.is_valid():
 		# Obtencion del board a eliminar de la base de datos
@@ -151,6 +205,31 @@ def delete_board(request):
 @login_required
 @require_http_methods(['POST'])
 def delete_board_shared(request):
+	"""
+	Function view in charge of deleting a board shared to the platform.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	deleteBoard = DeleteBoardForm(request.POST)
 	if deleteBoard.is_valid():
 		# Obtencion del board a eliminar de la base de datos
@@ -163,6 +242,31 @@ def delete_board_shared(request):
 @login_required
 @require_http_methods(['GET'])
 def analysis(request):
+	"""
+	Function view in charge of presenting the information contained in a board of visual form to allow the genetic analysis.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formularios a presentar
 	searchForm = SearchGenForm()
 	addGenForm = AddGenForm()
@@ -235,6 +339,32 @@ def analysis(request):
 @login_required
 @require_http_methods(['POST', 'GET'])
 def refilterBoard(request):
+	"""
+	Function view responsible for performing a new filtering with the number of genes indicated.
+
+	Http Methods:
+	   * GET
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Si el metodo es POST se procesan los datos del formulario
 	if request.method == 'POST':
 		# Formulario a procesar
@@ -298,6 +428,32 @@ def refilterBoard(request):
 @login_required
 @require_http_methods(['GET'])
 def requestAddGen(request):
+	"""
+	Function view responsible for giving access to the page of adding genes and
+	filtered by name of the same.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formularios a presentar 
 	searchForm = SearchGenForm()
 	addGenForm = AddGenForm()
@@ -321,6 +477,31 @@ def requestAddGen(request):
 @login_required
 @require_http_methods(['POST'])
 def filt(request):
+	"""
+	Function view charged to filter the genes by their name before the gene is added.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formulario a procesar
 	searchForm = SearchGenForm(request.POST)
 	# Formulario a presentar
@@ -377,6 +558,31 @@ def filt(request):
 @login_required
 @require_http_methods(['POST'])
 def addGen(request):
+	"""
+	Function responsible for adding the specified gene to the board's filtering.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formulario a procesar
 	addGenForm = AddGenForm(request.POST)
 	# Formularios a presentar en la vista
@@ -462,6 +668,31 @@ def addGen(request):
 @login_required
 @require_http_methods(['POST'])
 def delGen(request):
+	"""
+	Function responsible for deleting the selected gene to the board's filtering.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formulario a procesar
 	deleteGenForm = DeleteGenForm(request.POST)
 	# Formularios a presentar en la vista
@@ -533,6 +764,31 @@ def delGen(request):
 @login_required
 @require_http_methods(['POST'])
 def share(request):
+	"""
+	Function responsible for sharing the specified board.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Fromularios a procesar
 	shareForm = ShareBoardForm(request.POST)
 	sharedForm = SharedBoardForm(request.POST)
@@ -565,6 +821,31 @@ def share(request):
 @login_required
 @require_http_methods(['POST'])
 def searchUser(request):
+	"""
+	Function in charge of filtering users by the name entered before sharing the board.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formulario a procesar
 	searchUser = SearchUserForm(request.POST)
 	# Si el filtro introducido es correcto se muestra al usuario los nombres filtrados
@@ -595,6 +876,31 @@ def searchUser(request):
 @login_required
 @require_http_methods(['POST'])
 def confirm(request):
+	"""
+	Function view responsible for confirming board sharing.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formulario a procesar
 	confirmForm = SharedBoardConfirmForm(request.POST)
 	# Se confirma la solicitud de comparticion del board con el usuario especificado
@@ -619,6 +925,32 @@ def confirm(request):
 @login_required
 @require_http_methods(['GET'])
 def resend(request):
+	"""
+	Function responsible for sending the email to the user for acceptance or not
+	of an unconfirmed board.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Obtencion del board que aceptar o no
 	board = BoardShared.objects.get(id_board = request.GET['id_board'])
 	# Seguridad
@@ -632,6 +964,32 @@ def resend(request):
 @login_required
 @require_http_methods(['POST'])
 def saveState(request):
+	"""
+	Function responsible for saving of the status of the display of the
+ 	coordinates for the mongo database.
+
+	Http Methods:
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Formulario a procesar
 	saveForm = SaveStateForm(request.POST)
 	# Si el formulario es valido se guarda en la base de datos Mongo el estado de las coordenadas paralealas
@@ -657,12 +1015,65 @@ def saveState(request):
 @login_required
 @require_http_methods(['GET'])
 def infoBoard(request):
+	"""
+	Function that is responsible for displaying the format specifications of 
+	the datatsets supported by the platform.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	return render(request, 'formato.html')
 
 # TRATAMIENTO DE LA PETICION DE COMPARTICION DEL BOARD
 @login_required
 @require_http_methods(['POST','GET'])
 def proccesShared(request):
+	"""
+	Function responsible for processing the request to share the board, presenting 
+	the user and processing their decision as it is convenient.
+
+	Http Methods:
+	   * POS
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Si el metodo es POST se confirma o elimina el board compartido
 	if request.method == 'POST':
 		# Fromulario a procesar
@@ -711,12 +1122,47 @@ def proccesShared(request):
 # ESTE METODO A LA ESCUCHA DE LA SEÑAL ENVIADA AL COMPARTIR UN BOARD SE ENCARGA DE NOTIFICAR AL USUARIO POR E-MAIL
 @receiver(board_signal_shared)
 def notificationBoardShared(sender, **kwargs):
+	"""
+	This function, listening to the signal sent to accompany a board, is responsible 
+	for notifying the user by email.
+
+	Signal reciever
+	---------------
+	genplatform.boards.signals.board_signal_shared
+
+	Parameters
+	----------
+	
+	sender: object 
+	    Object sender of the signal
+	
+	**Kwargs: dict
+	    Dictionary with the arguments of the defined signal.  
+	"""
 	mensaje = "The user '" + kwargs['board'].board.owner.username + "' wants to share the board '" + kwargs['board'].board.title + "' with you.\n" + "Please access the link to confirm the request: http://" + IP_ADDRESS + "/boards/proccesShared?board=" + kwargs['board'].id_board
 	send_mail('Share Board', mensaje, settings.EMAIL_HOST_USER, [kwargs['board'].user.email], fail_silently=False)
 	
 # ESTE METODO A LA ESCUCHA DE LA SEÑAL ENVIADA AL ACABAR LOS FILTRADOS DE UN BOARD, CAMBIA EL ESTADO DEL MISMO A TRUE
 @receiver(board_signal_save)
 def notificationAddBoard(sender, **kwargs):
+	"""
+	This function, listening to the signal sent at the end of the filtering of a board, 
+	changes the resolution of the same to confirmed to be able to proceed to its
+ 	visualization.
+
+	Signal reciever
+	---------------
+	genplatform.boards.signals.board_signal_save
+
+	Parameters
+	----------
+	
+	sender: object 
+	    Object sender of the signal
+	
+	**Kwargs: dict
+	    Dictionary with the arguments of the defined signal.  
+	"""
 	board = Board.objects.filter(id_board = kwargs['board'].id_board, confirmed=False)
 	if len (board) > 0:
 		for board_confirmed in board:

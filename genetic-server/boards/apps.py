@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python para definir la aplicacion boards
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module to define the boards application.
 '''
 from __future__ import unicode_literals
 

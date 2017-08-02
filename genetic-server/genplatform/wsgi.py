@@ -1,5 +1,7 @@
 """
-WSGI config for GeneticServer project.
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+WSGI config for genplatform project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +13,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "GeneticServer.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "genplatform.settings")
 
 application = get_wsgi_application()

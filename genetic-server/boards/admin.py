@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python encargado de administrar los modelos definidos para acceder a ellos y poder
-gestionarlos desde el sitio de administracion de django
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module responsible for managing the defined models to access them and manage them from the django administration site.
 '''
 from django.contrib import admin
 from models import Board, BoardShared

@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python encargado de hacer los tres filtrados al subir el board, 
-guardando los datos en un base de de datos mongo no sql, con un documento 
-para cada gen, y uno para cada filtrado.
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module in charge of making the three filters when uploading the board, saving the data in a data base mongo no sql, with one document for each gene, and one for each filtering.
 '''
+# MongoDB
 from pymongo import MongoClient
-
+# Numpy para el tratamiento de matrices
 import numpy as np
-
+# Modelo sql Board
 from models import Board
-
 # Filtrados 
 from mannWhitney import Prefilter
 from gbr import GBRT_CBR
@@ -19,16 +17,28 @@ from boruta import BorutaPy
 from sklearn.ensemble import RandomForestClassifier
 
 import operator
-
+# Manejo de ficheros
 from django.core.files import File
 import os
 import csv
-
 # Señales
 from signals import board_signal_save
 
 # GUARDAR EL DATASET EN LA BASE DE DATOS MONGO (NO SQL)
 def saveDataSet(board, data):
+	"""
+	Save the dataset in the Mongo Database (No SQL)
+
+        Parameters
+	----------
+	board: object Model.
+ 	    contains the board information associated with the 
+            datasets to be filtered.
+
+	data: object File
+	    File with the gene expression data to be filtered, 
+	    coming from the uploaded datasets.
+	"""
 
 	samples = data[0,1:]
 	X = data[2:,1:].astype(np.float32)
@@ -39,8 +49,9 @@ def saveDataSet(board, data):
 	expresion = []
 	Xcorregido = np.empty((len(list(set(gene_names))),len(y.tolist())))
 
-	#Almacenamiento en la base de datos de los genes sin replicar, nos quedamos con el primer gen encontrado en el dataset, 
-	#media comentada (mucho menos eficiente)
+	# Almacenamiento en la base de datos de los genes sin replicar, 
+	# nos quedamos con el primer gen encontrado en el dataset, 
+	# media comentada (mucho menos eficiente)
 	client = MongoClient()
 	db = client.geneticserverdb
 	coll = db["" + board.id_board]
@@ -52,7 +63,8 @@ def saveDataSet(board, data):
 		if gene_names_unicos.count(name) == 0:
 			gene_names_unicos.append(name)
 			Xcorregido[j,:] = X[i,:]
-			#Xcorregido[j,:] = np.mean(X[gene_names == name,:], axis=0) ---> Media aritmetica (Muy inefciente)
+			# Xcorregido[j,:] = np.mean(X[gene_names == name,:], 
+			# axis=0) ---> Media aritmetica (Muy inefciente)
 			coll.insert_one(
  				{
 					'gene_name': name,
@@ -68,7 +80,8 @@ def saveDataSet(board, data):
 	Xfiltered = pref.fit_transform(Xcorregido.T, y).T
 	gene_names_filtered = np.asarray(gene_names_unicos)[pref.selectedGenesIndexes]
 
-	# Escritura del fichero con los datos geneticos procesados para su posterior visualizacion a traves de javascript
+	# Escritura del fichero con los datos geneticos procesados para su posterior
+	# visualizacion a traves de javascript
 	fileFiltered = open("media/boardCSV/" + board.id_board + "FilteredMN" + ".csv", 'w')
 	fileFiltered.write('Histology,' + ','.join(gene_names_filtered) + '\n')
 
@@ -184,7 +197,8 @@ def saveDataSet(board, data):
        	}
 	)
 
-	# Documento para guardar el estado de las coordenadas paralelas en cuanto a muestras seleccionadas, en cada uno de
+	# Documento para guardar el estado de las coordenadas paralelas 
+	# en cuanto a muestras seleccionadas, en cada uno de
 	# los filtrados disponibles
 
 	coll.insert_one(
@@ -208,7 +222,8 @@ def saveDataSet(board, data):
 		}
 	)
 
-	# Cuando los filtrados concluyan enviamos una señal para cambiar el estado del board a confirmado,
+	# Cuando los filtrados concluyan enviamos una señal para cambiar el 
+	# estado del board a confirmado,
 	# y asi el usuario pueda trabajar con el
 	board_signal_save.send(sender = Board, board=board)
 	
@@ -216,6 +231,14 @@ def saveDataSet(board, data):
 
 # ELIMINAR EL DATASET DE LA BASE DE DATOS MONGO
 def deleteDataSet(idBoard):
+	"""
+	Delete the dataset in the Mongo Database (No SQL)
+
+        Parameters
+	----------
+	idBoard: string.
+ 	    Board identifier to remove.
+	"""
 	# Borramos todas las colecciones mongo asociadas al board a eliminar
 	client = MongoClient()
 	db = client.geneticserverdb

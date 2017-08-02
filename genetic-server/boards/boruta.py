@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Author: Daniel Homola <dani.homola@gmail.com>
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
 
 Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/
 

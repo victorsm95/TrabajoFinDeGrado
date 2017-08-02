@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-'''
-Definicion
----
-Modulo python encargado de gestionar los formularios para presentar al usuario y validar los
-datos introducidos por el mismo a través de ellos 
-'''
+"""
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module responsible for managing the forms to present to the user and validate the data entered by the user through them.
+"""
 from django.forms import ModelForm, Form, ValidationError
 from models import Board, BoardShared
 from django import forms
@@ -15,10 +14,12 @@ import pymongo
 
 # Formulario para borrar un board
 class DeleteBoardForm(Form):
+	""" Form to delete a board."""
 	id_board_delete = forms.CharField()
 
 # Formulario para añadir un board
 class AddBoardForm(ModelForm):
+	""" Form to add a board."""
 	class Meta:
 		model = Board
 		fields = ['title', 'dataFile', 'delimiter', 'n_genes_initial']
@@ -37,12 +38,14 @@ class AddBoardForm(ModelForm):
 
 # Formulario para buscar un gen antes de añadirlo 
 class SearchGenForm(Form):
+	""" Form to serch a gene before add on the board."""
 	id_board_searchGen = forms.CharField()
 	name_gen = forms.CharField()
 	filt = forms.CharField()
 
 # Formulario para añadir un gen
 class AddGenForm(Form):
+	""" Form to add a gene on the board."""
 	id_board_addGen = forms.CharField()
 	filt = forms.CharField()
 	name_gen = forms.CharField()
@@ -66,6 +69,7 @@ class AddGenForm(Form):
 
 # Formulario para eliminar un gen	
 class DeleteGenForm(Form):
+	""" Form to remove a gene from the board."""
 	id_board_deleteGen = forms.CharField()
 	filt = forms.CharField()
 	name_gen = forms.CharField()
@@ -89,10 +93,12 @@ class DeleteGenForm(Form):
 
 # Formulario para la solicitud de compartición de board
 class ShareBoardForm(Form):
+	"""Board request application form"""
 	id_board_share = forms.CharField()
 
 # Formulario para la solicitud de comparticion de board con el usuario especificado
 class SharedBoardForm(Form):
+	"""Board request application form with the specified user"""
 	id_board_shared = forms.CharField()
 	user = forms.CharField()
 
@@ -112,27 +118,32 @@ class SharedBoardForm(Form):
 
 # Fromulario para confirmacion de la comparticion del board
 class SharedBoardConfirmForm(Form):
+	"""Form for confirmation of board sharing"""
 	id_board_confirmShare = forms.CharField()
 	user = forms.CharField()
 
 # Formulario para el procesamiento de la solicitud de la comparticion
 class ProccesSharedForm(Form):
+	"""Sharing Request Processing Form"""
 	id_board_proccess = forms.CharField()
 	option = forms.CharField()
 
 # Formulario para la busqueda de usuario a la hora de compartir un board
 class SearchUserForm(Form):
+	"""Form for user search when sharing a board"""
 	id_board_searchUser = forms.CharField()
 	username = forms.CharField()
 
 # Fromulario para guardar el estado de las muestras seleccionadas en el filtrado de un board
 class SaveStateForm(Form):
+	"""Form to save the status of selected samples in the filtering of a board"""
 	id_board_save = forms.CharField()
 	brushed = forms.CharField()	
 	filt = forms.CharField()
 
-# Refiltrado, para poder hacer tantos filtros como se desee
+# Formulario para el refiltrado, para poder hacer tantos filtros como se desee
 class RefilterForm(Form):
+	"""Form for filtering, to be able to make as many filters as you want"""
 	id_board_refilter = forms.CharField()
 	n_genes_refilter= forms.IntegerField()
 

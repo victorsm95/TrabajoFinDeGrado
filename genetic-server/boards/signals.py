@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python que consta de las señales definidas para el uso de notificaciones en la aplicación
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module consisting of signals defined for the use 
+of notifications in the application.
 '''
 import django.dispatch
 # Señal de comparticion de board, enviada al compartir un board para enviar un e-mail 
