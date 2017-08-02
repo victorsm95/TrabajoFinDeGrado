@@ -2,7 +2,9 @@
 """
 Author: Víctor Sánchez Martín <victorsm156548@usal.es>
 
-Python module responsible for managing the forms to present to the user and validate the data entered by the user through them.
+Python module responsible for managing the forms to 
+present to the user and validate the data entered by 
+the user through them.
 """
 from django.forms import ModelForm, Form, ValidationError
 from models import Board, BoardShared

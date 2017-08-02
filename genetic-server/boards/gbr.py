@@ -2,7 +2,9 @@
 '''
 Author: Víctor Sánchez Martín <victorsm156548@usal.es>
 
-Python module in charge of performing the GBR filtering, taking the result of the Mann-Whitney prefilter as the initiation data.
+Python module in charge of performing the GBR filtering, 
+taking the result of the Mann-Whitney prefilter as the 
+initiation data.
 '''
 
 from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin

@@ -2,7 +2,9 @@
 '''
 Author: Víctor Sánchez Martín <victorsm156548@usal.es>
 
-Python module responsible for managing the defined models to access them and manage them from the django administration site.
+Python module responsible for managing the defined 
+models to access them and manage them from the django 
+administration site.
 '''
 from django.contrib import admin
 from models import Board, BoardShared

@@ -23,19 +23,33 @@ class Board(models.Model):
 	----------
 
 	id_board: object models.CharField: Board identifier
+
 	owner: object django.contrib.auth.models.User: User owner of board
+
 	title: object model.CharField: Title of board
+
 	date: object model.DateField: Add date of board
+
 	dataFile: object model.FileFIeld: Dataset assocciated of board
+
 	dataFilteredMN: object model.FileFIeld: File filtered Mann-Whitney of board
+
 	dataFilteredGBR: object model.FileFIeld: File filtered GBR of board
+
 	dataFilteredBoruta: object model.FileFIeld: File filtered Boruta of board
+
 	delimiter: object model.CharField: Delimiter of dataFile
+
 	n_genes_initial: object models.IntegerField: Number of genes filtered 
+
 	n_samples: object models.IntegerField: Number of shamples 
+
 	n_genes: object models.IntegerField: NUmber of genes total
+
 	n_types: object models.IntegerField: Number of shample types
+
 	types: object models.CharField: Shamples types
+
 	confirmed: object models.BooleanField: Filtered state board
 	"""
 
@@ -85,8 +99,11 @@ class BoardShared(models.Model):
 	Parameters
 	----------
 	id_board: object models.CharField: Board shared identifier
+
 	board: object boards.model.Board: Board shared linked
+
 	user: object django.contrib.auth.models.User: Board participant user
+
 	confirmation: object models.BooleanField: Shared confirmation state of board
 	"""
 	id_board = models.CharField(max_length = 200, primary_key = True)

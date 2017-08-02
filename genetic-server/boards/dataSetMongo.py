@@ -2,7 +2,10 @@
 '''
 Author: Víctor Sánchez Martín <victorsm156548@usal.es>
 
-Python module in charge of making the three filters when uploading the board, saving the data in a data base mongo no sql, with one document for each gene, and one for each filtering.
+Python module in charge of making the three filters 
+when uploading the board, saving the data in a data 
+base mongo no sql, with one document for each gene, 
+and one for each filtering.
 '''
 # MongoDB
 from pymongo import MongoClient
