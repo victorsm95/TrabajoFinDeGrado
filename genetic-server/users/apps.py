@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-Modulo python para definir la aplicacion users
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+Python module to define the users application.
 '''
 from __future__ import unicode_literals
 

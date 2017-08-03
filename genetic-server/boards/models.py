@@ -84,7 +84,8 @@ class Board(models.Model):
 
 	class Meta:
 		"""
-		Python metaclass that describes concepts related to the database.
+		Python metaclass that describes concepts related to 
+		the database.
 		"""
 		unique_together = (("owner", "title"),)
 		db_table = 'board'

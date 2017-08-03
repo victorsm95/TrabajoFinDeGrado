@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Author: Víctor Sánchez Martín <victorsm156548@usal.es>
 

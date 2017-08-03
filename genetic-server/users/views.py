@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 '''
-Definicion
----
-VISTA
-Modulo python que define las funciones vistas que gestionan la aplicacion y sirven las plantillas 
-necesarias para el uso de las funcionalidades ofrecidas por la misma.
+Author: Víctor Sánchez Martín <victorsm156548@usal.es>
+
+VIEW
+
+Python module that defines the view functions that manage 
+the application and serve the templates necessary for the use 
+of the functionalities offered by it.
 '''
 # Renderizar vistas
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
@@ -36,6 +38,32 @@ from django.dispatch import receiver
 # DEVUELVE LA PAGINA DE INICIO DE CADA USUARIO CON SUS BOARDS O BIEN EL INDEX DE LA APLICACION
 @require_http_methods(['GET'])
 def home(request):
+	"""
+	Function view in charge of returning the home page of each user 
+	with their boards or the application index.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Si el usuario esta autenticado se devuelve la pagina home con los boards del usuario
 	if request.user.is_authenticated() and request.user.profile.account_verified():
 		board = Board.objects.filter(owner=request.user, confirmed = True)
@@ -54,27 +82,133 @@ def home(request):
 # INFORMACION Y ESPECIFICACIONES DE LA APLICACION
 @require_http_methods(['GET'])
 def info(request):
+	"""
+	Function view in charge of returning the page with 
+	information and specifications of the web application.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	return render(request, 'home/readMore.html')
 
 # CONTACTO PARA LOS USUARIOS
 @require_http_methods(['GET'])
 def contact(request):
+	"""
+	Function view in charge of returning the page with
+	the contact admin platform for the users.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	return render(request, 'home/contact.html')
 
 # RETORNA LA PAGINA CON LOS BOARDS QUE HAN COMPARTIDO CON EL USUARIO
 @login_required
 @require_http_methods(['GET'])
 def home_shared(request):
-	# Obtencion de los boards compartidos con el usuario
-		boardShared = BoardShared.objects.filter(user=request.user, confirmation=True)
-		boardShared.order_by("date")
-		context = Context({'board': boardShared})
-		return render(request, 'home/home_shared.html', context)
+	"""
+	Function view in charge of returning the home page with
+	the boards shared whit the request user.
 
-# PAGINA CON LOS DATOS DEL USUARIO  Y UN BREVE RESUMEN ESTADISTICO DE SUS RECURSOS
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
+	# Obtencion de los boards compartidos con el usuario
+	boardShared = BoardShared.objects.filter(user=request.user, confirmation=True)
+	boardShared.order_by("date")
+	context = Context({'board': boardShared})
+	return render(request, 'home/home_shared.html', context)
+
+# PAGINA CON LOS DATOS DEL USUARIO Y UN BREVE RESUMEN ESTADISTICO DE SUS RECURSOS
 @login_required
 @require_http_methods(['GET','POST'])
 def profile(request):
+	"""
+	Function responsible for returning a page with user profile data and 
+	a brief statistical description of its use of the platform.
+	The user can also change their profile data through this view.
+
+	Http Methods:
+	   * GET
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	# Si el metodo es POST se procesa el formulario para cambiar los datos del perfil de usuario
 	if request.method == 'POST':
 		# Formularios a procesar
@@ -166,6 +300,33 @@ def profile(request):
 @login_required
 @require_http_methods(['GET'])
 def image_delete(request):
+	"""
+	Function responsible for giving the user the possibility to delete 
+	his profile photo.
+
+	Http Methods:
+	   * GET
+	   * POST
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
 	if request.user.profile.image:
 		profiles = Profile.objects.filter(user = request.user)
 		if len(profiles):
@@ -176,6 +337,23 @@ def image_delete(request):
 # ESTA FUNCION A LA ESCUCHA DE LA SEÑAL password_changed ENVIA UN CORREO AL USUARIO INFORMANDOLE DE QUE SU CONTRASEÑA HA SIDO CAMBIADA
 @receiver(password_changed)
 def notificationChangePassword(sender, **kwargs):
+	"""
+	By listening to the signal sent by changing the password of the user account, 
+	this function sends an email to the user informing him that his password has been changed.
+
+	Signal reciever
+	---------------
+	allauth.account.signals.password_changed
+
+	Parameters
+	----------
+	
+	sender: object 
+	    Object sender of the signal
+	
+	**Kwargs: dict
+	    Dictionary with the arguments of the defined signal.  
+	"""
 	# Se envia un email infromativo al usuario
 	mensaje = "The password has been successfully changed to account" + kwargs['request'].user.username
 	send_mail('Password changed', mensaje, settings.EMAIL_HOST_USER, [kwargs['request'].user.email], fail_silently=False)
