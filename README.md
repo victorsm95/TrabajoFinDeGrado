@@ -1,4 +1,4 @@
-# Aplicaion web para el analisis visual de conjuntos de datos de expresion genética
+# Aplicación web para el analisis visual de conjuntos de datos de expresion genética
 
 ## Descripción 
 Aplicacion web desarrollada en Python junto con el framework web [Django](https://www.djangoproject.com/) que ofrece las siguientes funcionalidades básicas:
