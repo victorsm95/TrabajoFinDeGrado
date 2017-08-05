@@ -106,6 +106,8 @@ AUTHENTICATION_BACKENDS = (
 	"allauth.account.auth_backends.AuthenticationBackend",
 )
 
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
 ACCOUNT_EMAIL_REQUIRED = True
