@@ -361,7 +361,15 @@
     	  bindto: '#chart1',
     	  data: {
      	    columns: [variance],
-      	    regions: {'Variance': [{'start': {{ n_genes_initial }} - 1}]}}});
+      	    regions: {'Variance': [{'start': {{ n_genes_initial }} - 1}]}},
+	  grid: {
+            x: {
+              show: true
+            },
+            y: {
+              show: true
+            }
+          }});
         break;
 
       case 2:
@@ -373,7 +381,15 @@
     	  bindto: '#chart2',
     	  data: {
      	    columns: [rawweights],
-      	    regions: {'Rawweights': [{'start': {{ n_genes_initial }} - 1}]}}});
+      	    regions: {'Rawweights': [{'start': {{ n_genes_initial }} - 1}]}},
+	  grid: {
+            x: {
+              show: true
+            },
+            y: {
+              show: true
+            }
+          }});
 	break;
 
       case 3:
@@ -385,7 +401,15 @@
     	  bindto: '#chart3',
     	  data: {
      	    columns: [ranking],
-      	    regions: {'Rankin (1 confirmed; 2 tentative)': [{'start': {{ n_genes_initial }} - 1}]}}});
+      	    regions: {'Rankin (1 confirmed; 2 tentative)': [{'start': {{ n_genes_initial }} - 1}]}},
+	  grid: {
+            x: {
+              show: true
+            },
+            y: {
+              show: true
+            }
+          }});
 	break;}
   }
   

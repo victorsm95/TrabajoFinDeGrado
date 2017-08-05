@@ -16,7 +16,7 @@ from django.core.mail import send_mail
 # Tratamiento de ficheros
 import os
 # Configuracion del proyecto
-from genplatform import settings
+from biogen import settings
 # Formularios a presentar y manejar
 from forms import UserForm, ProfileForm
 # Modelos de datos a manejar

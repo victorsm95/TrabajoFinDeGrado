@@ -25,8 +25,8 @@ from django.core.mail import send_mail
 # Tratamiento de ficheros
 from django.core.files import File
 # Configuracion del proyecto
-from genplatform import settings
-from genplatform.settings import IP_ADDRESS
+from biogen import settings
+from biogen.settings import IP_ADDRESS
 # Filtrados estadisticos y manejo de datos genéticos (matrices)
 import numpy as np
 from dataSetMongo import saveDataSet, deleteDataSet
@@ -1128,7 +1128,7 @@ def notificationBoardShared(sender, **kwargs):
 
 	Signal reciever
 	---------------
-	genplatform.boards.signals.board_signal_shared
+	biogen.boards.signals.board_signal_shared
 
 	Parameters
 	----------
@@ -1152,7 +1152,7 @@ def notificationAddBoard(sender, **kwargs):
 
 	Signal reciever
 	---------------
-	genplatform.boards.signals.board_signal_save
+	biogen.boards.signals.board_signal_save
 
 	Parameters
 	----------
