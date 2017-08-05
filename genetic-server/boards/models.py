@@ -89,6 +89,9 @@ class Board(models.Model):
 		"""
 		unique_together = (("owner", "title"),)
 		db_table = 'board'
+	
+	def __str__(self):              
+        	return self.title + " | " + self.owner.username
 
 # Clase que describe un board compartido, haciendo referencia a un 
 # board existente y a un usuario al cual se comparte.
@@ -118,3 +121,6 @@ class BoardShared(models.Model):
 		"""
 		unique_together = (("board", "user"),)
 		db_table = 'board_share'
+
+	def __str__(self):              
+        	return self.board.title + " | " + self.user.sername

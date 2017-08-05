@@ -44,6 +44,9 @@ class Profile(models.Model):
 		"""
 		db_table = 'user_profile'
 
+	def __str__(self):              
+        	return self.user.username
+
 	# Comprobamos si el correo del usuario se ha verificado
 	def account_verified(self):
 		"""
