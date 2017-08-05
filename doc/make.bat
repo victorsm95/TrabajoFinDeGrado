@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
-set SPHINXPROJ=genplatform
+set SPHINXPROJ=biogen
 
 if "%1" == "" goto help
 

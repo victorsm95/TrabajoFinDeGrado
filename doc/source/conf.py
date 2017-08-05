@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# genplatform documentation build configuration file, created by
-# sphinx-quickstart on Thu Aug  3 18:20:51 2017.
+# biogen documentation build configuration file, created by
+# sphinx-quickstart on Sat Aug  5 21:56:07 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -36,13 +36,8 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
+    'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode']
-
-import django, sys, os
-
-sys.path.insert(0, os.path.abspath('/home/victor/Escritorio/git/TrabajoFinDeGrado/genetic-server'))
-os.environ['DJANGO_SETTINGS_MODULE'] = 'genplatform.settings'
-django.setup()
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -53,11 +48,17 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
+import django, sys, os
+
+sys.path.insert(0, os.path.abspath('/home/victor/Escritorio/git/TrabajoFinDeGrado/genetic-server'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'biogen.settings'
+django.setup()
+
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
-project = u'genplatform'
+project = u'biogen'
 copyright = u'2017, Víctor Sánchez Martín'
 author = u'Víctor Sánchez Martín'
 
@@ -126,7 +127,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'genplatformdoc'
+htmlhelp_basename = 'biogendoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -153,7 +154,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'genplatform.tex', u'genplatform Documentation',
+    (master_doc, 'biogen.tex', u'biogen Documentation',
      u'Víctor Sánchez Martín', 'manual'),
 ]
 
@@ -163,7 +164,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'genplatform', u'genplatform Documentation',
+    (master_doc, 'biogen', u'biogen Documentation',
      [author], 1)
 ]
 
@@ -174,8 +175,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'genplatform', u'genplatform Documentation',
-     author, 'genplatform', 'One line description of project.',
+    (master_doc, 'biogen', u'biogen Documentation',
+     author, 'biogen', 'One line description of project.',
      'Miscellaneous'),
 ]
 

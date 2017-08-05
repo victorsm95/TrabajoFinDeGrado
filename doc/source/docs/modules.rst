@@ -4,7 +4,7 @@ genetic-server
 .. toctree::
    :maxdepth: 4
 
+   biogen
    boards
-   genplatform
    manage
    users
