@@ -20,42 +20,10 @@ boards\.apps module
     :undoc-members:
     :show-inheritance:
 
-boards\.boruta module
----------------------
-
-.. automodule:: boards.boruta
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-boards\.dataSetMongo module
----------------------------
-
-.. automodule:: boards.dataSetMongo
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 boards\.forms module
 --------------------
 
 .. automodule:: boards.forms
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-boards\.gbr module
-------------------
-
-.. automodule:: boards.gbr
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-boards\.mannWhitney module
---------------------------
-
-.. automodule:: boards.mannWhitney
     :members:
     :undoc-members:
     :show-inheritance:

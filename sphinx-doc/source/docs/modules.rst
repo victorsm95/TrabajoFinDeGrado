@@ -6,5 +6,6 @@ genetic-server
 
    biogen
    boards
+   filters
    manage
    users

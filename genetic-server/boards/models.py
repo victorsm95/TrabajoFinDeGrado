@@ -123,4 +123,4 @@ class BoardShared(models.Model):
 		db_table = 'board_share'
 
 	def __str__(self):              
-        	return self.board.title + " | " + self.user.sername
+        	return self.board.title + " | " + self.user.username

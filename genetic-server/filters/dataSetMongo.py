@@ -12,7 +12,7 @@ from pymongo import MongoClient
 # Numpy para el tratamiento de matrices
 import numpy as np
 # Modelo sql Board
-from models import Board
+from boards.models import Board
 # Filtrados 
 from mannWhitney import Prefilter
 from gbr import GBRT_CBR
@@ -25,7 +25,7 @@ from django.core.files import File
 import os
 import csv
 # Señales
-from signals import board_signal_save
+from boards.signals import board_signal_save
 
 # GUARDAR EL DATASET EN LA BASE DE DATOS MONGO (NO SQL)
 def saveDataSet(board, data):

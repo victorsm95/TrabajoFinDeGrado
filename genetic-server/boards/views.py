@@ -29,7 +29,7 @@ from biogen import settings
 from biogen.settings import IP_ADDRESS
 # Filtrados estadisticos y manejo de datos genéticos (matrices)
 import numpy as np
-from dataSetMongo import saveDataSet, deleteDataSet
+from filters.dataSetMongo import saveDataSet, deleteDataSet
 # Base de datos no sql (MongoDB)
 from pymongo import MongoClient
 import pymongo
