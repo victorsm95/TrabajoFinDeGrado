@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>filters.dataSetMongo &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>filters.dataSetMongo</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for filters.dataSetMongo</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Author: Víctor Sánchez Martín &lt;victorsm156548@usal.es&gt;</span>
+
+<span class="sd">Python module in charge of making the three filters </span>
+<span class="sd">when uploading the board, saving the data in a data </span>
+<span class="sd">base mongo no sql, with one document for each gene, </span>
+<span class="sd">and one for each filtering.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c1"># MongoDB</span>
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="k">import</span> <span class="n">MongoClient</span>
+<span class="c1"># Numpy para el tratamiento de matrices</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># Modelo sql Board</span>
+<span class="kn">from</span> <span class="nn">boards.models</span> <span class="k">import</span> <span class="n">Board</span>
+<span class="c1"># Filtrados </span>
+<span class="kn">from</span> <span class="nn">mannWhitney</span> <span class="k">import</span> <span class="n">Prefilter</span>
+<span class="kn">from</span> <span class="nn">gbr</span> <span class="k">import</span> <span class="n">GBRT_CBR</span>
+<span class="kn">from</span> <span class="nn">boruta</span> <span class="k">import</span> <span class="n">BorutaPy</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="c1"># Manejo de ficheros</span>
+<span class="kn">from</span> <span class="nn">django.core.files</span> <span class="k">import</span> <span class="n">File</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="c1"># Señales</span>
+<span class="kn">from</span> <span class="nn">boards.signals</span> <span class="k">import</span> <span class="n">board_signal_save</span>
+
+<span class="c1"># GUARDAR EL DATASET EN LA BASE DE DATOS MONGO (NO SQL)</span>
+<div class="viewcode-block" id="saveDataSet"><a class="viewcode-back" href="../../docs/filters.html#filters.dataSetMongo.saveDataSet">[docs]</a><span class="k">def</span> <span class="nf">saveDataSet</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Save the dataset in the Mongo Database (No SQL)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	board: object Model.</span>
+<span class="sd"> 	    contains the board information associated with the </span>
+<span class="sd">            datasets to be filtered.</span>
+
+<span class="sd">	data: object File</span>
+<span class="sd">	    File with the gene expression data to be filtered, </span>
+<span class="sd">	    coming from the uploaded datasets.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">samples</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">:]</span>
+	<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+	<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+	<span class="n">gene_names</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">gene_names_unicos</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">expresion</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">Xcorregido</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">gene_names</span><span class="p">))),</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">tolist</span><span class="p">())))</span>
+
+	<span class="c1"># Almacenamiento en la base de datos de los genes sin replicar, </span>
+	<span class="c1"># nos quedamos con el primer gen encontrado en el dataset, </span>
+	<span class="c1"># media comentada (mucho menos eficiente)</span>
+	<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+	<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+	<span class="n">coll</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">board</span><span class="o">.</span><span class="n">id_board</span><span class="p">]</span>
+	<span class="n">coll</span><span class="o">.</span><span class="n">delete_many</span><span class="p">({})</span>
+
+	<span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">gene_names</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
+		<span class="k">if</span> <span class="n">gene_names_unicos</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">gene_names_unicos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+			<span class="c1">#Xcorregido[j,:] = X[i,:]</span>
+			<span class="n">Xcorregido</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">gene_names</span> <span class="o">==</span> <span class="n">name</span><span class="p">,:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#---&gt; Media aritmetica (Muy inefciente)</span>
+			<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+ 				<span class="p">{</span>
+					<span class="s1">&#39;gene_name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+					<span class="s1">&#39;expression&#39;</span><span class="p">:</span> <span class="n">Xcorregido</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+       			<span class="p">}</span>
+			<span class="p">)</span>
+			<span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+	<span class="k">if</span> <span class="n">gene_names_unicos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gene_names_unicos</span><span class="p">)):</span>
+			<span class="n">gene_names_unicos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> 	<span class="n">gene_names_unicos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+	<span class="c1">#####  FILTRADO MANN-WHITNEY  #####</span>
+	<span class="n">pref</span> <span class="o">=</span> <span class="n">Prefilter</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">)</span>
+	<span class="n">Xfiltered</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">Xcorregido</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+	<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gene_names_unicos</span><span class="p">)[</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexes</span><span class="p">]</span>
+
+	<span class="c1"># Escritura del fichero con los datos geneticos procesados para su posterior</span>
+	<span class="c1"># visualizacion a traves de javascript</span>
+	<span class="n">fileFiltered</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;media/boardCSV/&quot;</span> <span class="o">+</span> <span class="n">board</span><span class="o">.</span><span class="n">id_board</span> <span class="o">+</span> <span class="s2">&quot;FilteredMN&quot;</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+	<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Histology,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gene_names_filtered</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+		<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Xfiltered</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+		
+	<span class="c1"># Vector con las varianzas ordenadas de mayor a menor</span>
+	<span class="n">variance</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">varianza</span><span class="p">[</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="p">]</span>
+	<span class="n">variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">variance</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+	<span class="c1"># Almacenamiento en la base de datos mongo de los resultados del filtrado Mann-Whitney</span>
+	<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+  		<span class="p">{</span>
+			<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s2">&quot;SpecificationsMN&quot;</span><span class="p">,</span>
+			<span class="s1">&#39;samples&#39;</span><span class="p">:</span> <span class="n">samples</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;histology&#39;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;n_genes_selected&#39;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">,</span>
+			<span class="s1">&#39;gene_names&#39;</span><span class="p">:</span> <span class="n">gene_names_unicos</span><span class="p">,</span>
+			<span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">:</span> <span class="n">gene_names_filtered</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;graphic&#39;</span><span class="p">:</span> <span class="n">variance</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;Wilcoxon-Mann-Whitney&#39;</span>
+        <span class="p">})</span>
+
+	<span class="c1">#####  FILTRADO GBRT_CBR #####</span>
+	<span class="n">filtGBR_CBR</span> <span class="o">=</span> <span class="n">GBRT_CBR</span><span class="p">()</span>
+	<span class="n">filtGBR_CBR</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span> <span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">X_filt</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+
+	<span class="c1"># Diccionario con clave (indice del gen) y valor (rawweight del gen)</span>
+	<span class="n">index_rawweights</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filtGBR_CBR</span><span class="o">.</span><span class="n">rawweights</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+		<span class="n">index_rawweights</span><span class="p">[</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">filtGBR_CBR</span><span class="o">.</span><span class="n">rawweights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+	<span class="c1"># Ordenacion d los indices segun el rawweight</span>
+	<span class="n">result</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">index_rawweights</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+	<span class="c1"># Index con los indices de los num_genes con mayor rawweight</span>
+	<span class="n">indexes</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">):</span>
+		<span class="n">indexes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">result</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+
+	<span class="n">XfilteredGBR</span> <span class="o">=</span> <span class="n">Xcorregido</span><span class="p">[</span><span class="n">indexes</span><span class="p">,</span> <span class="p">:]</span>
+	<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gene_names_unicos</span><span class="p">)[</span><span class="n">indexes</span><span class="p">]</span>
+
+	<span class="c1"># Escritura del fichero con los datos geneticos procesados para su posterior visualizacion a traves de javascript</span>
+	<span class="n">fileFiltered</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;media/boardCSV/&quot;</span> <span class="o">+</span> <span class="n">board</span><span class="o">.</span><span class="n">id_board</span> <span class="o">+</span> <span class="s2">&quot;FilteredGBR&quot;</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+	<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Histology,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gene_names_filtered</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+		<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">XfilteredGBR</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+	<span class="c1"># Vector con los rawweights ordenado de mayor a menor</span>
+	<span class="n">rawweights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">filtGBR_CBR</span><span class="o">.</span><span class="n">rawweights</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+	<span class="c1"># Almacenamiento en la base de datos mongo de los resultados del filtrado</span>
+	<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+  		<span class="p">{</span>
+			<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s2">&quot;SpecificationsGBR&quot;</span><span class="p">,</span>
+			<span class="s1">&#39;samples&#39;</span><span class="p">:</span> <span class="n">samples</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;histology&#39;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;n_genes_selected&#39;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">,</span>
+			<span class="s1">&#39;gene_names&#39;</span><span class="p">:</span> <span class="n">gene_names_unicos</span><span class="p">,</span>
+			<span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">:</span> <span class="n">gene_names_filtered</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;graphic&#39;</span><span class="p">:</span> <span class="n">rawweights</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;CBR-GBR&#39;</span>
+        <span class="p">}</span>
+	<span class="p">)</span>
+
+	<span class="c1">##### FILTRADO BORUTA #####</span>
+	<span class="c1">## Estimador de aprendizaje supervisado Random Forest Clasifier</span>
+	<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+	<span class="c1">## Filtrado Boruta</span>
+	<span class="n">filtBoruta</span> <span class="o">=</span> <span class="n">BorutaPy</span><span class="p">(</span><span class="n">rf</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+	<span class="n">filtBoruta</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">X_filt</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+	
+	<span class="c1"># Obtencion de los indices de los n_genes mejor clasificados</span>
+	<span class="n">selectedGenesIndexesBoruta</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">filtBoruta</span><span class="o">.</span><span class="n">ranking_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">):</span>
+			<span class="n">selectedGenesIndexesBoruta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">filtBoruta</span><span class="o">.</span><span class="n">ranking_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">):</span>
+				<span class="n">selectedGenesIndexesBoruta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">filtBoruta</span><span class="o">.</span><span class="n">ranking_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">):</span>
+				<span class="n">selectedGenesIndexesBoruta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">selectedGenesIndexesPrefilter</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+	<span class="n">XfilteredBoruta</span> <span class="o">=</span> <span class="n">Xcorregido</span><span class="p">[</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">,</span> <span class="p">:]</span>
+	<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gene_names_unicos</span><span class="p">)[</span><span class="n">selectedGenesIndexesBoruta</span><span class="p">]</span>
+
+	<span class="c1"># Escritura del fichero con los datos geneticos procesados para su posterior visualizacion a traves de javascript</span>
+	<span class="n">fileFiltered</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;media/boardCSV/&quot;</span> <span class="o">+</span> <span class="n">board</span><span class="o">.</span><span class="n">id_board</span> <span class="o">+</span> <span class="s2">&quot;FilteredBoruta&quot;</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+	<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Histology,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gene_names_filtered</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">tolist</span><span class="p">())):</span>
+		<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">XfilteredBoruta</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+	<span class="c1"># Vector con el ranking de genes ordenado</span>
+	<span class="n">ranking</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">filtBoruta</span><span class="o">.</span><span class="n">ranking_</span><span class="p">)</span>
+
+	<span class="c1"># Almacenamiento en la base de datos mongo</span>
+	<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+  		<span class="p">{</span>
+			<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s2">&quot;SpecificationsBoruta&quot;</span><span class="p">,</span>
+			<span class="s1">&#39;samples&#39;</span><span class="p">:</span> <span class="n">samples</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;histology&#39;</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;n_genes_selected&#39;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">n_genes_initial</span><span class="p">,</span>
+			<span class="s1">&#39;gene_names&#39;</span><span class="p">:</span> <span class="n">gene_names_unicos</span><span class="p">,</span>
+			<span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">:</span> <span class="n">gene_names_filtered</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;graphic&#39;</span><span class="p">:</span> <span class="n">ranking</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+			<span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;Boruta&#39;</span>
+       	<span class="p">}</span>
+	<span class="p">)</span>
+
+	<span class="c1"># Documento para guardar el estado de las coordenadas paralelas </span>
+	<span class="c1"># en cuanto a muestras seleccionadas, en cada uno de</span>
+	<span class="c1"># los filtrados disponibles</span>
+
+	<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+		<span class="p">{</span>
+			<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;DatasetStateMN&#39;</span><span class="p">,</span>
+			<span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span>
+		<span class="p">}</span>
+	<span class="p">)</span>
+
+	<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+		<span class="p">{</span>
+			<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;DatasetStateGBR&#39;</span><span class="p">,</span>
+			<span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span>
+		<span class="p">}</span>
+	<span class="p">)</span>
+
+	<span class="n">coll</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
+		<span class="p">{</span>
+			<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;DatasetStateBoruta&#39;</span><span class="p">,</span>
+			<span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span>
+		<span class="p">}</span>
+	<span class="p">)</span>
+
+	<span class="c1"># Cuando los filtrados concluyan enviamos una señal para cambiar el </span>
+	<span class="c1"># estado del board a confirmado,</span>
+	<span class="c1"># y asi el usuario pueda trabajar con el</span>
+	<span class="n">board_signal_save</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span> <span class="o">=</span> <span class="n">Board</span><span class="p">,</span> <span class="n">board</span><span class="o">=</span><span class="n">board</span><span class="p">)</span></div>
+	
+
+
+<span class="c1"># ELIMINAR EL DATASET DE LA BASE DE DATOS MONGO</span>
+<div class="viewcode-block" id="deleteDataSet"><a class="viewcode-back" href="../../docs/filters.html#filters.dataSetMongo.deleteDataSet">[docs]</a><span class="k">def</span> <span class="nf">deleteDataSet</span><span class="p">(</span><span class="n">idBoard</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Delete the dataset in the Mongo Database (No SQL)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	idBoard: string.</span>
+<span class="sd"> 	    Board identifier to remove.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Borramos todas las colecciones mongo asociadas al board a eliminar</span>
+	<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+	<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+	<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">delete_many</span><span class="p">({})</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

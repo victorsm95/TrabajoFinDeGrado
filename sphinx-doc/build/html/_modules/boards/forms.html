@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>boards.forms &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>boards.forms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for boards.forms</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Author: Víctor Sánchez Martín &lt;victorsm156548@usal.es&gt;</span>
+
+<span class="sd">Python module responsible for managing the forms to </span>
+<span class="sd">present to the user and validate the data entered by </span>
+<span class="sd">the user through them.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.forms</span> <span class="k">import</span> <span class="n">ModelForm</span><span class="p">,</span> <span class="n">Form</span><span class="p">,</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="k">import</span> <span class="n">Board</span><span class="p">,</span> <span class="n">BoardShared</span>
+<span class="kn">from</span> <span class="nn">django</span> <span class="k">import</span> <span class="n">forms</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="k">import</span> <span class="n">MongoClient</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+
+<span class="c1"># Formulario para borrar un board</span>
+<div class="viewcode-block" id="DeleteBoardForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.DeleteBoardForm">[docs]</a><span class="k">class</span> <span class="nc">DeleteBoardForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Form to delete a board.&quot;&quot;&quot;</span>
+	<span class="n">id_board_delete</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Formulario para añadir un board</span>
+<div class="viewcode-block" id="AddBoardForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.AddBoardForm">[docs]</a><span class="k">class</span> <span class="nc">AddBoardForm</span><span class="p">(</span><span class="n">ModelForm</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Form to add a board.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AddBoardForm.Meta"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.AddBoardForm.Meta">[docs]</a>	<span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+		<span class="n">model</span> <span class="o">=</span> <span class="n">Board</span>
+		<span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;dataFile&#39;</span><span class="p">,</span> <span class="s1">&#39;delimiter&#39;</span><span class="p">,</span> <span class="s1">&#39;n_genes_initial&#39;</span><span class="p">]</span></div>
+	<span class="c1"># El titulo debe tener al menos tres caracteres</span>
+<div class="viewcode-block" id="AddBoardForm.clean_title"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.AddBoardForm.clean_title">[docs]</a>	<span class="k">def</span> <span class="nf">clean_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;Name must be three characters shorter&quot;</span><span class="p">)</span>	
+		<span class="k">return</span> <span class="n">title</span></div>
+
+<div class="viewcode-block" id="AddBoardForm.clean_n_genes_initial"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.AddBoardForm.clean_n_genes_initial">[docs]</a>	<span class="k">def</span> <span class="nf">clean_n_genes_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">n_genes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;n_genes_initial&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">n_genes</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">n_genes</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;The number of genes must be between 1 and 15&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">n_genes</span></div></div>
+
+<span class="c1"># Formulario para buscar un gen antes de añadirlo </span>
+<div class="viewcode-block" id="SearchGenForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.SearchGenForm">[docs]</a><span class="k">class</span> <span class="nc">SearchGenForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Form to serch a gene before add on the board.&quot;&quot;&quot;</span>
+	<span class="n">id_board_searchGen</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">name_gen</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">filt</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Formulario para añadir un gen</span>
+<div class="viewcode-block" id="AddGenForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.AddGenForm">[docs]</a><span class="k">class</span> <span class="nc">AddGenForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Form to add a gene on the board.&quot;&quot;&quot;</span>
+	<span class="n">id_board_addGen</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">filt</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">name_gen</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	
+	<span class="c1"># No puede haber mas de 15 genes en la visualización  </span>
+<div class="viewcode-block" id="AddGenForm.clean_name_gen"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.AddGenForm.clean_name_gen">[docs]</a>	<span class="k">def</span> <span class="nf">clean_name_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;id_board_addGen&#39;</span><span class="p">]</span>
+		<span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;name_gen&#39;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;filt&#39;</span><span class="p">]</span>
+		
+		<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+		<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+		<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+		<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+			<span class="n">n_genes</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;n_genes_selected&#39;</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="n">n_genes</span> <span class="o">&gt;=</span> <span class="mi">15</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;ERROR: There can be no more than 15 genes selected&quot;</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">name</span></div></div>
+
+<span class="c1"># Formulario para eliminar un gen	</span>
+<div class="viewcode-block" id="DeleteGenForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.DeleteGenForm">[docs]</a><span class="k">class</span> <span class="nc">DeleteGenForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Form to remove a gene from the board.&quot;&quot;&quot;</span>
+	<span class="n">id_board_deleteGen</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">filt</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">name_gen</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+
+	<span class="c1"># No puede haber menos de un gen en la visualización</span>
+<div class="viewcode-block" id="DeleteGenForm.clean_name_gen"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.DeleteGenForm.clean_name_gen">[docs]</a>	<span class="k">def</span> <span class="nf">clean_name_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;id_board_deleteGen&#39;</span><span class="p">]</span>
+		<span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;name_gen&#39;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;filt&#39;</span><span class="p">]</span>
+		
+		<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+		<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+		<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+		<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+			<span class="n">n_genes</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;n_genes_selected&#39;</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="n">n_genes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;ERROR: There can be no less than one selected gene&quot;</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">name</span></div></div>
+
+<span class="c1"># Formulario para la solicitud de compartición de board</span>
+<div class="viewcode-block" id="ShareBoardForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.ShareBoardForm">[docs]</a><span class="k">class</span> <span class="nc">ShareBoardForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Board request application form&quot;&quot;&quot;</span>
+	<span class="n">id_board_share</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Formulario para la solicitud de comparticion de board con el usuario especificado</span>
+<div class="viewcode-block" id="SharedBoardForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.SharedBoardForm">[docs]</a><span class="k">class</span> <span class="nc">SharedBoardForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Board request application form with the specified user&quot;&quot;&quot;</span>
+	<span class="n">id_board_shared</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">user</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SharedBoardForm.clean_user"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.SharedBoardForm.clean_user">[docs]</a>	<span class="k">def</span> <span class="nf">clean_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;id_board_shared&#39;</span><span class="p">]</span>
+		<span class="c1"># Comporbacion para verificar si ya esta compartido el board con el usuario introducido o si se ha enviado solicitud</span>
+		<span class="c1"># y no ha sido aceptada por el usuario</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span> <span class="o">+</span> <span class="n">username</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">board</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span> <span class="o">+</span> <span class="n">username</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">confirmation</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;ERROR: You already shared the board with &quot;</span> <span class="o">+</span> <span class="n">username</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;ERROR: You have already sent an application to share this board with &quot;</span> <span class="o">+</span> <span class="n">username</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">username</span></div></div>
+
+<span class="c1"># Fromulario para confirmacion de la comparticion del board</span>
+<div class="viewcode-block" id="SharedBoardConfirmForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.SharedBoardConfirmForm">[docs]</a><span class="k">class</span> <span class="nc">SharedBoardConfirmForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Form for confirmation of board sharing&quot;&quot;&quot;</span>
+	<span class="n">id_board_confirmShare</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">user</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Formulario para el procesamiento de la solicitud de la comparticion</span>
+<div class="viewcode-block" id="ProccesSharedForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.ProccesSharedForm">[docs]</a><span class="k">class</span> <span class="nc">ProccesSharedForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Sharing Request Processing Form&quot;&quot;&quot;</span>
+	<span class="n">id_board_proccess</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">option</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Formulario para la busqueda de usuario a la hora de compartir un board</span>
+<div class="viewcode-block" id="SearchUserForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.SearchUserForm">[docs]</a><span class="k">class</span> <span class="nc">SearchUserForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Form for user search when sharing a board&quot;&quot;&quot;</span>
+	<span class="n">id_board_searchUser</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Fromulario para guardar el estado de las muestras seleccionadas en el filtrado de un board</span>
+<div class="viewcode-block" id="SaveStateForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.SaveStateForm">[docs]</a><span class="k">class</span> <span class="nc">SaveStateForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Form to save the status of selected samples in the filtering of a board&quot;&quot;&quot;</span>
+	<span class="n">id_board_save</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">brushed</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>	
+	<span class="n">filt</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+<span class="c1"># Formulario para el refiltrado, para poder hacer tantos filtros como se desee</span>
+<div class="viewcode-block" id="RefilterForm"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.RefilterForm">[docs]</a><span class="k">class</span> <span class="nc">RefilterForm</span><span class="p">(</span><span class="n">Form</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Form for filtering, to be able to make as many filters as you want&quot;&quot;&quot;</span>
+	<span class="n">id_board_refilter</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+	<span class="n">n_genes_refilter</span><span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+
+<div class="viewcode-block" id="RefilterForm.clean_n_genes_refilter"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.RefilterForm.clean_n_genes_refilter">[docs]</a>	<span class="k">def</span> <span class="nf">clean_n_genes_refilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">n_genes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;n_genes_refilter&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">n_genes</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">n_genes</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;The number of genes must be between 1 and 15&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">n_genes</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

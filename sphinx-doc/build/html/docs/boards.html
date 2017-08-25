@@ -1,0 +1,1464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>boards package &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">boards package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-boards.admin">boards.admin module</a></li>
+<li><a class="reference internal" href="#module-boards.apps">boards.apps module</a></li>
+<li><a class="reference internal" href="#module-boards.forms">boards.forms module</a></li>
+<li><a class="reference internal" href="#module-boards.models">boards.models module</a></li>
+<li><a class="reference internal" href="#module-boards.signals">boards.signals module</a></li>
+<li><a class="reference internal" href="#module-boards.tests">boards.tests module</a></li>
+<li><a class="reference internal" href="#module-boards.urls">boards.urls module</a></li>
+<li><a class="reference internal" href="#module-boards.views">boards.views module</a></li>
+<li><a class="reference internal" href="#module-boards">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>boards package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/docs/boards.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="boards-package">
+<h1>boards package<a class="headerlink" href="#boards-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-boards.admin">
+<span id="boards-admin-module"></span><h2>boards.admin module<a class="headerlink" href="#module-boards.admin" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module responsible for managing the defined 
+models to access them and manage them from the django 
+administration site.</p>
+</div>
+<div class="section" id="module-boards.apps">
+<span id="boards-apps-module"></span><h2>boards.apps module<a class="headerlink" href="#module-boards.apps" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module to define the boards application.</p>
+<dl class="class">
+<dt id="boards.apps.BoardsConfig">
+<em class="property">class </em><code class="descclassname">boards.apps.</code><code class="descname">BoardsConfig</code><span class="sig-paren">(</span><em>app_name</em>, <em>app_module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/apps.html#BoardsConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.apps.BoardsConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.apps.config.AppConfig</span></code></p>
+<dl class="attribute">
+<dt id="boards.apps.BoardsConfig.name">
+<code class="descname">name</code><em class="property"> = u'boards'</em><a class="headerlink" href="#boards.apps.BoardsConfig.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-boards.forms">
+<span id="boards-forms-module"></span><h2>boards.forms module<a class="headerlink" href="#module-boards.forms" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module responsible for managing the forms to 
+present to the user and validate the data entered by 
+the user through them.</p>
+<dl class="class">
+<dt id="boards.forms.AddBoardForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">AddBoardForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#AddBoardForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.AddBoardForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.models.ModelForm</span></code></p>
+<p>Form to add a board.</p>
+<dl class="class">
+<dt id="boards.forms.AddBoardForm.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="../_modules/boards/forms.html#AddBoardForm.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.AddBoardForm.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="boards.forms.AddBoardForm.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ['title', 'dataFile', 'delimiter', 'n_genes_initial']</em><a class="headerlink" href="#boards.forms.AddBoardForm.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.AddBoardForm.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#boards.forms.AddBoardForm.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Board</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.AddBoardForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('title', &lt;django.forms.fields.CharField object&gt;), ('dataFile', &lt;django.forms.fields.FileField object&gt;), ('delimiter', &lt;django.forms.fields.TypedChoiceField object&gt;), ('n_genes_initial', &lt;django.forms.fields.IntegerField object&gt;)])</em><a class="headerlink" href="#boards.forms.AddBoardForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.forms.AddBoardForm.clean_n_genes_initial">
+<code class="descname">clean_n_genes_initial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#AddBoardForm.clean_n_genes_initial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.AddBoardForm.clean_n_genes_initial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.forms.AddBoardForm.clean_title">
+<code class="descname">clean_title</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#AddBoardForm.clean_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.AddBoardForm.clean_title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.AddBoardForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict()</em><a class="headerlink" href="#boards.forms.AddBoardForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.AddBoardForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.AddBoardForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.AddGenForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">AddGenForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#AddGenForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.AddGenForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form to add a gene on the board.</p>
+<dl class="attribute">
+<dt id="boards.forms.AddGenForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_addGen', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;), ('name_gen', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.AddGenForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.forms.AddGenForm.clean_name_gen">
+<code class="descname">clean_name_gen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#AddGenForm.clean_name_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.AddGenForm.clean_name_gen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.AddGenForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_addGen', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;), ('name_gen', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.AddGenForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.AddGenForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.AddGenForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.DeleteBoardForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">DeleteBoardForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#DeleteBoardForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.DeleteBoardForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form to delete a board.</p>
+<dl class="attribute">
+<dt id="boards.forms.DeleteBoardForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_delete', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.DeleteBoardForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.DeleteBoardForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_delete', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.DeleteBoardForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.DeleteBoardForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.DeleteBoardForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.DeleteGenForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">DeleteGenForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#DeleteGenForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.DeleteGenForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form to remove a gene from the board.</p>
+<dl class="attribute">
+<dt id="boards.forms.DeleteGenForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_deleteGen', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;), ('name_gen', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.DeleteGenForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.forms.DeleteGenForm.clean_name_gen">
+<code class="descname">clean_name_gen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#DeleteGenForm.clean_name_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.DeleteGenForm.clean_name_gen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.DeleteGenForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_deleteGen', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;), ('name_gen', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.DeleteGenForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.DeleteGenForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.DeleteGenForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.ProccesSharedForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">ProccesSharedForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#ProccesSharedForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.ProccesSharedForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Sharing Request Processing Form</p>
+<dl class="attribute">
+<dt id="boards.forms.ProccesSharedForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_proccess', &lt;django.forms.fields.CharField object&gt;), ('option', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.ProccesSharedForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.ProccesSharedForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_proccess', &lt;django.forms.fields.CharField object&gt;), ('option', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.ProccesSharedForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.ProccesSharedForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.ProccesSharedForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.RefilterForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">RefilterForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#RefilterForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.RefilterForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form for filtering, to be able to make as many filters as you want</p>
+<dl class="attribute">
+<dt id="boards.forms.RefilterForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_refilter', &lt;django.forms.fields.CharField object&gt;), ('n_genes_refilter', &lt;django.forms.fields.IntegerField object&gt;)])</em><a class="headerlink" href="#boards.forms.RefilterForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.forms.RefilterForm.clean_n_genes_refilter">
+<code class="descname">clean_n_genes_refilter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#RefilterForm.clean_n_genes_refilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.RefilterForm.clean_n_genes_refilter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.RefilterForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_refilter', &lt;django.forms.fields.CharField object&gt;), ('n_genes_refilter', &lt;django.forms.fields.IntegerField object&gt;)])</em><a class="headerlink" href="#boards.forms.RefilterForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.RefilterForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.RefilterForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.SaveStateForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">SaveStateForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#SaveStateForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.SaveStateForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form to save the status of selected samples in the filtering of a board</p>
+<dl class="attribute">
+<dt id="boards.forms.SaveStateForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_save', &lt;django.forms.fields.CharField object&gt;), ('brushed', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SaveStateForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SaveStateForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_save', &lt;django.forms.fields.CharField object&gt;), ('brushed', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SaveStateForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SaveStateForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.SaveStateForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.SearchGenForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">SearchGenForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#SearchGenForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.SearchGenForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form to serch a gene before add on the board.</p>
+<dl class="attribute">
+<dt id="boards.forms.SearchGenForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_searchGen', &lt;django.forms.fields.CharField object&gt;), ('name_gen', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SearchGenForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SearchGenForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_searchGen', &lt;django.forms.fields.CharField object&gt;), ('name_gen', &lt;django.forms.fields.CharField object&gt;), ('filt', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SearchGenForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SearchGenForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.SearchGenForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.SearchUserForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">SearchUserForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#SearchUserForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.SearchUserForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form for user search when sharing a board</p>
+<dl class="attribute">
+<dt id="boards.forms.SearchUserForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_searchUser', &lt;django.forms.fields.CharField object&gt;), ('username', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SearchUserForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SearchUserForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_searchUser', &lt;django.forms.fields.CharField object&gt;), ('username', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SearchUserForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SearchUserForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.SearchUserForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.ShareBoardForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">ShareBoardForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#ShareBoardForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.ShareBoardForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Board request application form</p>
+<dl class="attribute">
+<dt id="boards.forms.ShareBoardForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_share', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.ShareBoardForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.ShareBoardForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_share', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.ShareBoardForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.ShareBoardForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.ShareBoardForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.SharedBoardConfirmForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">SharedBoardConfirmForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#SharedBoardConfirmForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.SharedBoardConfirmForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form for confirmation of board sharing</p>
+<dl class="attribute">
+<dt id="boards.forms.SharedBoardConfirmForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_confirmShare', &lt;django.forms.fields.CharField object&gt;), ('user', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SharedBoardConfirmForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SharedBoardConfirmForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_confirmShare', &lt;django.forms.fields.CharField object&gt;), ('user', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SharedBoardConfirmForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SharedBoardConfirmForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.SharedBoardConfirmForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.forms.SharedBoardForm">
+<em class="property">class </em><code class="descclassname">boards.forms.</code><code class="descname">SharedBoardForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>field_order=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#SharedBoardForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.SharedBoardForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Board request application form with the specified user</p>
+<dl class="attribute">
+<dt id="boards.forms.SharedBoardForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('id_board_shared', &lt;django.forms.fields.CharField object&gt;), ('user', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SharedBoardForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.forms.SharedBoardForm.clean_user">
+<code class="descname">clean_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/forms.html#SharedBoardForm.clean_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.forms.SharedBoardForm.clean_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SharedBoardForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('id_board_shared', &lt;django.forms.fields.CharField object&gt;), ('user', &lt;django.forms.fields.CharField object&gt;)])</em><a class="headerlink" href="#boards.forms.SharedBoardForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.forms.SharedBoardForm.media">
+<code class="descname">media</code><a class="headerlink" href="#boards.forms.SharedBoardForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-boards.models">
+<span id="boards-models-module"></span><h2>boards.models module<a class="headerlink" href="#module-boards.models" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>MODEL</p>
+<p>Python module to define the data models that describe the data 
+handled by the application. Model Entity / Relationship that
+will later be translated by Django into a relational database.</p>
+<dl class="class">
+<dt id="boards.models.Board">
+<em class="property">class </em><code class="descclassname">boards.models.</code><code class="descname">Board</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/models.html#Board"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.models.Board" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Python class describing a board and the files associated with it.</p>
+<p>id_board: object models.CharField: Board identifier</p>
+<p>owner: object django.contrib.auth.models.User: User owner of board</p>
+<p>title: object model.CharField: Title of board</p>
+<p>date: object model.DateField: Add date of board</p>
+<p>dataFile: object model.FileFIeld: Dataset assocciated of board</p>
+<p>dataFilteredMN: object model.FileFIeld: File filtered Mann-Whitney of board</p>
+<p>dataFilteredGBR: object model.FileFIeld: File filtered GBR of board</p>
+<p>dataFilteredBoruta: object model.FileFIeld: File filtered Boruta of board</p>
+<p>delimiter: object model.CharField: Delimiter of dataFile</p>
+<p>n_genes_initial: object models.IntegerField: Number of genes filtered</p>
+<p>n_samples: object models.IntegerField: Number of shamples</p>
+<p>n_genes: object models.IntegerField: NUmber of genes total</p>
+<p>n_types: object models.IntegerField: Number of shample types</p>
+<p>types: object models.CharField: Shamples types</p>
+<p>confirmed: object models.BooleanField: Filtered state board</p>
+<dl class="attribute">
+<dt id="boards.models.Board.COMA">
+<code class="descname">COMA</code><em class="property"> = u'COMA'</em><a class="headerlink" href="#boards.models.Board.COMA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="boards.models.Board.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#boards.models.Board.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.ESPACIO">
+<code class="descname">ESPACIO</code><em class="property"> = u'ESPACIO'</em><a class="headerlink" href="#boards.models.Board.ESPACIO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="boards.models.Board.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#boards.models.Board.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.OTRO">
+<code class="descname">OTRO</code><em class="property"> = u'OTRO'</em><a class="headerlink" href="#boards.models.Board.OTRO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.PUNTOYCOMA">
+<code class="descname">PUNTOYCOMA</code><em class="property"> = u'PUNTO Y COMA'</em><a class="headerlink" href="#boards.models.Board.PUNTOYCOMA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.TABULACION">
+<code class="descname">TABULACION</code><em class="property"> = u'TABULACION'</em><a class="headerlink" href="#boards.models.Board.TABULACION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.TYPE_OF_DELIMITER">
+<code class="descname">TYPE_OF_DELIMITER</code><em class="property"> = ((u'COMA', u'Coma (,)'), (u'TABULACION', u'Tabulated'), (u'PUNTO Y COMA', u'Point and coma (;)'), (u'ESPACIO', u'Space'), (u'OTRO', u'Other'))</em><a class="headerlink" href="#boards.models.Board.TYPE_OF_DELIMITER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.boardshared_set">
+<code class="descname">boardshared_set</code><a class="headerlink" href="#boards.models.Board.boardshared_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">parent.children</span></code> is a <code class="docutils literal"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.confirmed">
+<code class="descname">confirmed</code><a class="headerlink" href="#boards.models.Board.confirmed" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.dataFile">
+<code class="descname">dataFile</code><a class="headerlink" href="#boards.models.Board.dataFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>The descriptor for the file attribute on the model instance. Returns a
+FieldFile when accessed so you can do stuff like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">MyModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+<p>Assigns a file object on assignment so you can do:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/hello.world&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">instance</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.dataFilteredBoruta">
+<code class="descname">dataFilteredBoruta</code><a class="headerlink" href="#boards.models.Board.dataFilteredBoruta" title="Permalink to this definition">¶</a></dt>
+<dd><p>The descriptor for the file attribute on the model instance. Returns a
+FieldFile when accessed so you can do stuff like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">MyModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+<p>Assigns a file object on assignment so you can do:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/hello.world&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">instance</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.dataFilteredGBR">
+<code class="descname">dataFilteredGBR</code><a class="headerlink" href="#boards.models.Board.dataFilteredGBR" title="Permalink to this definition">¶</a></dt>
+<dd><p>The descriptor for the file attribute on the model instance. Returns a
+FieldFile when accessed so you can do stuff like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">MyModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+<p>Assigns a file object on assignment so you can do:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/hello.world&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">instance</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.dataFilteredMN">
+<code class="descname">dataFilteredMN</code><a class="headerlink" href="#boards.models.Board.dataFilteredMN" title="Permalink to this definition">¶</a></dt>
+<dd><p>The descriptor for the file attribute on the model instance. Returns a
+FieldFile when accessed so you can do stuff like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">MyModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+<p>Assigns a file object on assignment so you can do:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/hello.world&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">instance</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.date">
+<code class="descname">date</code><a class="headerlink" href="#boards.models.Board.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.delimiter">
+<code class="descname">delimiter</code><a class="headerlink" href="#boards.models.Board.delimiter" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="boards.models.Board.get_delimiter_display">
+<code class="descname">get_delimiter_display</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#boards.models.Board.get_delimiter_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.models.Board.get_next_by_date">
+<code class="descname">get_next_by_date</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#boards.models.Board.get_next_by_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="boards.models.Board.get_previous_by_date">
+<code class="descname">get_previous_by_date</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#boards.models.Board.get_previous_by_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.id_board">
+<code class="descname">id_board</code><a class="headerlink" href="#boards.models.Board.id_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.n_genes">
+<code class="descname">n_genes</code><a class="headerlink" href="#boards.models.Board.n_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.n_genes_initial">
+<code class="descname">n_genes_initial</code><a class="headerlink" href="#boards.models.Board.n_genes_initial" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.n_samples">
+<code class="descname">n_samples</code><a class="headerlink" href="#boards.models.Board.n_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.n_types">
+<code class="descname">n_types</code><a class="headerlink" href="#boards.models.Board.n_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.objects">
+<code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#boards.models.Board.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.owner">
+<code class="descname">owner</code><a class="headerlink" href="#boards.models.Board.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.owner_id">
+<code class="descname">owner_id</code><a class="headerlink" href="#boards.models.Board.owner_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.title">
+<code class="descname">title</code><a class="headerlink" href="#boards.models.Board.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.Board.types">
+<code class="descname">types</code><a class="headerlink" href="#boards.models.Board.types" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="boards.models.BoardShared">
+<em class="property">class </em><code class="descclassname">boards.models.</code><code class="descname">BoardShared</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/models.html#BoardShared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.models.BoardShared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Python class that describes a shared board, referring to an existing 
+board and a user to whom it is shared.</p>
+<p>id_board: object models.CharField: Board shared identifier</p>
+<p>board: object boards.model.Board: Board shared linked</p>
+<p>user: object django.contrib.auth.models.User: Board participant user</p>
+<p>confirmation: object models.BooleanField: Shared confirmation state of board</p>
+<dl class="exception">
+<dt id="boards.models.BoardShared.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#boards.models.BoardShared.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="boards.models.BoardShared.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#boards.models.BoardShared.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.board">
+<code class="descname">board</code><a class="headerlink" href="#boards.models.BoardShared.board" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.board_id">
+<code class="descname">board_id</code><a class="headerlink" href="#boards.models.BoardShared.board_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.confirmation">
+<code class="descname">confirmation</code><a class="headerlink" href="#boards.models.BoardShared.confirmation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.id_board">
+<code class="descname">id_board</code><a class="headerlink" href="#boards.models.BoardShared.id_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.objects">
+<code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#boards.models.BoardShared.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.user">
+<code class="descname">user</code><a class="headerlink" href="#boards.models.BoardShared.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">child.parent</span></code> is a <code class="docutils literal"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="boards.models.BoardShared.user_id">
+<code class="descname">user_id</code><a class="headerlink" href="#boards.models.BoardShared.user_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-boards.signals">
+<span id="boards-signals-module"></span><h2>boards.signals module<a class="headerlink" href="#module-boards.signals" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module consisting of signals defined for the use 
+of notifications in the application.</p>
+</div>
+<div class="section" id="module-boards.tests">
+<span id="boards-tests-module"></span><h2>boards.tests module<a class="headerlink" href="#module-boards.tests" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module used to perform different platform tests.</p>
+</div>
+<div class="section" id="module-boards.urls">
+<span id="boards-urls-module"></span><h2>boards.urls module<a class="headerlink" href="#module-boards.urls" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>CONTROLLER</p>
+<p>Python module that defines the particular urls of the application 
+and that will then be imported In the url module of the project to 
+handle the different resources published in the platform.</p>
+</div>
+<div class="section" id="module-boards.views">
+<span id="boards-views-module"></span><h2>boards.views module<a class="headerlink" href="#module-boards.views" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>VIEW</p>
+<p>Python module that defines the view functions that manage 
+the application and serve the templates necessary for the use 
+of the functionalities offered by it.</p>
+<dl class="function">
+<dt id="boards.views.addGen">
+<code class="descclassname">boards.views.</code><code class="descname">addGen</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#addGen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.addGen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible for adding the specified gene to the board’s filtering.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.add_board">
+<code class="descclassname">boards.views.</code><code class="descname">add_board</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#add_board"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.add_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view in charge of adding a new board to the platform.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.analysis">
+<code class="descclassname">boards.views.</code><code class="descname">analysis</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view in charge of presenting the information contained in a board of visual form to allow the genetic analysis.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.confirm">
+<code class="descclassname">boards.views.</code><code class="descname">confirm</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#confirm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.confirm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view responsible for confirming board sharing.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.current_milli_time">
+<code class="descclassname">boards.views.</code><code class="descname">current_milli_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#boards.views.current_milli_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="boards.views.delGen">
+<code class="descclassname">boards.views.</code><code class="descname">delGen</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#delGen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.delGen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible for deleting the selected gene to the board’s filtering.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.delete_board">
+<code class="descclassname">boards.views.</code><code class="descname">delete_board</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#delete_board"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.delete_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view in charge of deleting a new board to the platform.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.delete_board_shared">
+<code class="descclassname">boards.views.</code><code class="descname">delete_board_shared</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#delete_board_shared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.delete_board_shared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view in charge of deleting a board shared to the platform.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.filt">
+<code class="descclassname">boards.views.</code><code class="descname">filt</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#filt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.filt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view charged to filter the genes by their name before the gene is added.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.infoBoard">
+<code class="descclassname">boards.views.</code><code class="descname">infoBoard</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#infoBoard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.infoBoard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that is responsible for displaying the format specifications of 
+the datatsets supported by the platform.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.notificationAddBoard">
+<code class="descclassname">boards.views.</code><code class="descname">notificationAddBoard</code><span class="sig-paren">(</span><em>sender</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#notificationAddBoard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.notificationAddBoard" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function, listening to the signal sent at the end of the filtering of a board, 
+changes the resolution of the same to confirmed to be able to proceed to its
+visualization.</p>
+<p>biogen.boards.signals.board_signal_save</p>
+<dl class="docutils">
+<dt>sender: object </dt>
+<dd>Object sender of the signal</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>Kwargs: dict</dt>
+<dd>Dictionary with the arguments of the defined signal.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.notificationBoardShared">
+<code class="descclassname">boards.views.</code><code class="descname">notificationBoardShared</code><span class="sig-paren">(</span><em>sender</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#notificationBoardShared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.notificationBoardShared" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function, listening to the signal sent to accompany a board, is responsible 
+for notifying the user by email.</p>
+<p>biogen.boards.signals.board_signal_shared</p>
+<dl class="docutils">
+<dt>sender: object </dt>
+<dd>Object sender of the signal</dd>
+<dt><a href="#id3"><span class="problematic" id="id4">**</span></a>Kwargs: dict</dt>
+<dd>Dictionary with the arguments of the defined signal.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.proccesShared">
+<code class="descclassname">boards.views.</code><code class="descname">proccesShared</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#proccesShared"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.proccesShared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible for processing the request to share the board, presenting 
+the user and processing their decision as it is convenient.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POS</li>
+<li>GET</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.refilterBoard">
+<code class="descclassname">boards.views.</code><code class="descname">refilterBoard</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#refilterBoard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.refilterBoard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view responsible for performing a new filtering with the number of genes indicated.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.requestAddGen">
+<code class="descclassname">boards.views.</code><code class="descname">requestAddGen</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#requestAddGen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.requestAddGen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function view responsible for giving access to the page of adding genes and
+filtered by name of the same.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.resend">
+<code class="descclassname">boards.views.</code><code class="descname">resend</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#resend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.resend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible for sending the email to the user for acceptance or not
+of an unconfirmed board.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.saveState">
+<code class="descclassname">boards.views.</code><code class="descname">saveState</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#saveState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.saveState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible for saving of the status of the display of the
+coordinates for the mongo database.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.searchUser">
+<code class="descclassname">boards.views.</code><code class="descname">searchUser</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#searchUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.searchUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function in charge of filtering users by the name entered before sharing the board.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boards.views.share">
+<code class="descclassname">boards.views.</code><code class="descname">share</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/boards/views.html#share"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#boards.views.share" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function responsible for sharing the specified board.</p>
+<dl class="docutils">
+<dt>Http Methods:</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+</dl>
+<dl class="docutils">
+<dt>request: django.http.request</dt>
+<dd>Object request that contains all the information 
+regarding the HTTP request to be handled in the view function: 
+method, sessions, parameters, etc.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</a></dd>
+</dl>
+<dl class="docutils">
+<dt>response: django.http.response</dt>
+<dd>Object through which the response to the http request is 
+handled by the view function, as well as all the necessary 
+and own information of the answer of the communication.
+Django reference:
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects">https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</a></dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-boards">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-boards" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

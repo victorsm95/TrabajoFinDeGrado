@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>boards.models &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>boards.models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for boards.models</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Author: Víctor Sánchez Martín &lt;victorsm156548@usal.es&gt;</span>
+
+<span class="sd">MODEL</span>
+
+<span class="sd">Python module to define the data models that describe the data </span>
+<span class="sd">handled by the application. Model Entity / Relationship that</span>
+<span class="sd">will later be translated by Django into a relational database.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="k">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.core.validators</span> <span class="k">import</span> <span class="n">validate_comma_separated_integer_list</span>
+
+<span class="c1"># Clase que describe un board y los ficheros asociados al mismo</span>
+<div class="viewcode-block" id="Board"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.Board">[docs]</a><span class="k">class</span> <span class="nc">Board</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Python class describing a board and the files associated with it.</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+
+<span class="sd">	id_board: object models.CharField: Board identifier</span>
+
+<span class="sd">	owner: object django.contrib.auth.models.User: User owner of board</span>
+
+<span class="sd">	title: object model.CharField: Title of board</span>
+
+<span class="sd">	date: object model.DateField: Add date of board</span>
+
+<span class="sd">	dataFile: object model.FileFIeld: Dataset assocciated of board</span>
+
+<span class="sd">	dataFilteredMN: object model.FileFIeld: File filtered Mann-Whitney of board</span>
+
+<span class="sd">	dataFilteredGBR: object model.FileFIeld: File filtered GBR of board</span>
+
+<span class="sd">	dataFilteredBoruta: object model.FileFIeld: File filtered Boruta of board</span>
+
+<span class="sd">	delimiter: object model.CharField: Delimiter of dataFile</span>
+
+<span class="sd">	n_genes_initial: object models.IntegerField: Number of genes filtered </span>
+
+<span class="sd">	n_samples: object models.IntegerField: Number of shamples </span>
+
+<span class="sd">	n_genes: object models.IntegerField: NUmber of genes total</span>
+
+<span class="sd">	n_types: object models.IntegerField: Number of shample types</span>
+
+<span class="sd">	types: object models.CharField: Shamples types</span>
+
+<span class="sd">	confirmed: object models.BooleanField: Filtered state board</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">COMA</span> <span class="o">=</span> <span class="s1">&#39;COMA&#39;</span>
+	<span class="n">TABULACION</span> <span class="o">=</span> <span class="s1">&#39;TABULACION&#39;</span>
+ 	<span class="n">PUNTOYCOMA</span> <span class="o">=</span> <span class="s1">&#39;PUNTO Y COMA&#39;</span>
+	<span class="n">ESPACIO</span> <span class="o">=</span> <span class="s1">&#39;ESPACIO&#39;</span>
+	<span class="n">OTRO</span> <span class="o">=</span> <span class="s1">&#39;OTRO&#39;</span>
+	
+	<span class="n">TYPE_OF_DELIMITER</span> <span class="o">=</span> <span class="p">((</span><span class="n">COMA</span><span class="p">,</span> <span class="s1">&#39;Coma (,)&#39;</span><span class="p">),(</span><span class="n">TABULACION</span><span class="p">,</span> <span class="s1">&#39;Tabulated&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">PUNTOYCOMA</span><span class="p">,</span> <span class="s1">&#39;Point and coma (;)&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">ESPACIO</span><span class="p">,</span> <span class="s1">&#39;Space&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">OTRO</span><span class="p">,</span> <span class="s1">&#39;Other&#39;</span><span class="p">))</span>
+
+	<span class="n">id_board</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">primary_key</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+	<span class="n">owner</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">on_delete</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+	<span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+	<span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="n">auto_now_add</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+	
+	<span class="n">dataFile</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">(</span><span class="n">upload_to</span> <span class="o">=</span> <span class="s1">&#39;boardCSV&#39;</span><span class="p">)</span>
+	<span class="n">dataFilteredMN</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">(</span><span class="n">upload_to</span> <span class="o">=</span> <span class="s1">&#39;boardCSV&#39;</span><span class="p">,</span> <span class="n">null</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+	<span class="n">dataFilteredGBR</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">(</span><span class="n">upload_to</span> <span class="o">=</span> <span class="s1">&#39;boardCSV&#39;</span><span class="p">,</span> <span class="n">null</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+	<span class="n">dataFilteredBoruta</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">(</span><span class="n">upload_to</span> <span class="o">=</span> <span class="s1">&#39;boardCSV&#39;</span><span class="p">,</span> <span class="n">null</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+	<span class="n">delimiter</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">choices</span> <span class="o">=</span> <span class="n">TYPE_OF_DELIMITER</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="n">COMA</span><span class="p">)</span>
+
+	<span class="n">n_genes_initial</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+	<span class="n">n_samples</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+	<span class="n">n_genes</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+	<span class="n">n_types</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+
+	<span class="n">types</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">validate_comma_separated_integer_list</span><span class="p">],</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">null</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+	<span class="n">confirmed</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+	<span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Python metaclass that describes concepts related to </span>
+<span class="sd">		the database.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">unique_together</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;owner&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">),)</span>
+		<span class="n">db_table</span> <span class="o">=</span> <span class="s1">&#39;board&#39;</span>
+	
+	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>              
+        	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span></div>
+
+<span class="c1"># Clase que describe un board compartido, haciendo referencia a un </span>
+<span class="c1"># board existente y a un usuario al cual se comparte.</span>
+<div class="viewcode-block" id="BoardShared"><a class="viewcode-back" href="../../docs/boards.html#boards.forms.BoardShared">[docs]</a><span class="k">class</span> <span class="nc">BoardShared</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Python class that describes a shared board, referring to an existing </span>
+<span class="sd">	board and a user to whom it is shared.</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	id_board: object models.CharField: Board shared identifier</span>
+
+<span class="sd">	board: object boards.model.Board: Board shared linked</span>
+
+<span class="sd">	user: object django.contrib.auth.models.User: Board participant user</span>
+
+<span class="sd">	confirmation: object models.BooleanField: Shared confirmation state of board</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">id_board</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">primary_key</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+	<span class="n">board</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Board</span><span class="p">,</span> <span class="n">on_delete</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+	<span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">on_delete</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+	<span class="n">confirmation</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+	
+	<span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Python metaclass that describes concepts related to the database.</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">unique_together</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;board&quot;</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">),)</span>
+		<span class="n">db_table</span> <span class="o">=</span> <span class="s1">&#39;board_share&#39;</span>
+
+	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>              
+        	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

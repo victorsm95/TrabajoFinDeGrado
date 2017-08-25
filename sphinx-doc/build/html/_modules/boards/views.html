@@ -1,0 +1,1396 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>boards.views &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>boards.views</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for boards.views</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Author: Víctor Sánchez Martín &lt;victorsm156548@usal.es&gt;</span>
+
+<span class="sd">VIEW</span>
+
+<span class="sd">Python module that defines the view functions that manage </span>
+<span class="sd">the application and serve the templates necessary for the use </span>
+<span class="sd">of the functionalities offered by it.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># Renderizar vistas</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="k">import</span> <span class="n">Context</span>
+<span class="c1"># Recibir señales</span>
+<span class="kn">from</span> <span class="nn">django.dispatch</span> <span class="k">import</span> <span class="n">receiver</span>
+<span class="kn">from</span> <span class="nn">signals</span> <span class="k">import</span> <span class="n">board_signal_shared</span><span class="p">,</span> <span class="n">board_signal_save</span>
+<span class="c1"># Modelos de datos a manejar</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="k">import</span> <span class="n">Board</span><span class="p">,</span> <span class="n">BoardShared</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="k">import</span> <span class="n">User</span>
+<span class="c1"># Formularios a presentar y manejar</span>
+<span class="kn">from</span> <span class="nn">forms</span> <span class="k">import</span> <span class="n">DeleteBoardForm</span><span class="p">,</span> <span class="n">AddBoardForm</span><span class="p">,</span> <span class="n">SearchGenForm</span><span class="p">,</span> <span class="n">AddGenForm</span><span class="p">,</span> <span class="n">DeleteGenForm</span><span class="p">,</span> <span class="n">SharedBoardForm</span><span class="p">,</span> <span class="n">ShareBoardForm</span><span class="p">,</span> <span class="n">SharedBoardConfirmForm</span><span class="p">,</span> <span class="n">SaveStateForm</span><span class="p">,</span> <span class="n">SearchUserForm</span><span class="p">,</span> <span class="n">ProccesSharedForm</span><span class="p">,</span> <span class="n">RefilterForm</span>
+<span class="c1"># Envio de emails</span>
+<span class="kn">from</span> <span class="nn">django.core.mail</span> <span class="k">import</span> <span class="n">send_mail</span>
+<span class="c1"># Tratamiento de ficheros</span>
+<span class="kn">from</span> <span class="nn">django.core.files</span> <span class="k">import</span> <span class="n">File</span>
+<span class="c1"># Configuracion del proyecto</span>
+<span class="kn">from</span> <span class="nn">biogen</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">biogen.settings</span> <span class="k">import</span> <span class="n">IP_ADDRESS</span>
+<span class="c1"># Filtrados estadisticos y manejo de datos genéticos (matrices)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">filters.dataSetMongo</span> <span class="k">import</span> <span class="n">saveDataSet</span><span class="p">,</span> <span class="n">deleteDataSet</span>
+<span class="c1"># Base de datos no sql (MongoDB)</span>
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="k">import</span> <span class="n">MongoClient</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="c1"># Decoradores de Django-alluth para verificar ciertas caracteristicas de usuarios y sesiones</span>
+<span class="c1"># En este caso, verificar que el usuario esta logueado para realizar ciertas funciones</span>
+<span class="kn">from</span> <span class="nn">allauth.account.decorators</span> <span class="k">import</span> <span class="n">login_required</span> 
+<span class="c1"># Decoradores de Django para el manejo de metodos http</span>
+<span class="kn">from</span> <span class="nn">django.views.decorators.http</span> <span class="k">import</span> <span class="n">require_http_methods</span>
+<span class="c1"># Hilos para realizar los filtrados en un hilo secundario</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="c1"># Tratamiento de los datos de ficheros csv</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="c1"># Tiempo: hora y fecha actual del servidor en milisegundos</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="c1"># Modulo del sistema</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># Excepcion Http404 para capturar errores</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">Http404</span>
+<span class="c1"># Funcion para obtener los milisegundos de la hora actual del servidor para que el navegador lea los cambios</span>
+<span class="c1"># del fichero de filtrado cada vez que la pagina de anlasis genetico carga</span>
+<span class="n">current_milli_time</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+
+<span class="c1">#### FUNCIONES VISTA ####</span>
+
+<span class="c1"># AÑADIR UN NUEVO BOARD </span>
+<div class="viewcode-block" id="add_board"><a class="viewcode-back" href="../../docs/boards.html#boards.views.add_board">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">add_board</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of adding a new board to the platform.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Tratamiento para el metodo POST (Añadir un board con los datos del formulario)</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+		<span class="n">addBoardForm</span> <span class="o">=</span> <span class="n">AddBoardForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">)</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+			<span class="p">{</span>
+				<span class="s1">&#39;addBoardForm&#39;</span><span class="p">:</span> <span class="n">addBoardForm</span>
+			<span class="p">})</span>
+		<span class="c1"># Si los datos on válidos</span>
+		<span class="k">if</span> <span class="n">addBoardForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+			<span class="c1"># Generacion del id del board a partir del nombre del username y del nombre del board</span>
+			<span class="n">idBoard</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">+</span> <span class="n">addBoardForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+			<span class="c1"># Comprobacion de que no existan mas boards con ese id, y si es asi se indica al usuario</span>
+			<span class="n">error</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+				<span class="n">warning</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">				It was not possible to add the board, since you already have one with the same name. </span>
+<span class="s2">				Delete existing board or choose another name&quot;&quot;&quot;</span>
+				<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+					<span class="p">{</span>
+						<span class="s1">&#39;addBoardForm&#39;</span><span class="p">:</span> <span class="n">addBoardForm</span><span class="p">,</span> 
+						<span class="s1">&#39;warning&#39;</span><span class="p">:</span> <span class="n">warning</span>
+					<span class="p">})</span>
+				<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;addBoards.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+			<span class="c1"># Generacion del objeto board a guardar en la base de datos</span>
+			<span class="n">board</span> <span class="o">=</span> <span class="n">Board</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">,</span> <span class="n">owner</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="n">addBoardForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="n">dataFile</span> <span class="o">=</span> <span class="n">addBoardForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;dataFile&quot;</span><span class="p">],</span> 
+					<span class="n">delimiter</span> <span class="o">=</span> <span class="n">addBoardForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;delimiter&quot;</span><span class="p">],</span> <span class="n">n_genes_initial</span> <span class="o">=</span> <span class="n">addBoardForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;n_genes_initial&quot;</span><span class="p">])</span>
+			<span class="c1"># Cambio de nombre el fichero csv que representa el board</span>
+			<span class="n">board</span><span class="o">.</span><span class="n">dataFile</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="n">idBoard</span>
+			<span class="c1"># Lectura del dataset y cargado del mismo en una matriz numpy para su uso</span>
+			<span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;COMA&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+			<span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;TABULACION&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;	&#39;</span>
+			<span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;PUNTO Y COMA&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span>
+			<span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;ESPACIO&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+			<span class="k">elif</span> <span class="n">board</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;OTRO&#39;</span><span class="p">:</span>
+				<span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">dataFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">10000</span><span class="p">))</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="n">dialect</span><span class="o">.</span><span class="n">delimiter</span>
+
+			<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">dataFile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">separator</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span>
+			<span class="c1"># Obtencion de todos los tipos de las muestras (histologia del dataset)</span>
+			<span class="n">board</span><span class="o">.</span><span class="n">types</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:])</span>
+			<span class="c1"># Obtencion del numero de muestras y el numero de genes del dataset</span>
+			<span class="n">board</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">board</span><span class="o">.</span><span class="n">n_genes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="c1"># Obtencion del numero de tipos de clases de muestras diferentes</span>
+			<span class="n">num_types</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
+				<span class="k">if</span> <span class="n">num_types</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="n">num_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+			<span class="n">board</span><span class="o">.</span><span class="n">n_types</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_types</span><span class="p">)</span>
+			<span class="c1"># Guardado del board en la base de datos sin confirmar</span>
+			<span class="n">board</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+			<span class="c1"># Guardado del dataset del board en la base de datos mongo y realizacion de los filtrados en un hilo a parte</span>
+			<span class="n">tr</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">function</span><span class="o">=</span><span class="n">saveDataSet</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">board</span><span class="p">,</span><span class="n">data</span><span class="p">))</span>
+			<span class="n">tr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+			<span class="c1"># Redireccion al sitio home del usuario, mientras el servidor trabaja en los filtrados</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+	<span class="c1"># Si el metodo es GET se presenta el formulario al usuario para que introduzca los datos</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">addBoardForm</span> <span class="o">=</span> <span class="n">AddBoardForm</span><span class="p">()</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+			<span class="p">{</span>
+				<span class="s1">&#39;addBoardForm&#39;</span><span class="p">:</span> <span class="n">addBoardForm</span>
+			<span class="p">})</span>
+	
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;addBoards.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># ELIMINAR UN BOARD</span>
+<div class="viewcode-block" id="delete_board"><a class="viewcode-back" href="../../docs/boards.html#boards.views.delete_board">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">delete_board</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of deleting a new board to the platform.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">deleteBoard</span> <span class="o">=</span> <span class="n">DeleteBoardForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">deleteBoard</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board a eliminar de la base de datos</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">deleteBoard</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_delete&quot;</span><span class="p">]</span>
+		<span class="n">board_delete</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="n">board_delete</span><span class="o">.</span><span class="n">dataFile</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+		<span class="n">board_delete</span><span class="o">.</span><span class="n">dataFilteredMN</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+		<span class="n">board_delete</span><span class="o">.</span><span class="n">dataFilteredGBR</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+		<span class="n">board_delete</span><span class="o">.</span><span class="n">dataFilteredBoruta</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+		<span class="n">board_delete</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+		<span class="c1"># Eliminacion del dataset del board de la base de datos mongo</span>
+		<span class="n">deleteDataSet</span><span class="p">(</span><span class="n">idBoard</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># ELIMINAR UN BOARD COMPARTIDO </span>
+<div class="viewcode-block" id="delete_board_shared"><a class="viewcode-back" href="../../docs/boards.html#boards.views.delete_board_shared">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">delete_board_shared</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of deleting a board shared to the platform.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">deleteBoard</span> <span class="o">=</span> <span class="n">DeleteBoardForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">deleteBoard</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board a eliminar de la base de datos</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">deleteBoard</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_delete&quot;</span><span class="p">]</span>
+		<span class="n">board_delete</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="n">board_delete</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># ACCESO AL BOARD Y SU VISUALIZACION PARA EL ANÁLISIS GENÉTICO</span>
+<div class="viewcode-block" id="analysis"><a class="viewcode-back" href="../../docs/boards.html#boards.views.analysis">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of presenting the information contained in a board of visual form to allow the genetic analysis.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formularios a presentar</span>
+	<span class="n">searchForm</span> <span class="o">=</span> <span class="n">SearchGenForm</span><span class="p">()</span>
+	<span class="n">addGenForm</span> <span class="o">=</span> <span class="n">AddGenForm</span><span class="p">()</span>
+	<span class="n">deleteGenForm</span> <span class="o">=</span> <span class="n">DeleteGenForm</span><span class="p">()</span>
+	<span class="n">shareForm</span> <span class="o">=</span> <span class="n">ShareBoardForm</span><span class="p">()</span>
+	<span class="c1"># Obtención del board solicitado para presentar sus datos al usuario y del filtrado solicitado</span>
+	<span class="n">idBoard</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;id_board_analysis&#39;</span><span class="p">]</span>
+	<span class="n">board_analysis</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+	<span class="n">n_genes_initial</span> <span class="o">=</span> <span class="n">board_analysis</span><span class="o">.</span><span class="n">n_genes_initial</span>
+	<span class="n">filt</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+	<span class="c1"># Participantes del board</span>
+	<span class="n">board_shared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">board</span> <span class="o">=</span> <span class="n">board_analysis</span><span class="p">)</span>
+	<span class="n">participants</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">board_shared</span><span class="p">:</span>
+		<span class="n">participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+	<span class="c1"># Seguridad</span>
+	<span class="k">if</span> <span class="p">((</span><span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">!=</span> <span class="n">board_analysis</span><span class="o">.</span><span class="n">owner</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">participants</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)):</span>
+		<span class="k">raise</span> <span class="n">Http404</span>
+	<span class="c1"># Obtencion de la informacion a visualizar de la base de datos mongo	</span>
+	<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+	<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;DatasetState&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+	<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+		<span class="n">brushed</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>	
+						
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+	<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+		<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">]</span>
+		<span class="n">n_genes</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;n_genes_selected&#39;</span><span class="p">]</span>
+		<span class="n">y</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;histology&#39;</span><span class="p">]</span>
+
+	<span class="c1"># Visualizacion gráfica del grafo de importancia</span>
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;SpecificationsMN&quot;</span><span class="p">})</span>
+	<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+		<span class="n">variance</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;graphic&#39;</span><span class="p">]</span>
+
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;SpecificationsGBR&quot;</span><span class="p">})</span>
+	<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+		<span class="n">rawweights</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;graphic&#39;</span><span class="p">]</span> 
+
+	<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;SpecificationsBoruta&quot;</span><span class="p">})</span>
+	<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+		<span class="n">ranking</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;graphic&#39;</span><span class="p">]</span> 
+
+	<span class="c1"># Hora y fecha del servidor en milisegundos</span>
+	<span class="n">instant</span> <span class="o">=</span> <span class="n">current_milli_time</span><span class="p">()</span>
+	<span class="c1"># Generacion del contexto para la pagina y sretono de la misma</span>
+	<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+		<span class="p">{</span>	
+			<span class="s1">&#39;board_analysis&#39;</span><span class="p">:</span><span class="n">board_analysis</span><span class="p">,</span> 
+			<span class="s1">&#39;deleteForm&#39;</span><span class="p">:</span><span class="n">deleteGenForm</span><span class="p">,</span>
+			<span class="s1">&#39;shareForm&#39;</span><span class="p">:</span><span class="n">shareForm</span><span class="p">,</span> 
+			<span class="s1">&#39;namesDel&#39;</span><span class="p">:</span><span class="n">gene_names_filtered</span><span class="p">,</span> 
+			<span class="s1">&#39;participants&#39;</span><span class="p">:</span><span class="n">participants</span><span class="p">,</span> 
+			<span class="s1">&#39;n_genes&#39;</span><span class="p">:</span> <span class="n">n_genes</span><span class="p">,</span> 
+			<span class="s1">&#39;max_domain&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">),</span>
+			<span class="s1">&#39;min_domain&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> 
+			<span class="s1">&#39;brushed&#39;</span><span class="p">:</span> <span class="n">brushed</span><span class="p">,</span>
+			<span class="s1">&#39;filt&#39;</span><span class="p">:</span> <span class="n">filt</span><span class="p">,</span>
+			<span class="s1">&#39;variance&#39;</span><span class="p">:</span> <span class="n">variance</span><span class="p">,</span>
+			<span class="s1">&#39;rawweights&#39;</span><span class="p">:</span> <span class="n">rawweights</span><span class="p">,</span> 
+			<span class="s1">&#39;ranking&#39;</span><span class="p">:</span> <span class="n">ranking</span><span class="p">,</span>
+			<span class="s1">&#39;n_genes_initial&#39;</span><span class="p">:</span> <span class="n">n_genes_initial</span><span class="p">,</span>
+			<span class="s1">&#39;instant&#39;</span><span class="p">:</span> <span class="n">instant</span>
+		<span class="p">}</span>
+	<span class="p">)</span>
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;genExpression.html&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># FUNCION ENCARGADA DE HACER UN NUEVO FILTRADO CON EL NUMERO DE GENES INDICADO</span>
+<div class="viewcode-block" id="refilterBoard"><a class="viewcode-back" href="../../docs/boards.html#boards.views.refilterBoard">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">refilterBoard</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view responsible for performing a new filtering with the number of genes indicated.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Si el metodo es POST se procesan los datos del formulario</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+		<span class="c1"># Formulario a procesar</span>
+		<span class="n">refilterForm</span> <span class="o">=</span> <span class="n">RefilterForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+		<span class="c1"># Si el formulario es valido se realiza el refiltrado</span>
+		<span class="k">if</span> <span class="n">refilterForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+			<span class="n">idBoard</span> <span class="o">=</span> <span class="n">refilterForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;id_board_refilter&#39;</span><span class="p">]</span>
+			<span class="n">n_genes_refilter</span> <span class="o">=</span> <span class="n">refilterForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;n_genes_refilter&#39;</span><span class="p">]</span>
+			<span class="n">board_refilter</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+
+			<span class="c1"># Lectura del dataset y cargado del mismo en una matriz numpy para su uso</span>
+			<span class="k">if</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;COMA&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+			<span class="k">elif</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;TABULACION&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;	&#39;</span>
+			<span class="k">elif</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;PUNTO Y COMA&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span>
+			<span class="k">elif</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;ESPACIO&#39;</span><span class="p">:</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+			<span class="k">elif</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">delimiter</span> <span class="o">==</span> <span class="s1">&#39;OTRO&#39;</span><span class="p">:</span>
+				<span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">board_refilter</span><span class="o">.</span><span class="n">dataFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">10000</span><span class="p">))</span>
+				<span class="n">separator</span> <span class="o">=</span> <span class="n">dialect</span><span class="o">.</span><span class="n">delimiter</span>
+
+			<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">board_refilter</span><span class="o">.</span><span class="n">dataFile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">separator</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span>
+
+			<span class="n">board_refilter</span><span class="o">.</span><span class="n">n_genes_initial</span> <span class="o">=</span> <span class="n">n_genes_refilter</span>
+			<span class="n">board_refilter</span><span class="o">.</span><span class="n">confirmed</span> <span class="o">=</span> <span class="kc">False</span>
+
+			<span class="c1"># Guardado del board en la base de datos sin confirmar</span>
+			<span class="n">board_refilter</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+			<span class="c1"># Guardado del dataset del board en la base de datos mongo y realizacion de los filtrados en un hilo a parte</span>
+			<span class="n">tr</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">function</span><span class="o">=</span><span class="n">saveDataSet</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">board_refilter</span><span class="p">,</span><span class="n">data</span><span class="p">))</span>
+			<span class="n">tr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+			<span class="c1"># Redireccion al sitio home del usuario, mientras el servidor trabaja en los filtrados</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+		<span class="c1"># Si el formulario no es válido, se muestran los errores al usuario</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">idBoard</span> <span class="o">=</span> <span class="n">refilterForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_refilter&quot;</span><span class="p">]</span>
+			<span class="n">board_refilter</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">!=</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">owner</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">Http404</span>
+			<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;refilterForm&#39;</span><span class="p">:</span><span class="n">refilterForm</span><span class="p">})</span>
+			<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;refilter.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+	<span class="c1"># Si el metodo es GET se presenta el formulario al usuario</span>
+	<span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+		<span class="c1"># Formulario a resentar</span>
+		<span class="n">refilterForm</span> <span class="o">=</span> <span class="n">RefilterForm</span><span class="p">()</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s2">&quot;id_board_refilter&quot;</span><span class="p">]</span>
+		<span class="n">board_refilter</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="c1"># Seguridad</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">!=</span> <span class="n">board_refilter</span><span class="o">.</span><span class="n">owner</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">Http404</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;refilterForm&#39;</span><span class="p">:</span><span class="n">refilterForm</span><span class="p">,</span> <span class="s1">&#39;board_refilter&#39;</span><span class="p">:</span><span class="n">board_refilter</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;refilter.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ACCESO A LA PAGINA DE ADICCION DE GENES Y FILTRADO POR NOMBRE DE LOS MISMOS</span>
+<div class="viewcode-block" id="requestAddGen"><a class="viewcode-back" href="../../docs/boards.html#boards.views.requestAddGen">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">requestAddGen</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view responsible for giving access to the page of adding genes and</span>
+<span class="sd">	filtered by name of the same.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formularios a presentar </span>
+	<span class="n">searchForm</span> <span class="o">=</span> <span class="n">SearchGenForm</span><span class="p">()</span>
+	<span class="n">addGenForm</span> <span class="o">=</span> <span class="n">AddGenForm</span><span class="p">()</span>
+	<span class="n">idBoard</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s2">&quot;id_board_requestAdd&quot;</span><span class="p">]</span>
+	<span class="n">board_analysis</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+	<span class="c1"># Seguridad</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">!=</span> <span class="n">board_analysis</span><span class="o">.</span><span class="n">owner</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="n">Http404</span>
+	<span class="n">filt</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+	<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+		<span class="p">{</span>
+			<span class="s1">&#39;id_board&#39;</span><span class="p">:</span> <span class="n">idBoard</span><span class="p">,</span>
+			<span class="s1">&#39;searchForm&#39;</span><span class="p">:</span><span class="n">searchForm</span><span class="p">,</span>
+			<span class="s1">&#39;addForm&#39;</span><span class="p">:</span><span class="n">addGenForm</span><span class="p">,</span>
+			<span class="s1">&#39;filt&#39;</span><span class="p">:</span> <span class="n">filt</span>	
+		<span class="p">}</span>
+	<span class="p">)</span>
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;addGen.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># FILTRADO DE LOS GENES POR SU NOMBRE PREVIAMENTE A AÑADIR</span>
+<div class="viewcode-block" id="filt"><a class="viewcode-back" href="../../docs/boards.html#boards.views.filt">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">filt</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view charged to filter the genes by their name before the gene is added.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formulario a procesar</span>
+	<span class="n">searchForm</span> <span class="o">=</span> <span class="n">SearchGenForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Formulario a presentar</span>
+	<span class="n">addGenForm</span> <span class="o">=</span> <span class="n">AddGenForm</span><span class="p">()</span>
+	<span class="c1"># Si el formulario es valido se muestran los nombres filtrados</span>
+	<span class="k">if</span> <span class="n">searchForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board al que añadir un gen</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">searchForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_searchGen&quot;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="n">searchForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+		<span class="n">nameGen</span> <span class="o">=</span> <span class="n">searchForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;name_gen&quot;</span><span class="p">]</span>
+		<span class="c1"># Obtencion de los datos para la visualizacion de la base de datos MONGO</span>
+		<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+		<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+		<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+		<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+			<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">]</span>
+			<span class="n">gene_names</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;gene_names&#39;</span><span class="p">]</span>
+		<span class="n">lista</span> <span class="o">=</span> <span class="n">gene_names</span><span class="p">[:]</span>
+		<span class="c1"># Eliminacion de los genes ya añadidos en la visualizacion</span>
+		<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">gene_names_filtered</span><span class="p">:</span>
+			<span class="n">gene_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+			<span class="n">lista</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+		<span class="c1"># Filtrado de los nombre de genes a mostrar </span>
+		<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">lista</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">nameGen</span><span class="p">)):</span>
+				<span class="n">gene_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+		<span class="c1"># Generacion del contexto para la pagina</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+			<span class="p">{</span>
+				<span class="s1">&#39;id_board&#39;</span><span class="p">:</span> <span class="n">idBoard</span><span class="p">,</span> 
+				<span class="s1">&#39;gene_names&#39;</span><span class="p">:</span><span class="n">gene_names</span><span class="p">,</span>
+				<span class="s1">&#39;searchForm&#39;</span><span class="p">:</span><span class="n">searchForm</span><span class="p">,</span>
+				<span class="s1">&#39;addForm&#39;</span><span class="p">:</span><span class="n">addGenForm</span><span class="p">,</span>
+				<span class="s1">&#39;filt&#39;</span><span class="p">:</span> <span class="n">filt</span>	
+			<span class="p">}</span>
+		<span class="p">)</span>
+
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># Si se ha introducido un filtro incorrecto se muestran los errores al usuario</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">searchForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_searchGen&quot;</span><span class="p">]</span>
+		<span class="n">especificaciones</span> <span class="o">=</span> <span class="n">searchForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+			<span class="p">{</span>
+				<span class="s1">&#39;id_board&#39;</span><span class="p">:</span> <span class="n">idBoard</span><span class="p">,</span>
+				<span class="s1">&#39;searchForm&#39;</span><span class="p">:</span><span class="n">searchForm</span><span class="p">,</span>
+				<span class="s1">&#39;addForm&#39;</span><span class="p">:</span><span class="n">addGenForm</span><span class="p">,</span>
+				<span class="s1">&#39;filt&#39;</span><span class="p">:</span><span class="n">Specifications</span>		
+			<span class="p">}</span>
+		<span class="p">)</span>
+			
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;addGen.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># ADICCION DE LOS GENES ESPECIFICADOS</span>
+<div class="viewcode-block" id="addGen"><a class="viewcode-back" href="../../docs/boards.html#boards.views.addGen">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">addGen</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for adding the specified gene to the board&#39;s filtering.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formulario a procesar</span>
+	<span class="n">addGenForm</span> <span class="o">=</span> <span class="n">AddGenForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Formularios a presentar en la vista</span>
+	<span class="n">searchForm</span> <span class="o">=</span> <span class="n">SearchGenForm</span><span class="p">()</span>
+	<span class="n">deleteGenForm</span> <span class="o">=</span> <span class="n">DeleteGenForm</span><span class="p">()</span>
+	<span class="n">shareForm</span> <span class="o">=</span> <span class="n">ShareBoardForm</span><span class="p">()</span>
+	<span class="c1"># Si los datos del formulario son correctos adicción del gen a la visualizacion del filtrado </span>
+	<span class="k">if</span> <span class="n">addGenForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board al que añadir el gen introducido</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">addGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_addGen&quot;</span><span class="p">]</span>
+		<span class="n">nameGen</span> <span class="o">=</span> <span class="n">addGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;name_gen&quot;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="n">addGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+		<span class="n">board_add</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="c1"># Participantes del board</span>
+		<span class="n">board_shared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">board</span> <span class="o">=</span> <span class="n">board_add</span><span class="p">)</span>
+		<span class="n">participants</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">board_shared</span><span class="p">:</span>
+			<span class="n">participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+		<span class="c1"># Obtencion de los datos para la visualizacion de la base de datos MONGO</span>
+		<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+		<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+		<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+		<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+			<span class="n">n_genes</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;n_genes_selected&#39;</span><span class="p">]</span>
+			<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">]</span>
+			<span class="n">histology</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;histology&#39;</span><span class="p">]</span>
+			<span class="n">n_columnasFiltered</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s1">&#39;histology&#39;</span><span class="p">])</span>
+			<span class="n">samples</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">]</span>
+		<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">histology</span><span class="p">)</span>
+		<span class="n">gene_names_filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nameGen</span><span class="p">)</span>
+		<span class="c1"># Escritura en fichero csv</span>
+		<span class="n">expression</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">n_genes</span> <span class="o">=</span> <span class="n">n_genes</span> <span class="o">+</span> <span class="mi">1</span>	
+		<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">gene_names_filtered</span><span class="p">:</span>
+			<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;gene_name&#39;</span> <span class="p">:</span> <span class="n">name</span><span class="p">})</span>
+			<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+				<span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span> <span class="o">+</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;expression&#39;</span><span class="p">]</span>
+							
+		<span class="n">Xfiltered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_genes</span><span class="p">,</span> <span class="n">n_columnasFiltered</span><span class="p">)</span>
+
+		<span class="n">pathFiltered</span> <span class="o">=</span> <span class="s2">&quot;media/boardCSV/&quot;</span> <span class="o">+</span> <span class="n">idBoard</span> <span class="o">+</span> <span class="s2">&quot;Filtered&quot;</span> <span class="o">+</span> <span class="n">filt</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+		<span class="n">fileFiltered</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pathFiltered</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+		<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Histology,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gene_names_filtered</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)):</span>
+			<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Xfiltered</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+		<span class="c1"># Actualizacion de la base de datos mongo</span>
+		<span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+    		<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">},</span>
+   		 	<span class="p">{</span>
+        		<span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+           			<span class="s2">&quot;n_genes_selected&quot;</span><span class="p">:</span> <span class="n">n_genes</span><span class="p">,</span>
+				 	<span class="s2">&quot;gene_names_filtered&quot;</span><span class="p">:</span> <span class="n">gene_names_filtered</span>
+        		<span class="p">}</span>
+    		<span class="p">}</span>
+    	<span class="p">)</span>
+		<span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+    		<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DatasetState&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">},</span>
+   		 	<span class="p">{</span>
+        		<span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+           			 <span class="s2">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;false&quot;</span>
+        		<span class="p">}</span>
+    		<span class="p">}</span>
+    	<span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/boards/analysis?filt=&#39;</span> <span class="o">+</span> <span class="n">filt</span> <span class="o">+</span> <span class="s1">&#39;&amp;id_board_analysis=&#39;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">)</span>
+	
+	<span class="c1"># Si los datos son inválidos se muestran los errores al usuario</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">addGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_addGen&quot;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="n">addGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span>
+			<span class="p">{</span>
+				<span class="s1">&#39;id_board&#39;</span><span class="p">:</span> <span class="n">idBoard</span><span class="p">,</span>
+				<span class="s1">&#39;searchForm&#39;</span><span class="p">:</span><span class="n">searchForm</span><span class="p">,</span>
+				<span class="s1">&#39;addForm&#39;</span><span class="p">:</span><span class="n">addGenForm</span><span class="p">,</span>
+				<span class="s1">&#39;filt&#39;</span><span class="p">:</span> <span class="n">filt</span>		
+			<span class="p">}</span>
+		<span class="p">)</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;addGen.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># ELIMINACION DEL GEN SELECCIONADO</span>
+<div class="viewcode-block" id="delGen"><a class="viewcode-back" href="../../docs/boards.html#boards.views.delGen">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">delGen</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for deleting the selected gene to the board&#39;s filtering.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formulario a procesar</span>
+	<span class="n">deleteGenForm</span> <span class="o">=</span> <span class="n">DeleteGenForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Formularios a presentar en la vista</span>
+	<span class="n">shareForm</span> <span class="o">=</span> <span class="n">ShareBoardForm</span><span class="p">()</span>
+	<span class="c1"># Si el gen es valido se elimina de la visualizacion del filtrado</span>
+	<span class="k">if</span> <span class="n">deleteGenForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board al que eliminar el gen introducido</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">deleteGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_deleteGen&quot;</span><span class="p">]</span>
+		<span class="n">nameGen</span> <span class="o">=</span> <span class="n">deleteGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;name_gen&quot;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="n">deleteGenForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+		<span class="n">board_delete</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="c1"># Participantes del board</span>
+		<span class="n">board_shared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">board</span> <span class="o">=</span> <span class="n">board_delete</span><span class="p">)</span>
+		<span class="n">participants</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">board_shared</span><span class="p">:</span>
+			<span class="n">participants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+		<span class="c1"># Obtencion de los datos para la visualizacion, de la base de datos MONGO</span>
+		<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+		<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+		<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">})</span>
+		<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+			<span class="n">n_genes</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;n_genes_selected&#39;</span><span class="p">]</span>
+			<span class="n">gene_names_filtered</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;gene_names_filtered&#39;</span><span class="p">]</span>
+			<span class="n">histology</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;histology&#39;</span><span class="p">]</span>
+			<span class="n">n_columnasFiltered</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="s1">&#39;histology&#39;</span><span class="p">])</span>
+			<span class="n">samples</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">]</span>
+		<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">histology</span><span class="p">)</span>
+		<span class="n">gene_names_filtered</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">nameGen</span><span class="p">)</span>
+		<span class="c1"># Escritura en fichero csv</span>
+		<span class="n">expression</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">n_genes</span> <span class="o">=</span> <span class="n">n_genes</span> <span class="o">-</span> <span class="mi">1</span>
+		<span class="nb">print</span><span class="p">(</span><span class="n">gene_names_filtered</span><span class="p">)</span>	
+		<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">gene_names_filtered</span><span class="p">:</span>
+			<span class="n">cursor</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;gene_name&#39;</span> <span class="p">:</span> <span class="n">name</span><span class="p">})</span>
+			<span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+				<span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span> <span class="o">+</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;expression&#39;</span><span class="p">]</span>
+		<span class="n">Xfiltered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_genes</span><span class="p">,</span> <span class="n">n_columnasFiltered</span><span class="p">)</span>
+
+		<span class="n">pathFiltered</span> <span class="o">=</span> <span class="s2">&quot;media/boardCSV/&quot;</span> <span class="o">+</span> <span class="n">idBoard</span> <span class="o">+</span> <span class="s2">&quot;Filtered&quot;</span> <span class="o">+</span> <span class="n">filt</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+		<span class="n">fileFiltered</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pathFiltered</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+		<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Histology,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gene_names_filtered</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+			
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)):</span>
+			<span class="n">fileFiltered</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Xfiltered</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+				
+		<span class="c1"># Actualizacion de la base de datos Mongo</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+    			<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Specifications&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">},</span>
+   		 		<span class="p">{</span>
+        			<span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+           				 <span class="s2">&quot;n_genes_selected&quot;</span><span class="p">:</span> <span class="n">n_genes</span><span class="p">,</span>
+					 	 <span class="s2">&quot;gene_names_filtered&quot;</span><span class="p">:</span> <span class="n">gene_names_filtered</span>
+        			<span class="p">}</span>
+    			<span class="p">}</span>
+    		<span class="p">)</span>
+
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+    			<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DatasetState&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">},</span>
+   		 		<span class="p">{</span>
+        			<span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+           				 <span class="s2">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;false&quot;</span>
+        			<span class="p">}</span>
+    			<span class="p">}</span>
+    		<span class="p">)</span>
+	
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/boards/analysis?filt=&#39;</span> <span class="o">+</span> <span class="n">filt</span> <span class="o">+</span> <span class="s1">&#39;&amp;id_board_analysis=&#39;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">)</span></div>
+
+<span class="c1"># COMPARTICION DEL BOARD</span>
+<div class="viewcode-block" id="share"><a class="viewcode-back" href="../../docs/boards.html#boards.views.share">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">share</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for sharing the specified board.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Fromularios a procesar</span>
+	<span class="n">shareForm</span> <span class="o">=</span> <span class="n">ShareBoardForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="n">sharedForm</span> <span class="o">=</span> <span class="n">SharedBoardForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Formularios a presentar</span>
+	<span class="n">sharedConfirmForm</span> <span class="o">=</span> <span class="n">SharedBoardConfirmForm</span><span class="p">()</span>
+	<span class="n">searchUser</span> <span class="o">=</span> <span class="n">SearchUserForm</span><span class="p">()</span>
+	<span class="c1"># Si el formulario de solicitud de comparticion es valido se presenta el formulario de busqueda de usuario</span>
+	<span class="c1"># al que compartir dicho board</span>
+	<span class="k">if</span> <span class="n">shareForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">shareForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_share&quot;</span><span class="p">]</span>
+		<span class="n">board_share</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;board_share&#39;</span><span class="p">:</span> <span class="n">board_share</span><span class="p">,</span> <span class="s1">&#39;searchForm&#39;</span><span class="p">:</span> <span class="n">searchUser</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;shareBoard.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+	<span class="c1"># Si el formulario de peticion de comparticion a un determinado usuario ya introducido es válido se presenta al usuario</span>
+	<span class="c1"># el formulario de confirmacion</span>
+	<span class="k">elif</span> <span class="n">sharedForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">sharedForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_shared&quot;</span><span class="p">]</span>
+		<span class="n">user</span> <span class="o">=</span> <span class="n">sharedForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+		<span class="n">board_shared</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="s1">&#39;board_shared&#39;</span><span class="p">:</span> <span class="n">board_shared</span><span class="p">,</span> <span class="s1">&#39;form&#39;</span><span class="p">:</span><span class="n">sharedConfirmForm</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;shareConfirm.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+	<span class="c1"># Si se ha introducido un usuario vacio o invalido se presentan los errores al usuario </span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">sharedForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_shared&quot;</span><span class="p">]</span>
+		<span class="n">board_share</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;board_share&#39;</span><span class="p">:</span> <span class="n">board_share</span><span class="p">,</span> <span class="s1">&#39;searchForm&#39;</span><span class="p">:</span> <span class="n">searchUser</span><span class="p">,</span> <span class="s1">&#39;sharedForm&#39;</span><span class="p">:</span> <span class="n">sharedForm</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;shareBoard.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># FILTRAMOS LOS NOMBRES DE USUARIO PARA COMPARTIR EL BOARD</span>
+<div class="viewcode-block" id="searchUser"><a class="viewcode-back" href="../../docs/boards.html#boards.views.searchUser">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">searchUser</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function in charge of filtering users by the name entered before sharing the board.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formulario a procesar</span>
+	<span class="n">searchUser</span> <span class="o">=</span> <span class="n">SearchUserForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Si el filtro introducido es correcto se muestra al usuario los nombres filtrados</span>
+	<span class="k">if</span> <span class="n">searchUser</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board y el nombre filtrado</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">searchUser</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_searchUser&quot;</span><span class="p">]</span>
+		<span class="n">username</span> <span class="o">=</span> <span class="n">searchUser</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span>
+		<span class="n">board_share</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="c1"># Obtencion de los usuarios que cumplen el filtrado</span>
+		<span class="n">listUsers</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+		<span class="n">listUsernames</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">listUsers</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="s1">&#39;admin&#39;</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+				<span class="n">listUsernames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">listUsernames</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">username</span><span class="p">)):</span>
+				<span class="n">listUsernames</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;users&#39;</span><span class="p">:</span> <span class="n">listUsernames</span><span class="p">,</span> <span class="s1">&#39;board_share&#39;</span><span class="p">:</span> <span class="n">board_share</span><span class="p">,</span> <span class="s1">&#39;searchForm&#39;</span><span class="p">:</span> <span class="n">searchUser</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;shareBoard.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">searchUser</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_searchUser&quot;</span><span class="p">]</span>
+		<span class="n">board_share</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;board_share&#39;</span><span class="p">:</span> <span class="n">board_share</span><span class="p">,</span> <span class="s1">&#39;searchForm&#39;</span><span class="p">:</span> <span class="n">searchUser</span><span class="p">})</span></div>
+
+<span class="c1"># CONFIRMACION DE LA COMPARTICION DEL BOARD</span>
+<div class="viewcode-block" id="confirm"><a class="viewcode-back" href="../../docs/boards.html#boards.views.confirm">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">confirm</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view responsible for confirming board sharing.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formulario a procesar</span>
+	<span class="n">confirmForm</span> <span class="o">=</span> <span class="n">SharedBoardConfirmForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Se confirma la solicitud de comparticion del board con el usuario especificado</span>
+	<span class="k">if</span> <span class="n">confirmForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="c1"># Obtencion del board y del usuario</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">confirmForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_confirmShare&quot;</span><span class="p">]</span>
+		<span class="n">board_confirm</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+
+		<span class="n">username</span> <span class="o">=</span> <span class="n">confirmForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+		<span class="n">user_confirm</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span><span class="p">)</span>
+		<span class="c1"># Guardado en la base de datos de un nuevo objeto Board Shared con estado de cofirmacion &#39;False&#39; hasta que el usuario</span>
+		<span class="c1"># lo acepto desde su email</span>
+		<span class="n">board_shared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span> <span class="o">+</span> <span class="n">username</span><span class="p">,</span> <span class="n">board</span> <span class="o">=</span> <span class="n">board_confirm</span><span class="p">,</span> <span class="n">user</span> <span class="o">=</span> <span class="n">user_confirm</span><span class="p">)</span>
+		<span class="n">board_shared</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+		<span class="c1"># A traves de una señal se envia un email al usuario, para que este lo acepte o no</span>
+		<span class="n">board_signal_shared</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">BoardShared</span><span class="p">,</span> <span class="n">board</span><span class="o">=</span><span class="n">board_shared</span><span class="p">)</span>
+		
+
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># REENVIO DEL EMAIL AL USUARIO PARA QUE ACEPTE O NO UN BOARD COMPARTIDO SIN CONFIRMAR</span>
+<div class="viewcode-block" id="resend"><a class="viewcode-back" href="../../docs/boards.html#boards.views.resend">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">resend</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for sending the email to the user for acceptance or not</span>
+<span class="sd">	of an unconfirmed board.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Obtencion del board que aceptar o no</span>
+	<span class="n">board</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;id_board&#39;</span><span class="p">])</span>
+	<span class="c1"># Seguridad</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">!=</span> <span class="n">board</span><span class="o">.</span><span class="n">user</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="n">Http404</span>
+	<span class="c1"># A traves de una señal se envia un email al usuario, para que este lo acepte o no</span>
+	<span class="n">board_signal_shared</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">sender</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="p">,</span> <span class="n">board</span><span class="o">=</span><span class="n">board</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/profile&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># GUARDADO DEL ESTADO DE LAS COORDENADAS PARALELAS EN MONGO</span>
+<div class="viewcode-block" id="saveState"><a class="viewcode-back" href="../../docs/boards.html#boards.views.saveState">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">saveState</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for saving of the status of the display of the</span>
+<span class="sd"> 	coordinates for the mongo database.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Formulario a procesar</span>
+	<span class="n">saveForm</span> <span class="o">=</span> <span class="n">SaveStateForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+	<span class="c1"># Si el formulario es valido se guarda en la base de datos Mongo el estado de las coordenadas paralealas</span>
+	<span class="k">if</span> <span class="n">saveForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">saveForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_save&quot;</span><span class="p">]</span>
+		<span class="n">brushed</span> <span class="o">=</span> <span class="n">saveForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;brushed&quot;</span><span class="p">]</span>
+		<span class="n">filt</span> <span class="o">=</span> <span class="n">saveForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;filt&quot;</span><span class="p">]</span>
+		<span class="c1"># Actualizacion de la base de datos</span>
+		<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">()</span>
+		<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">geneticserverdb</span>
+		<span class="n">coll</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="o">+</span> <span class="n">idBoard</span><span class="p">]</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
+    		<span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DatasetState&quot;</span> <span class="o">+</span> <span class="n">filt</span><span class="p">},</span>
+   		 	<span class="p">{</span>
+        		<span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span>
+           			 <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">brushed</span>
+        		<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">)</span>
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span></div>
+			
+<span class="c1"># MOSTRAMOS LAS ESPECIFICACIONES DEL FORMATO DE LOS DATASET</span>
+<div class="viewcode-block" id="infoBoard"><a class="viewcode-back" href="../../docs/boards.html#boards.views.infoBoard">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">infoBoard</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function that is responsible for displaying the format specifications of </span>
+<span class="sd">	the datatsets supported by the platform.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;formato.html&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># TRATAMIENTO DE LA PETICION DE COMPARTICION DEL BOARD</span>
+<div class="viewcode-block" id="proccesShared"><a class="viewcode-back" href="../../docs/boards.html#boards.views.proccesShared">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">proccesShared</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for processing the request to share the board, presenting </span>
+<span class="sd">	the user and processing their decision as it is convenient.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * POS</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Si el metodo es POST se confirma o elimina el board compartido</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+		<span class="c1"># Fromulario a procesar</span>
+		<span class="n">proccessForm</span> <span class="o">=</span> <span class="n">ProccesSharedForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+		<span class="c1"># Si el formulario es valido se guarda o no el board</span>
+		<span class="k">if</span> <span class="n">proccessForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+			<span class="c1"># Obtenccon del board y la opcion elegida</span>
+			<span class="n">idBoard</span> <span class="o">=</span> <span class="n">proccessForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;id_board_proccess&quot;</span><span class="p">]</span>
+			<span class="n">option</span> <span class="o">=</span> <span class="n">proccessForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;option&quot;</span><span class="p">]</span>
+			<span class="n">boards</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+			<span class="c1"># Comprobacion previa de si el board no ha sido borrado inesperadamente</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">boards</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">board_confirmShared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">option</span> <span class="o">==</span> <span class="s1">&#39;accept&#39;</span><span class="p">:</span>
+					<span class="c1"># Si se acepta se cambia el estado a confirmado</span>
+					<span class="n">board_confirmShared</span><span class="o">.</span><span class="n">confirmation</span> <span class="o">=</span> <span class="kc">True</span>
+					<span class="n">board_confirmShared</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+				<span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="s1">&#39;refuse&#39;</span><span class="p">:</span>
+					<span class="c1"># Si se rechaza el board compartido se elimina de la tabla de boards compartidos </span>
+					<span class="n">board_confirmShared</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+				<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/shared&#39;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+	<span class="c1"># Si el metodo es GET se presenta al usuario el formulario para aceptar o no el board</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># Obtencion del board</span>
+		<span class="n">idBoard</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span>
+		<span class="n">boards</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+		<span class="c1"># Comprobacion previa de si el board no ha sido borrado </span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">boards</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">board_confirmShared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">idBoard</span><span class="p">)</span>
+			<span class="n">confirmation</span> <span class="o">=</span> <span class="n">board_confirmShared</span><span class="o">.</span><span class="n">confirmation</span>
+			<span class="c1"># Comprobacion de si es el usuario correcto o no</span>
+			<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">board_confirmShared</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+				<span class="c1"># Si es correcto se muestra el formulario</span>
+				<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;id_board&#39;</span><span class="p">:</span><span class="n">idBoard</span><span class="p">,</span> <span class="s1">&#39;confirmation&#39;</span><span class="p">:</span><span class="n">confirmation</span><span class="p">})</span>
+				<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;proccesShared.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># Si no se le especifica que de debe loguearse con el usuario correcto</span>
+				<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;errorProccesShared.html&#39;</span><span class="p">)</span> 
+		<span class="c1"># Si ha sido borrado se indica al usuario</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;borrado&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">})</span>
+			<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s1">&#39;proccesShared.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># ESTE METODO A LA ESCUCHA DE LA SEÑAL ENVIADA AL COMPARTIR UN BOARD SE ENCARGA DE NOTIFICAR AL USUARIO POR E-MAIL</span>
+<div class="viewcode-block" id="notificationBoardShared"><a class="viewcode-back" href="../../docs/boards.html#boards.views.notificationBoardShared">[docs]</a><span class="nd">@receiver</span><span class="p">(</span><span class="n">board_signal_shared</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">notificationBoardShared</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	This function, listening to the signal sent to accompany a board, is responsible </span>
+<span class="sd">	for notifying the user by email.</span>
+
+<span class="sd">	Signal reciever</span>
+<span class="sd">	---------------</span>
+<span class="sd">	biogen.boards.signals.board_signal_shared</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	sender: object </span>
+<span class="sd">	    Object sender of the signal</span>
+<span class="sd">	</span>
+<span class="sd">	**Kwargs: dict</span>
+<span class="sd">	    Dictionary with the arguments of the defined signal.  </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">mensaje</span> <span class="o">=</span> <span class="s2">&quot;The user &#39;&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">username</span> <span class="o">+</span> <span class="s2">&quot;&#39; wants to share the board &#39;&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">&quot;&#39; with you.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;Please access the link to confirm the request: http://&quot;</span> <span class="o">+</span> <span class="n">IP_ADDRESS</span> <span class="o">+</span> <span class="s2">&quot;/boards/proccesShared?board=&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">id_board</span>
+	<span class="n">send_mail</span><span class="p">(</span><span class="s1">&#39;Share Board&#39;</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_HOST_USER</span><span class="p">,</span> <span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span> <span class="n">fail_silently</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+	
+<span class="c1"># ESTE METODO A LA ESCUCHA DE LA SEÑAL ENVIADA AL ACABAR LOS FILTRADOS DE UN BOARD, CAMBIA EL ESTADO DEL MISMO A TRUE</span>
+<div class="viewcode-block" id="notificationAddBoard"><a class="viewcode-back" href="../../docs/boards.html#boards.views.notificationAddBoard">[docs]</a><span class="nd">@receiver</span><span class="p">(</span><span class="n">board_signal_save</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">notificationAddBoard</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	This function, listening to the signal sent at the end of the filtering of a board, </span>
+<span class="sd">	changes the resolution of the same to confirmed to be able to proceed to its</span>
+<span class="sd"> 	visualization.</span>
+
+<span class="sd">	Signal reciever</span>
+<span class="sd">	---------------</span>
+<span class="sd">	biogen.boards.signals.board_signal_save</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	sender: object </span>
+<span class="sd">	    Object sender of the signal</span>
+<span class="sd">	</span>
+<span class="sd">	**Kwargs: dict</span>
+<span class="sd">	    Dictionary with the arguments of the defined signal.  </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">board</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">id_board</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">id_board</span><span class="p">,</span> <span class="n">confirmed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nb">len</span> <span class="p">(</span><span class="n">board</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">board_confirmed</span> <span class="ow">in</span> <span class="n">board</span><span class="p">:</span>
+			<span class="n">board_confirmed</span><span class="o">.</span><span class="n">confirmed</span> <span class="o">=</span> <span class="kc">True</span>
+		
+			<span class="n">board_confirmed</span><span class="o">.</span><span class="n">dataFilteredMN</span> <span class="o">=</span> <span class="s2">&quot;boardCSV/&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">id_board</span> <span class="o">+</span> <span class="s2">&quot;FilteredMN&quot;</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+			<span class="n">board_confirmed</span><span class="o">.</span><span class="n">dataFilteredGBR</span> <span class="o">=</span> <span class="s2">&quot;boardCSV/&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">id_board</span> <span class="o">+</span> <span class="s2">&quot;FilteredGBR&quot;</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+			<span class="n">board_confirmed</span><span class="o">.</span><span class="n">dataFilteredBoruta</span> <span class="o">=</span> <span class="s2">&quot;boardCSV/&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;board&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">id_board</span> <span class="o">+</span> <span class="s2">&quot;FilteredBoruta&quot;</span> <span class="o">+</span> <span class="s2">&quot;.csv&quot;</span>
+
+			<span class="n">board_confirmed</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

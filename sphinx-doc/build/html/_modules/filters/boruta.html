@@ -1,0 +1,760 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>filters.boruta &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>filters.boruta</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for filters.boruta</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Author: Víctor Sánchez Martín &lt;victorsm156548@usal.es&gt;</span>
+
+<span class="sd">Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/</span>
+
+<span class="sd">License: BSD 3 clause</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_random_state</span><span class="p">,</span> <span class="n">check_X_y</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span>
+
+
+<div class="viewcode-block" id="BorutaPy"><a class="viewcode-back" href="../../docs/filters.html#filters.boruta.BorutaPy">[docs]</a><span class="k">class</span> <span class="nc">BorutaPy</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Improved Python implementation of the Boruta R package.</span>
+
+<span class="sd">    The improvements of this implementation include:</span>
+<span class="sd">    - Faster run times:</span>
+<span class="sd">        Thanks to scikit-learn&#39;s fast implementation of the ensemble methods.</span>
+<span class="sd">    - Scikit-learn like interface:</span>
+<span class="sd">        Use BorutaPy just like any other scikit learner: fit, fit_transform and</span>
+<span class="sd">        transform are all implemented in a similar fashion.</span>
+<span class="sd">    - Modularity:</span>
+<span class="sd">        Any ensemble method could be used: random forest, extra trees</span>
+<span class="sd">        classifier, even gradient boosted trees.</span>
+<span class="sd">    - Two step correction:</span>
+<span class="sd">        The original Boruta code corrects for multiple testing in an overly</span>
+<span class="sd">        conservative way. In this implementation, the Benjamini Hochberg FDR is</span>
+<span class="sd">        used to correct in each iteration across active features. This means</span>
+<span class="sd">        only those features are included in the correction which are still in</span>
+<span class="sd">        the selection process. Following this, each that passed goes through a</span>
+<span class="sd">        regular Bonferroni correction to check for the repeated testing over</span>
+<span class="sd">        the iterations.</span>
+<span class="sd">    - Percentile:</span>
+<span class="sd">        Instead of using the max values of the shadow features the user can</span>
+<span class="sd">        specify which percentile to use. This gives a finer control over this</span>
+<span class="sd">        crucial parameter. For more info, please read about the perc parameter.</span>
+<span class="sd">    - Automatic tree number:</span>
+<span class="sd">        Setting the n_estimator to &#39;auto&#39; will calculate the number of trees</span>
+<span class="sd">        in each itartion based on the number of features under investigation.</span>
+<span class="sd">        This way more trees are used when the training data has many feautres</span>
+<span class="sd">        and less when most of the features have been rejected.</span>
+<span class="sd">    - Ranking of features:</span>
+<span class="sd">        After fitting BorutaPy it provides the user with ranking of features.</span>
+<span class="sd">        Confirmed ones are 1, Tentatives are 2, and the rejected are ranked</span>
+<span class="sd">        starting from 3, based on their feautre importance history through</span>
+<span class="sd">        the iterations.</span>
+
+<span class="sd">    We highly recommend using pruned trees with a depth between 3-7.</span>
+
+<span class="sd">    For more, see the docs of these functions, and the examples below.</span>
+
+<span class="sd">    Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/</span>
+
+<span class="sd">    Boruta is an all relevant feature selection method, while most other are</span>
+<span class="sd">    minimal optimal; this means it tries to find all features carrying</span>
+<span class="sd">    information usable for prediction, rather than finding a possibly compact</span>
+<span class="sd">    subset of features on which some classifier has a minimal error.</span>
+
+<span class="sd">    Why bother with all relevant feature selection?</span>
+<span class="sd">    When you try to understand the phenomenon that made your data, you should</span>
+<span class="sd">    care about all factors that contribute to it, not just the bluntest signs</span>
+<span class="sd">    of it in context of your methodology (yes, minimal optimal set of features</span>
+<span class="sd">    by definition depends on your classifier choice).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    estimator : object</span>
+<span class="sd">        A supervised learning estimator, with a &#39;fit&#39; method that returns the</span>
+<span class="sd">        feature_importances_ attribute. Important features must correspond to</span>
+<span class="sd">        high absolute values in the feature_importances_.</span>
+
+<span class="sd">    n_estimators : int or string, default = 1000</span>
+<span class="sd">        If int sets the number of estimators in the chosen ensemble method.</span>
+<span class="sd">        If &#39;auto&#39; this is determined automatically based on the size of the</span>
+<span class="sd">        dataset. The other parameters of the used estimators need to be set</span>
+<span class="sd">        with initialisation.</span>
+
+<span class="sd">    perc : int, default = 100</span>
+<span class="sd">        Instead of the max we use the percentile defined by the user, to pick</span>
+<span class="sd">        our threshold for comparison between shadow and real features. The max</span>
+<span class="sd">        tend to be too stringent. This provides a finer control over this. The</span>
+<span class="sd">        lower perc is the more false positives will be picked as relevant but</span>
+<span class="sd">        also the less relevant features will be left out. The usual trade-off.</span>
+<span class="sd">        The default is essentially the vanilla Boruta corresponding to the max.</span>
+
+<span class="sd">    alpha : float, default = 0.05</span>
+<span class="sd">        Level at which the corrected p-values will get rejected in both</span>
+<span class="sd">        correction steps.</span>
+
+<span class="sd">    two_step : Boolean, default = True</span>
+<span class="sd">        If you want to use the original implementation of Boruta with Bonferroni</span>
+<span class="sd">        correction only set this to False.</span>
+
+<span class="sd">    max_iter : int, default = 100</span>
+<span class="sd">        The number of maximum iterations to perform.</span>
+
+<span class="sd">    random_state : int, RandomState instance or None; default=None</span>
+<span class="sd">        If int, random_state is the seed used by the random number generator;</span>
+<span class="sd">        If RandomState instance, random_state is the random number generator;</span>
+<span class="sd">        If None, the random number generator is the RandomState instance used</span>
+<span class="sd">        by `np.random`.</span>
+
+<span class="sd">    verbose : int, default=0</span>
+<span class="sd">        Controls verbosity of output:</span>
+<span class="sd">        - 0: no output</span>
+<span class="sd">        - 1: displays iteration number</span>
+<span class="sd">        - 2: which features have been selected already</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    n_features_ : int</span>
+<span class="sd">        The number of selected features.</span>
+
+<span class="sd">    support_ : array of shape [n_features]</span>
+
+<span class="sd">        The mask of selected features - only confirmed ones are True.</span>
+
+<span class="sd">    support_weak_ : array of shape [n_features]</span>
+
+<span class="sd">        The mask of selected tentative features, which haven&#39;t gained enough</span>
+<span class="sd">        support during the max_iter number of iterations..</span>
+
+<span class="sd">    ranking_ : array of shape [n_features]</span>
+
+<span class="sd">        The feature ranking, such that ``ranking_[i]`` corresponds to the</span>
+<span class="sd">        ranking position of the i-th feature. Selected (i.e., estimated</span>
+<span class="sd">        best) features are assigned rank 1 and tentative features are assigned</span>
+<span class="sd">        rank 2.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    </span>
+<span class="sd">    import pandas as pd</span>
+<span class="sd">    from sklearn.ensemble import RandomForestClassifier</span>
+<span class="sd">    from boruta import BorutaPy</span>
+<span class="sd">    </span>
+<span class="sd">    # load X and y</span>
+<span class="sd">    # NOTE BorutaPy accepts numpy arrays only, hence the .values attribute</span>
+<span class="sd">    X = pd.read_csv(&#39;examples/test_X.csv&#39;, index_col=0).values</span>
+<span class="sd">    y = pd.read_csv(&#39;examples/test_y.csv&#39;, header=None, index_col=0).values</span>
+<span class="sd">    y = y.ravel()</span>
+<span class="sd">    </span>
+<span class="sd">    # define random forest classifier, with utilising all cores and</span>
+<span class="sd">    # sampling in proportion to y labels</span>
+<span class="sd">    rf = RandomForestClassifier(n_jobs=-1, class_weight=&#39;auto&#39;, max_depth=5)</span>
+<span class="sd">    </span>
+<span class="sd">    # define Boruta feature selection method</span>
+<span class="sd">    feat_selector = BorutaPy(rf, n_estimators=&#39;auto&#39;, verbose=2, random_state=1)</span>
+<span class="sd">    </span>
+<span class="sd">    # find all relevant features - 5 features should be selected</span>
+<span class="sd">    feat_selector.fit(X, y)</span>
+<span class="sd">    </span>
+<span class="sd">    # check selected features - first 5 features are selected</span>
+<span class="sd">    feat_selector.support_</span>
+<span class="sd">    </span>
+<span class="sd">    # check ranking of features</span>
+<span class="sd">    feat_selector.ranking_</span>
+<span class="sd">    </span>
+<span class="sd">    # call transform() on X to filter it down to selected features</span>
+<span class="sd">    X_filtered = feat_selector.transform(X)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    [1] Kursa M., Rudnicki W., &quot;Feature Selection with the Boruta Package&quot;</span>
+<span class="sd">        Journal of Statistical Software, Vol. 36, Issue 11, Sep 2010</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">perc</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                 <span class="n">two_step</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="n">n_estimators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perc</span> <span class="o">=</span> <span class="n">perc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">two_step</span> <span class="o">=</span> <span class="n">two_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+<div class="viewcode-block" id="BorutaPy.fit"><a class="viewcode-back" href="../../docs/filters.html#filters.boruta.BorutaPy.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fits the Boruta feature selection with the provided estimator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+
+<span class="sd">        y : array-like, shape = [n_samples]</span>
+<span class="sd">            The target values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BorutaPy.transform"><a class="viewcode-back" href="../../docs/filters.html#filters.boruta.BorutaPy.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reduces the input X to the features selected by Boruta.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+
+<span class="sd">        weak: boolean, default = False</span>
+<span class="sd">            If set to true, the tentative features are also used to reduce X.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        X : array-like, shape = [n_samples, n_features_]</span>
+<span class="sd">            The input matrix X&#39;s columns are reduced to the features which were</span>
+<span class="sd">            selected by Boruta.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">weak</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BorutaPy.fit_transform"><a class="viewcode-back" href="../../docs/filters.html#filters.boruta.BorutaPy.fit_transform">[docs]</a>    <span class="k">def</span> <span class="nf">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fits Boruta, then reduces the input X to the selected features.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+
+<span class="sd">        y : array-like, shape = [n_samples]</span>
+<span class="sd">            The target values.</span>
+
+<span class="sd">        weak: boolean, default = False</span>
+<span class="sd">            If set to true, the tentative features are also used to reduce X.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        X : array-like, shape = [n_samples, n_features_]</span>
+<span class="sd">            The input matrix X&#39;s columns are reduced to the features which were</span>
+<span class="sd">            selected by Boruta.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">weak</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="c1"># check input params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_params</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="c1"># setup variables for Boruta</span>
+        <span class="n">n_sample</span><span class="p">,</span> <span class="n">n_feat</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">_iter</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># holds the decision about each feature:</span>
+        <span class="c1"># 0  - default state = tentative in original code</span>
+        <span class="c1"># 1  - accepted in original code</span>
+        <span class="c1"># -1 - rejected in original code</span>
+        <span class="n">dec_reg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_feat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="c1"># counts how many times a given feature was more important than</span>
+        <span class="c1"># the best of the shadow features</span>
+        <span class="n">hit_reg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_feat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="c1"># these record the history of the iterations</span>
+        <span class="n">imp_history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_feat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="n">sha_max_history</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># set n_estimators</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">)</span>
+
+        <span class="c1"># main feature selection loop</span>
+        <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_iter</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">:</span>
+            <span class="c1"># find optimal number of trees and depth</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+                <span class="c1"># number of features that aren&#39;t rejected</span>
+                <span class="n">not_rejected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">n_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tree_num</span><span class="p">(</span><span class="n">not_rejected</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="n">n_tree</span><span class="p">)</span>
+
+            <span class="c1"># make sure we start with a new tree in each iteration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+
+            <span class="c1"># add shadow attributes, shuffle them and train estimator, get imps</span>
+            <span class="n">cur_imp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_shadows_get_imps</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dec_reg</span><span class="p">)</span>
+
+            <span class="c1"># get the threshold of shadow importances we will use for rejection</span>
+            <span class="n">imp_sha_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">cur_imp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">perc</span><span class="p">)</span>
+
+            <span class="c1"># record importance history</span>
+            <span class="n">sha_max_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imp_sha_max</span><span class="p">)</span>
+            <span class="n">imp_history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">imp_history</span><span class="p">,</span> <span class="n">cur_imp</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+            <span class="c1"># register which feature is more imp than the max of shadows</span>
+            <span class="n">hit_reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_hits</span><span class="p">(</span><span class="n">hit_reg</span><span class="p">,</span> <span class="n">cur_imp</span><span class="p">,</span> <span class="n">imp_sha_max</span><span class="p">)</span>
+
+            <span class="c1"># based on hit_reg we check if a feature is doing better than</span>
+            <span class="c1"># expected by chance</span>
+            <span class="n">dec_reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_tests</span><span class="p">(</span><span class="n">dec_reg</span><span class="p">,</span> <span class="n">hit_reg</span><span class="p">,</span> <span class="n">_iter</span><span class="p">)</span>
+
+            <span class="c1"># print out confirmed features</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">_iter</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">(</span><span class="n">dec_reg</span><span class="p">,</span> <span class="n">_iter</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_iter</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">:</span>
+                <span class="n">_iter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># we automatically apply R package&#39;s rough fix for tentative ones</span>
+        <span class="n">confirmed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tentative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># ignore the first row of zeros</span>
+        <span class="n">tentative_median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">imp_history</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="n">tentative</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># which tentative to keep</span>
+        <span class="n">tentative_confirmed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tentative_median</span>
+                                       <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sha_max_history</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tentative</span> <span class="o">=</span> <span class="n">tentative</span><span class="p">[</span><span class="n">tentative_confirmed</span><span class="p">]</span>
+
+        <span class="c1"># basic result variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features_</span> <span class="o">=</span> <span class="n">confirmed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_feat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_</span><span class="p">[</span><span class="n">confirmed</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_weak_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_feat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_weak_</span><span class="p">[</span><span class="n">tentative</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># ranking, confirmed variables are rank 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ranking_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_feat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="c1"># tentative variables are rank 2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ranking_</span><span class="p">[</span><span class="n">tentative</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="c1"># selected = confirmed and tentative</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">confirmed</span><span class="p">,</span> <span class="n">tentative</span><span class="p">))</span>
+        <span class="c1"># all rejected features are sorted by importance history</span>
+        <span class="n">not_selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_feat</span><span class="p">),</span> <span class="n">selected</span><span class="p">)</span>
+        <span class="c1"># large importance values should rank higher = lower ranks -&gt; *(-1)</span>
+        <span class="n">imp_history_rejected</span> <span class="o">=</span> <span class="n">imp_history</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="n">not_selected</span><span class="p">]</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1"># calculate ranks in each iteration, then median of ranks across feats</span>
+        <span class="n">iter_ranks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nanrankdata</span><span class="p">(</span><span class="n">imp_history_rejected</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">rank_medians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">iter_ranks</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ranks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nanrankdata</span><span class="p">(</span><span class="n">rank_medians</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># update rank for not_selected features</span>
+        <span class="k">if</span> <span class="n">not_selected</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># set smallest rank to 3 if there are tentative feats</span>
+            <span class="k">if</span> <span class="n">tentative</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ranks</span> <span class="o">=</span> <span class="n">ranks</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ranks</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># and 2 otherwise</span>
+                <span class="n">ranks</span> <span class="o">=</span> <span class="n">ranks</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ranks</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ranking_</span><span class="p">[</span><span class="n">not_selected</span><span class="p">]</span> <span class="o">=</span> <span class="n">ranks</span>
+
+        <span class="c1"># notify user</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_print_results</span><span class="p">(</span><span class="n">dec_reg</span><span class="p">,</span> <span class="n">_iter</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">weak</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># sanity check</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ranking_</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to call the fit(X, y) method first.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">weak</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_weak_</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">X</span>
+
+    <span class="k">def</span> <span class="nf">_get_tree_num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_feat</span><span class="p">):</span>
+        <span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">get_params</span><span class="p">()[</span><span class="s1">&#39;max_depth&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">depth</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="c1"># how many times a feature should be considered on average</span>
+        <span class="n">f_repr</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="c1"># n_feat * 2 because the training matrix is extended with n shadow features</span>
+        <span class="n">multi</span> <span class="o">=</span> <span class="p">((</span><span class="n">n_feat</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_feat</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">depth</span><span class="p">))</span>
+        <span class="n">n_estimators</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">multi</span> <span class="o">*</span> <span class="n">f_repr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">n_estimators</span>
+
+    <span class="k">def</span> <span class="nf">_get_imp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please check your X and y variable. The provided&#39;</span>
+                             <span class="s1">&#39;estimator cannot be fitted to your data.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">imp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">feature_importances_</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only methods with feature_importance_ attribute &#39;</span>
+                             <span class="s1">&#39;are currently supported in BorutaPy.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">imp</span>
+
+    <span class="k">def</span> <span class="nf">_get_shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">seq</span>
+
+    <span class="k">def</span> <span class="nf">_add_shadows_get_imps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dec_reg</span><span class="p">):</span>
+        <span class="c1"># find features that are tentative still</span>
+        <span class="n">x_cur_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_cur</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">x_cur_ind</span><span class="p">])</span>
+        <span class="n">x_cur_w</span> <span class="o">=</span> <span class="n">x_cur</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># deep copy the matrix for the shadow matrix</span>
+        <span class="n">x_sha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x_cur</span><span class="p">)</span>
+        <span class="c1"># make sure there&#39;s at least 5 columns in the shadow matrix for</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">x_sha</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="n">x_sha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x_sha</span><span class="p">,</span> <span class="n">x_sha</span><span class="p">))</span>
+        <span class="c1"># shuffle xSha</span>
+        <span class="n">x_sha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_shuffle</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_sha</span><span class="p">)</span>
+        <span class="c1"># get importance of the merged matrix</span>
+        <span class="n">imp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_imp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x_cur</span><span class="p">,</span> <span class="n">x_sha</span><span class="p">)),</span> <span class="n">y</span><span class="p">)</span>
+        <span class="c1"># separate importances of real and shadow features</span>
+        <span class="n">imp_sha</span> <span class="o">=</span> <span class="n">imp</span><span class="p">[</span><span class="n">x_cur_w</span><span class="p">:]</span>
+        <span class="n">imp_real</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">imp_real</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">imp_real</span><span class="p">[</span><span class="n">x_cur_ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">imp</span><span class="p">[:</span><span class="n">x_cur_w</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">imp_real</span><span class="p">,</span> <span class="n">imp_sha</span>
+
+    <span class="k">def</span> <span class="nf">_assign_hits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hit_reg</span><span class="p">,</span> <span class="n">cur_imp</span><span class="p">,</span> <span class="n">imp_sha_max</span><span class="p">):</span>
+        <span class="c1"># register hits for feautres that did better than the best of shadows</span>
+        <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cur_imp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">imp_sha_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">hit_reg</span><span class="p">[</span><span class="n">hits</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">hit_reg</span>
+
+    <span class="k">def</span> <span class="nf">_do_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dec_reg</span><span class="p">,</span> <span class="n">hit_reg</span><span class="p">,</span> <span class="n">_iter</span><span class="p">):</span>
+        <span class="n">active_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">hits</span> <span class="o">=</span> <span class="n">hit_reg</span><span class="p">[</span><span class="n">active_features</span><span class="p">]</span>
+        <span class="c1"># get uncorrected p values based on hit_reg</span>
+        <span class="n">to_accept_ps</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binom</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">hits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">_iter</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">to_reject_ps</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">binom</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">hits</span><span class="p">,</span> <span class="n">_iter</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">two_step</span><span class="p">:</span>
+            <span class="c1"># two step multicor process</span>
+            <span class="c1"># first we correct for testing several features in each round using FDR</span>
+            <span class="n">to_accept</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fdrcorrection</span><span class="p">(</span><span class="n">to_accept_ps</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">to_reject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fdrcorrection</span><span class="p">(</span><span class="n">to_reject_ps</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># second we correct for testing the same feature over and over again</span>
+            <span class="c1"># using bonferroni</span>
+            <span class="n">to_accept2</span> <span class="o">=</span> <span class="n">to_accept_ps</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">_iter</span><span class="p">)</span>
+            <span class="n">to_reject2</span> <span class="o">=</span> <span class="n">to_reject_ps</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">_iter</span><span class="p">)</span>
+
+            <span class="c1"># combine the two multi corrections, and get indexes</span>
+            <span class="n">to_accept</span> <span class="o">*=</span> <span class="n">to_accept2</span>
+            <span class="n">to_reject</span> <span class="o">*=</span> <span class="n">to_reject2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># as in th original Boruta, we simply do bonferroni correction</span>
+            <span class="c1"># with the total n_feat in each iteration</span>
+            <span class="n">to_accept</span> <span class="o">=</span> <span class="n">to_accept_ps</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dec_reg</span><span class="p">))</span>
+            <span class="n">to_reject</span> <span class="o">=</span> <span class="n">to_reject_ps</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dec_reg</span><span class="p">))</span>
+
+        <span class="c1"># find features which are 0 and have been rejected or accepted</span>
+        <span class="n">to_accept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dec_reg</span><span class="p">[</span><span class="n">active_features</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">to_accept</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">to_reject</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dec_reg</span><span class="p">[</span><span class="n">active_features</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">to_reject</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># updating dec_reg</span>
+        <span class="n">dec_reg</span><span class="p">[</span><span class="n">active_features</span><span class="p">[</span><span class="n">to_accept</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">dec_reg</span><span class="p">[</span><span class="n">active_features</span><span class="p">[</span><span class="n">to_reject</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">dec_reg</span>
+
+    <span class="k">def</span> <span class="nf">_fdrcorrection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pvals</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Benjamini/Hochberg p-value correction for false discovery rate, from</span>
+<span class="sd">        statsmodels package. Included here for decoupling dependency on statsmodels.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pvals : array_like</span>
+<span class="sd">            set of p-values of the individual tests.</span>
+<span class="sd">        alpha : float</span>
+<span class="sd">            error rate</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rejected : array, bool</span>
+<span class="sd">            True if a hypothesis is rejected, False if not</span>
+<span class="sd">        pvalue-corrected : array</span>
+<span class="sd">            pvalues adjusted for multiple hypothesis testing to limit FDR</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pvals</span><span class="p">)</span>
+        <span class="n">pvals_sortind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pvals</span><span class="p">)</span>
+        <span class="n">pvals_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">pvals</span><span class="p">,</span> <span class="n">pvals_sortind</span><span class="p">)</span>
+        <span class="n">nobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pvals_sorted</span><span class="p">)</span>
+        <span class="n">ecdffactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nobs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">nobs</span><span class="p">)</span>
+
+        <span class="n">reject</span> <span class="o">=</span> <span class="n">pvals_sorted</span> <span class="o">&lt;=</span> <span class="n">ecdffactor</span> <span class="o">*</span> <span class="n">alpha</span>
+        <span class="k">if</span> <span class="n">reject</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">rejectmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">reject</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">reject</span><span class="p">[:</span><span class="n">rejectmax</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">pvals_corrected_raw</span> <span class="o">=</span> <span class="n">pvals_sorted</span> <span class="o">/</span> <span class="n">ecdffactor</span>
+        <span class="n">pvals_corrected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">pvals_corrected_raw</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pvals_corrected</span><span class="p">[</span><span class="n">pvals_corrected</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># reorder p-values and rejection mask to original order of pvals</span>
+        <span class="n">pvals_corrected_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">pvals_corrected</span><span class="p">)</span>
+        <span class="n">pvals_corrected_</span><span class="p">[</span><span class="n">pvals_sortind</span><span class="p">]</span> <span class="o">=</span> <span class="n">pvals_corrected</span>
+        <span class="n">reject_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">reject_</span><span class="p">[</span><span class="n">pvals_sortind</span><span class="p">]</span> <span class="o">=</span> <span class="n">reject</span>
+        <span class="k">return</span> <span class="n">reject_</span><span class="p">,</span> <span class="n">pvals_corrected_</span>
+
+    <span class="k">def</span> <span class="nf">_nanrankdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replaces bottleneck&#39;s nanrankdata with scipy and numpy alternative.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ranks</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mstats</span><span class="o">.</span><span class="n">rankdata</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">ranks</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">X</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">return</span> <span class="n">ranks</span>
+
+    <span class="k">def</span> <span class="nf">_check_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check hyperparameters as well as X and y before proceeding with fit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check X and y are consistent len, X is Array and y is column</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">perc</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">perc</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The percentile should be between 0 and 100.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Alpha should be between 0 and 1.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dec_reg</span><span class="p">,</span> <span class="n">_iter</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+        <span class="n">n_iter</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">_iter</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; / &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">)</span>
+        <span class="n">n_confirmed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_rejected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Iteration: &#39;</span><span class="p">,</span> <span class="s1">&#39;Confirmed: &#39;</span><span class="p">,</span> <span class="s1">&#39;Tentative: &#39;</span><span class="p">,</span> <span class="s1">&#39;Rejected: &#39;</span><span class="p">]</span>
+
+        <span class="c1"># still in feature selection</span>
+        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">n_tentative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dec_reg</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">n_confirmed</span><span class="p">,</span> <span class="n">n_tentative</span><span class="p">,</span> <span class="n">n_rejected</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_iter</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">content</span><span class="p">)])</span>
+
+        <span class="c1"># Boruta finished running and tentatives have been filtered</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_tentative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">support_weak_</span><span class="p">)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">n_confirmed</span><span class="p">,</span> <span class="n">n_tentative</span><span class="p">,</span> <span class="n">n_rejected</span><span class="p">])</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">content</span><span class="p">)])</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">BorutaPy finished running.</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">result</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

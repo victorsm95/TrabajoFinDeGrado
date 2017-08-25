@@ -1,0 +1,580 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>users.views &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>users.views</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for users.views</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Author: Víctor Sánchez Martín &lt;victorsm156548@usal.es&gt;</span>
+
+<span class="sd">VIEW</span>
+
+<span class="sd">Python module that defines the view functions that manage </span>
+<span class="sd">the application and serve the templates necessary for the use </span>
+<span class="sd">of the functionalities offered by it.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c1"># Renderizar vistas</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="k">import</span> <span class="n">Context</span>
+<span class="c1"># Enviar e-mal</span>
+<span class="kn">from</span> <span class="nn">django.core.mail</span> <span class="k">import</span> <span class="n">send_mail</span>
+<span class="c1"># Tratamiento de ficheros</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># Configuracion del proyecto</span>
+<span class="kn">from</span> <span class="nn">biogen</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="c1"># Formularios a presentar y manejar</span>
+<span class="kn">from</span> <span class="nn">forms</span> <span class="k">import</span> <span class="n">UserForm</span><span class="p">,</span> <span class="n">ProfileForm</span>
+<span class="c1"># Modelos de datos a manejar</span>
+<span class="kn">from</span> <span class="nn">models</span> <span class="k">import</span> <span class="n">Profile</span>
+<span class="kn">from</span> <span class="nn">boards.models</span> <span class="k">import</span> <span class="n">Board</span><span class="p">,</span> <span class="n">BoardShared</span>
+<span class="c1"># Decoradores de Django-alluth para verificar ciertas caracteristicas de usuarios y sesiones</span>
+<span class="c1"># En este caso, verificar que el usuario esta logueado para realizar ciertas funciones</span>
+<span class="kn">from</span> <span class="nn">allauth.account.decorators</span> <span class="k">import</span> <span class="n">login_required</span>
+<span class="c1"># Base de datos no sql (MongoDB)</span>
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="k">import</span> <span class="n">MongoClient</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="c1"># Decoradores de Django para el manejo de metodos http</span>
+<span class="kn">from</span> <span class="nn">django.views.decorators.http</span> <span class="k">import</span> <span class="n">require_http_methods</span>
+<span class="c1"># Señales de django allauth</span>
+<span class="kn">from</span> <span class="nn">allauth.account.signals</span> <span class="k">import</span> <span class="n">password_changed</span>
+<span class="c1"># Recibir señales</span>
+<span class="kn">from</span> <span class="nn">django.dispatch</span> <span class="k">import</span> <span class="n">receiver</span>
+
+<span class="c1"># DEVUELVE LA PAGINA DE INICIO DE CADA USUARIO CON SUS BOARDS O BIEN EL INDEX DE LA APLICACION</span>
+<div class="viewcode-block" id="home"><a class="viewcode-back" href="../../docs/users.html#users.views.home">[docs]</a><span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of returning the home page of each user </span>
+<span class="sd">	with their boards or the application index.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Si el usuario esta autenticado se devuelve la pagina home con los boards del usuario</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">()</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">account_verified</span><span class="p">():</span>
+		<span class="n">board</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">confirmed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+		<span class="n">board</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+		<span class="c1"># Si hay algun board procesandose se impide subir otro hmediante el estado igual a false</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">confirmed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">state</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">state</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;board&#39;</span><span class="p">:</span> <span class="n">board</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">:</span><span class="n">state</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/home.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+	<span class="c1"># En caso contrario, se renderiza la pagina de inicio de la plataforma</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/index.html&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># INFORMACION Y ESPECIFICACIONES DE LA APLICACION</span>
+<div class="viewcode-block" id="info"><a class="viewcode-back" href="../../docs/users.html#users.views.info">[docs]</a><span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of returning the page with </span>
+<span class="sd">	information and specifications of the web application.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/readMore.html&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># CONTACTO PARA LOS USUARIOS</span>
+<div class="viewcode-block" id="contact"><a class="viewcode-back" href="../../docs/users.html#users.views.contact">[docs]</a><span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">contact</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of returning the page with</span>
+<span class="sd">	the contact admin platform for the users.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/contact.html&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># RETORNA LA PAGINA CON LOS BOARDS QUE HAN COMPARTIDO CON EL USUARIO</span>
+<div class="viewcode-block" id="home_shared"><a class="viewcode-back" href="../../docs/users.html#users.views.home_shared">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">home_shared</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function view in charge of returning the home page with</span>
+<span class="sd">	the boards shared whit the request user.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Obtencion de los boards compartidos con el usuario</span>
+	<span class="n">boardShared</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">confirmation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">boardShared</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+	<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;board&#39;</span><span class="p">:</span> <span class="n">boardShared</span><span class="p">})</span>
+	<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/home_shared.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># PAGINA CON LOS DATOS DEL USUARIO Y UN BREVE RESUMEN ESTADISTICO DE SUS RECURSOS</span>
+<div class="viewcode-block" id="profile"><a class="viewcode-back" href="../../docs/users.html#users.views.profile">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for returning a page with user profile data and </span>
+<span class="sd">	a brief statistical description of its use of the platform.</span>
+<span class="sd">	The user can also change their profile data through this view.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Si el metodo es POST se procesa el formulario para cambiar los datos del perfil de usuario</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+		<span class="c1"># Formularios a procesar</span>
+		<span class="n">userForm</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+		<span class="n">profileForm</span> <span class="o">=</span> <span class="n">ProfileForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">)</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span><span class="s1">&#39;userForm&#39;</span><span class="p">:</span> <span class="n">userForm</span><span class="p">,</span> <span class="s1">&#39;profileForm&#39;</span><span class="p">:</span> <span class="n">profileForm</span><span class="p">})</span>
+		<span class="c1"># Si los formularios son validos</span>
+		<span class="k">if</span> <span class="n">userForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span> <span class="ow">and</span> <span class="n">profileForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+			<span class="c1"># Se actualizan los datos del usuario de acuerdo a los datos de los formulario</span>
+			<span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">first_name</span> <span class="o">=</span> <span class="n">userForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;first_name&quot;</span><span class="p">]</span>
+			<span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">last_name</span> <span class="o">=</span> <span class="n">userForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;last_name&quot;</span><span class="p">]</span>
+			
+			<span class="c1"># Se actualizan los datos del perfil del usuario de acuerdo a los datos del formulario </span>
+			<span class="c1"># Tratamiento de la imagen</span>
+			<span class="n">imagen_modificada</span> <span class="o">=</span> <span class="n">profileForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+			<span class="c1"># Si se ha modificado se actualiza</span>
+			<span class="k">if</span> <span class="n">imagen_modificada</span><span class="p">:</span>
+				<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">bio</span> <span class="o">=</span> <span class="n">profileForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;bio&quot;</span><span class="p">],</span> <span class="n">image</span> <span class="o">=</span> <span class="n">profileForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">])</span>
+				<span class="n">profile</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span>
+				<span class="c1"># Se borra la anterior imagen si la hubiera</span>
+				<span class="n">delete_image_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span> <span class="o">+</span> <span class="s1">&#39;/profilePhotos/&#39;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span>
+				<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">delete_image_path</span><span class="p">):</span>
+					<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">delete_image_path</span><span class="p">)</span>
+			<span class="c1"># Si no se ha modificado</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># Si el usuario posee una imagne se presenta</span>
+				<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> 
+					<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">bio</span> <span class="o">=</span> <span class="n">profileForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;bio&quot;</span><span class="p">],</span> <span class="n">image</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">bio</span> <span class="o">=</span> <span class="n">profileForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;bio&quot;</span><span class="p">])</span>
+			<span class="c1"># Se guardan ambos objetos en la base de datos	</span>
+			
+			<span class="n">profile</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+			<span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/profile.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+			
+
+	<span class="c1"># Si el metodo es GET se presentan al usuario el formulario para cambiar sus datos y las estadisticas de sus recursos</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># Calculo del numero de boards propios</span>
+		<span class="n">ownBoards</span> <span class="o">=</span> <span class="n">Board</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="c1"># Calculo de los bards compartidos sin confirmar</span>
+		<span class="n">boardsSharedUnconfirm</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">ownBoards</span><span class="p">:</span>
+			<span class="n">boardSharedUnconfirmList</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">board</span><span class="o">=</span><span class="n">board</span><span class="p">,</span> <span class="n">confirmation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">boardSharedUnconfirmList</span><span class="p">:</span>
+				<span class="n">boardsSharedUnconfirm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
+		<span class="c1"># Calculo de los boards compartidos confirmados</span>
+		<span class="n">boardsShared</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">ownBoards</span><span class="p">:</span>
+			<span class="n">boardsSharedList</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">board</span><span class="o">=</span><span class="n">board</span><span class="p">,</span> <span class="n">confirmation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">board</span> <span class="ow">in</span> <span class="n">boardsSharedList</span><span class="p">:</span>
+				<span class="n">boardsShared</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
+		<span class="c1"># Calculo de los boards compartidos y confirmados al usuario</span>
+		<span class="n">boardsWithMe</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">confirmation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="c1"># Calculo de los boards compartidos al usuario, pero sin confirmar por el mismo</span>
+		<span class="n">unconfirmedBoards</span> <span class="o">=</span> <span class="n">BoardShared</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">confirmation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="c1"># Presentacion del formulario con los datos correspondientes</span>
+		<span class="n">userForm</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;first_name&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">first_name</span><span class="p">,</span> <span class="s1">&#39;last_name&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">last_name</span><span class="p">})</span>
+		<span class="c1"># Aseguracion de la existencia del perfil asociado al usuario</span>
+		<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+			<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+			<span class="n">profile</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+		<span class="n">profileForm</span> <span class="o">=</span> <span class="n">ProfileForm</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bio&#39;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">bio</span><span class="p">,</span> <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">profile</span><span class="o">.</span><span class="n">image</span><span class="p">})</span>
+
+		<span class="n">context</span> <span class="o">=</span> <span class="n">Context</span><span class="p">({</span> 
+				<span class="s1">&#39;userForm&#39;</span><span class="p">:</span> <span class="n">userForm</span><span class="p">,</span> 
+				<span class="s1">&#39;profileForm&#39;</span><span class="p">:</span> <span class="n">profileForm</span><span class="p">,</span>
+				<span class="s1">&#39;ownBoards&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">ownBoards</span><span class="p">),</span>
+				<span class="s1">&#39;boardsShared&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">boardsShared</span><span class="p">),</span>
+				<span class="s1">&#39;boardsWithMe&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">boardsWithMe</span><span class="p">),</span>
+				<span class="s1">&#39;boardsSharedUnconfirm&#39;</span><span class="p">:</span> <span class="n">boardsSharedUnconfirm</span><span class="p">,</span>
+				<span class="s1">&#39;numBoardsSharedUnconfirm&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">boardsSharedUnconfirm</span><span class="p">),</span>
+				<span class="s1">&#39;unconfirmedBoards&#39;</span><span class="p">:</span> <span class="n">unconfirmedBoards</span><span class="p">,</span>
+				<span class="s1">&#39;numUnconfirmedBoards&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">unconfirmedBoards</span><span class="p">),</span>
+				<span class="s1">&#39;numBoardsSharedUnconfirm&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">boardsSharedUnconfirm</span><span class="p">),</span>
+				<span class="s1">&#39;boardsSharedUnconfirm&#39;</span><span class="p">:</span> <span class="n">boardsSharedUnconfirm</span><span class="p">})</span>
+
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;home/profile.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+<span class="c1"># ELIMINACION DE LA IMAGEN DEL PERFIL DE USUARIO</span>
+<div class="viewcode-block" id="image_delete"><a class="viewcode-back" href="../../docs/users.html#users.views.image_delete">[docs]</a><span class="nd">@login_required</span>
+<span class="nd">@require_http_methods</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">image_delete</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Function responsible for giving the user the possibility to delete </span>
+<span class="sd">	his profile photo.</span>
+
+<span class="sd">	Http Methods:</span>
+<span class="sd">	   * GET</span>
+<span class="sd">	   * POST</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	request: django.http.request</span>
+<span class="sd">	    Object request that contains all the information </span>
+<span class="sd">	    regarding the HTTP request to be handled in the view function: </span>
+<span class="sd">	    method, sessions, parameters, etc.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects</span>
+
+<span class="sd">	Return</span>
+<span class="sd">	------</span>
+<span class="sd">	response: django.http.response</span>
+<span class="sd">	    Object through which the response to the http request is </span>
+<span class="sd">	    handled by the view function, as well as all the necessary </span>
+<span class="sd">	    and own information of the answer of the communication.</span>
+<span class="sd">	    Django reference:</span>
+<span class="sd">	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">image</span><span class="p">:</span>
+		<span class="n">profiles</span> <span class="o">=</span> <span class="n">Profile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">profiles</span><span class="p">):</span>
+			<span class="n">profiles</span> <span class="o">=</span> <span class="n">Profile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+			<span class="n">profiles</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+	<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/profile&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># ESTA FUNCION A LA ESCUCHA DE LA SEÑAL password_changed ENVIA UN CORREO AL USUARIO INFORMANDOLE DE QUE SU CONTRASEÑA HA SIDO CAMBIADA</span>
+<div class="viewcode-block" id="notificationChangePassword"><a class="viewcode-back" href="../../docs/users.html#users.views.notificationChangePassword">[docs]</a><span class="nd">@receiver</span><span class="p">(</span><span class="n">password_changed</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">notificationChangePassword</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	By listening to the signal sent by changing the password of the user account, </span>
+<span class="sd">	this function sends an email to the user informing him that his password has been changed.</span>
+
+<span class="sd">	Signal reciever</span>
+<span class="sd">	---------------</span>
+<span class="sd">	allauth.account.signals.password_changed</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	</span>
+<span class="sd">	sender: object </span>
+<span class="sd">	    Object sender of the signal</span>
+<span class="sd">	</span>
+<span class="sd">	**Kwargs: dict</span>
+<span class="sd">	    Dictionary with the arguments of the defined signal.  </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># Se envia un email infromativo al usuario</span>
+	<span class="n">mensaje</span> <span class="o">=</span> <span class="s2">&quot;The password has been successfully changed to account&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;request&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span>
+	<span class="n">send_mail</span><span class="p">(</span><span class="s1">&#39;Password changed&#39;</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">EMAIL_HOST_USER</span><span class="p">,</span> <span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;request&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span> <span class="n">fail_silently</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>filters package &mdash; biogen 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="biogen 1.0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> biogen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">filters package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-filters.boruta">filters.boruta module</a></li>
+<li><a class="reference internal" href="#module-filters.dataSetMongo">filters.dataSetMongo module</a></li>
+<li><a class="reference internal" href="#module-filters.gbr">filters.gbr module</a></li>
+<li><a class="reference internal" href="#module-filters.mannWhitney">filters.mannWhitney module</a></li>
+<li><a class="reference internal" href="#module-filters">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">biogen</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>filters package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/docs/filters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="filters-package">
+<h1>filters package<a class="headerlink" href="#filters-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-filters.boruta">
+<span id="filters-boruta-module"></span><h2>filters.boruta module<a class="headerlink" href="#module-filters.boruta" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Original code and method by: Miron B Kursa, <a class="reference external" href="https://m2.icm.edu.pl/boruta/">https://m2.icm.edu.pl/boruta/</a></p>
+<p>License: BSD 3 clause</p>
+<dl class="class">
+<dt id="filters.boruta.BorutaPy">
+<em class="property">class </em><code class="descclassname">filters.boruta.</code><code class="descname">BorutaPy</code><span class="sig-paren">(</span><em>estimator</em>, <em>n_estimators=1000</em>, <em>perc=100</em>, <em>alpha=0.05</em>, <em>two_step=True</em>, <em>max_iter=100</em>, <em>random_state=None</em>, <em>verbose=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/boruta.html#BorutaPy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.boruta.BorutaPy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Improved Python implementation of the Boruta R package.</p>
+<p>The improvements of this implementation include:
+- Faster run times:</p>
+<blockquote>
+<div>Thanks to scikit-learn’s fast implementation of the ensemble methods.</div></blockquote>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Scikit-learn like interface:</dt>
+<dd>Use BorutaPy just like any other scikit learner: fit, fit_transform and
+transform are all implemented in a similar fashion.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Modularity:</dt>
+<dd>Any ensemble method could be used: random forest, extra trees
+classifier, even gradient boosted trees.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Two step correction:</dt>
+<dd>The original Boruta code corrects for multiple testing in an overly
+conservative way. In this implementation, the Benjamini Hochberg FDR is
+used to correct in each iteration across active features. This means
+only those features are included in the correction which are still in
+the selection process. Following this, each that passed goes through a
+regular Bonferroni correction to check for the repeated testing over
+the iterations.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Percentile:</dt>
+<dd>Instead of using the max values of the shadow features the user can
+specify which percentile to use. This gives a finer control over this
+crucial parameter. For more info, please read about the perc parameter.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Automatic tree number:</dt>
+<dd>Setting the n_estimator to ‘auto’ will calculate the number of trees
+in each itartion based on the number of features under investigation.
+This way more trees are used when the training data has many feautres
+and less when most of the features have been rejected.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Ranking of features:</dt>
+<dd>After fitting BorutaPy it provides the user with ranking of features.
+Confirmed ones are 1, Tentatives are 2, and the rejected are ranked
+starting from 3, based on their feautre importance history through
+the iterations.</dd>
+</dl>
+</li>
+</ul>
+<p>We highly recommend using pruned trees with a depth between 3-7.</p>
+<p>For more, see the docs of these functions, and the examples below.</p>
+<p>Original code and method by: Miron B Kursa, <a class="reference external" href="https://m2.icm.edu.pl/boruta/">https://m2.icm.edu.pl/boruta/</a></p>
+<p>Boruta is an all relevant feature selection method, while most other are
+minimal optimal; this means it tries to find all features carrying
+information usable for prediction, rather than finding a possibly compact
+subset of features on which some classifier has a minimal error.</p>
+<p>Why bother with all relevant feature selection?
+When you try to understand the phenomenon that made your data, you should
+care about all factors that contribute to it, not just the bluntest signs
+of it in context of your methodology (yes, minimal optimal set of features
+by definition depends on your classifier choice).</p>
+<dl class="docutils">
+<dt>estimator <span class="classifier-delimiter">:</span> <span class="classifier">object</span></dt>
+<dd>A supervised learning estimator, with a ‘fit’ method that returns the
+<a href="#id1"><span class="problematic" id="id2">feature_importances_</span></a> attribute. Important features must correspond to
+high absolute values in the <a href="#id3"><span class="problematic" id="id4">feature_importances_</span></a>.</dd>
+<dt>n_estimators <span class="classifier-delimiter">:</span> <span class="classifier">int or string, default = 1000</span></dt>
+<dd>If int sets the number of estimators in the chosen ensemble method.
+If ‘auto’ this is determined automatically based on the size of the
+dataset. The other parameters of the used estimators need to be set
+with initialisation.</dd>
+<dt>perc <span class="classifier-delimiter">:</span> <span class="classifier">int, default = 100</span></dt>
+<dd>Instead of the max we use the percentile defined by the user, to pick
+our threshold for comparison between shadow and real features. The max
+tend to be too stringent. This provides a finer control over this. The
+lower perc is the more false positives will be picked as relevant but
+also the less relevant features will be left out. The usual trade-off.
+The default is essentially the vanilla Boruta corresponding to the max.</dd>
+<dt>alpha <span class="classifier-delimiter">:</span> <span class="classifier">float, default = 0.05</span></dt>
+<dd>Level at which the corrected p-values will get rejected in both
+correction steps.</dd>
+<dt>two_step <span class="classifier-delimiter">:</span> <span class="classifier">Boolean, default = True</span></dt>
+<dd>If you want to use the original implementation of Boruta with Bonferroni
+correction only set this to False.</dd>
+<dt>max_iter <span class="classifier-delimiter">:</span> <span class="classifier">int, default = 100</span></dt>
+<dd>The number of maximum iterations to perform.</dd>
+<dt>random_state <span class="classifier-delimiter">:</span> <span class="classifier">int, RandomState instance or None; default=None</span></dt>
+<dd>If int, random_state is the seed used by the random number generator;
+If RandomState instance, random_state is the random number generator;
+If None, the random number generator is the RandomState instance used
+by <cite>np.random</cite>.</dd>
+<dt>verbose <span class="classifier-delimiter">:</span> <span class="classifier">int, default=0</span></dt>
+<dd>Controls verbosity of output:
+- 0: no output
+- 1: displays iteration number
+- 2: which features have been selected already</dd>
+</dl>
+<dl class="docutils">
+<dt><a href="#id5"><span class="problematic" id="id6">n_features_</span></a> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The number of selected features.</dd>
+</dl>
+<p><a href="#id7"><span class="problematic" id="id8">support_</span></a> : array of shape [n_features]</p>
+<blockquote>
+<div>The mask of selected features - only confirmed ones are True.</div></blockquote>
+<p><a href="#id9"><span class="problematic" id="id10">support_weak_</span></a> : array of shape [n_features]</p>
+<blockquote>
+<div>The mask of selected tentative features, which haven’t gained enough
+support during the max_iter number of iterations..</div></blockquote>
+<p><a href="#id11"><span class="problematic" id="id12">ranking_</span></a> : array of shape [n_features]</p>
+<blockquote>
+<div>The feature ranking, such that <code class="docutils literal"><span class="pre">ranking_[i]</span></code> corresponds to the
+ranking position of the i-th feature. Selected (i.e., estimated
+best) features are assigned rank 1 and tentative features are assigned
+rank 2.</div></blockquote>
+<p>import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from boruta import BorutaPy</p>
+<p># load X and y
+# NOTE BorutaPy accepts numpy arrays only, hence the .values attribute
+X = pd.read_csv(‘examples/test_X.csv’, index_col=0).values
+y = pd.read_csv(‘examples/test_y.csv’, header=None, index_col=0).values
+y = y.ravel()</p>
+<p># define random forest classifier, with utilising all cores and
+# sampling in proportion to y labels
+rf = RandomForestClassifier(n_jobs=-1, class_weight=’auto’, max_depth=5)</p>
+<p># define Boruta feature selection method
+feat_selector = BorutaPy(rf, n_estimators=’auto’, verbose=2, random_state=1)</p>
+<p># find all relevant features - 5 features should be selected
+feat_selector.fit(X, y)</p>
+<p># check selected features - first 5 features are selected
+<a href="#id13"><span class="problematic" id="id14">feat_selector.support_</span></a></p>
+<p># check ranking of features
+<a href="#id15"><span class="problematic" id="id16">feat_selector.ranking_</span></a></p>
+<p># call transform() on X to filter it down to selected features
+X_filtered = feat_selector.transform(X)</p>
+<dl class="docutils">
+<dt>[1] Kursa M., Rudnicki W., “Feature Selection with the Boruta Package”</dt>
+<dd>Journal of Statistical Software, Vol. 36, Issue 11, Sep 2010</dd>
+</dl>
+<dl class="method">
+<dt id="filters.boruta.BorutaPy.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/boruta.html#BorutaPy.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.boruta.BorutaPy.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the Boruta feature selection with the provided estimator.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_features]</span></dt>
+<dd>The training input samples.</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples]</span></dt>
+<dd>The target values.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="filters.boruta.BorutaPy.fit_transform">
+<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>weak=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/boruta.html#BorutaPy.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.boruta.BorutaPy.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits Boruta, then reduces the input X to the selected features.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_features]</span></dt>
+<dd>The training input samples.</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples]</span></dt>
+<dd>The target values.</dd>
+<dt>weak: boolean, default = False</dt>
+<dd>If set to true, the tentative features are also used to reduce X.</dd>
+</dl>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, <a href="#id17"><span class="problematic" id="id18">n_features_</span></a>]</span></dt>
+<dd>The input matrix X’s columns are reduced to the features which were
+selected by Boruta.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="filters.boruta.BorutaPy.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em>, <em>weak=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/boruta.html#BorutaPy.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.boruta.BorutaPy.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduces the input X to the features selected by Boruta.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_features]</span></dt>
+<dd>The training input samples.</dd>
+<dt>weak: boolean, default = False</dt>
+<dd>If set to true, the tentative features are also used to reduce X.</dd>
+</dl>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, <a href="#id19"><span class="problematic" id="id20">n_features_</span></a>]</span></dt>
+<dd>The input matrix X’s columns are reduced to the features which were
+selected by Boruta.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-filters.dataSetMongo">
+<span id="filters-datasetmongo-module"></span><h2>filters.dataSetMongo module<a class="headerlink" href="#module-filters.dataSetMongo" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module in charge of making the three filters 
+when uploading the board, saving the data in a data 
+base mongo no sql, with one document for each gene, 
+and one for each filtering.</p>
+<dl class="function">
+<dt id="filters.dataSetMongo.deleteDataSet">
+<code class="descclassname">filters.dataSetMongo.</code><code class="descname">deleteDataSet</code><span class="sig-paren">(</span><em>idBoard</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/dataSetMongo.html#deleteDataSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.dataSetMongo.deleteDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the dataset in the Mongo Database (No SQL)</p>
+<dl class="docutils">
+<dt>idBoard: string.</dt>
+<dd>Board identifier to remove.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="filters.dataSetMongo.saveDataSet">
+<code class="descclassname">filters.dataSetMongo.</code><code class="descname">saveDataSet</code><span class="sig-paren">(</span><em>board</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/dataSetMongo.html#saveDataSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.dataSetMongo.saveDataSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the dataset in the Mongo Database (No SQL)</p>
+<dl class="docutils">
+<dt>board: object Model.</dt>
+<dd>contains the board information associated with the 
+datasets to be filtered.</dd>
+<dt>data: object File</dt>
+<dd>File with the gene expression data to be filtered, 
+coming from the uploaded datasets.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-filters.gbr">
+<span id="filters-gbr-module"></span><h2>filters.gbr module<a class="headerlink" href="#module-filters.gbr" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<p>Python module in charge of performing the GBR filtering, 
+taking the result of the Mann-Whitney prefilter as the 
+initiation data.</p>
+<dl class="class">
+<dt id="filters.gbr.GBRT_CBR">
+<em class="property">class </em><code class="descclassname">filters.gbr.</code><code class="descname">GBRT_CBR</code><span class="sig-paren">(</span><em>n_estimators=400</em>, <em>learning_rate=0.5</em>, <em>n_neighbors=5</em>, <em>max_depth=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/gbr.html#GBRT_CBR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.gbr.GBRT_CBR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.ClassifierMixin</span></code></p>
+<p>Improved Python implementation of the GBRT_CBR filter.</p>
+<dl class="docutils">
+<dt>CBR with GBRT-based feature selection as described in the paper:</dt>
+<dd>“A CBR framework with gradient boosting based feature selection for lung cancer subtype classification”
+<a class="reference external" href="https://doi.org/10.1016/j.compbiomed.2017.05.010">https://doi.org/10.1016/j.compbiomed.2017.05.010</a></dd>
+</dl>
+<dl class="docutils">
+<dt>n_estimators: int, default = 400</dt>
+<dd>Sets the number of estimators in the chosen ensemble method.</dd>
+</dl>
+<p>learning_rate: float, default = 0.5</p>
+<p>n_neighbors: int, default = 5</p>
+<p>selectedGenesIndexes: list, datasets indexes of genes selected</p>
+<dl class="method">
+<dt id="filters.gbr.GBRT_CBR.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/gbr.html#GBRT_CBR.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.gbr.GBRT_CBR.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the GBR feature selection with the provided estimator.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_genes]</span></dt>
+<dd>The training input samples.</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples]</span></dt>
+<dd>The target values.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="filters.gbr.GBRT_CBR.kNN">
+<code class="descname">kNN</code><em class="property"> = None</em><a class="headerlink" href="#filters.gbr.GBRT_CBR.kNN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="filters.gbr.GBRT_CBR.learning_rate">
+<code class="descname">learning_rate</code><em class="property"> = None</em><a class="headerlink" href="#filters.gbr.GBRT_CBR.learning_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="filters.gbr.GBRT_CBR.n_estimators">
+<code class="descname">n_estimators</code><em class="property"> = None</em><a class="headerlink" href="#filters.gbr.GBRT_CBR.n_estimators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="filters.gbr.GBRT_CBR.n_neighbors">
+<code class="descname">n_neighbors</code><em class="property"> = None</em><a class="headerlink" href="#filters.gbr.GBRT_CBR.n_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="filters.gbr.GBRT_CBR.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/gbr.html#GBRT_CBR.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.gbr.GBRT_CBR.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="filters.gbr.GBRT_CBR.predict_proba">
+<code class="descname">predict_proba</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/gbr.html#GBRT_CBR.predict_proba"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.gbr.GBRT_CBR.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="filters.gbr.GBRT_CBR.rawweights">
+<code class="descname">rawweights</code><em class="property"> = None</em><a class="headerlink" href="#filters.gbr.GBRT_CBR.rawweights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="filters.gbr.GBRT_CBR.retain">
+<code class="descname">retain</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/gbr.html#GBRT_CBR.retain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.gbr.GBRT_CBR.retain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="filters.gbr.GBRT_CBR.selectedGenesIndexes">
+<code class="descname">selectedGenesIndexes</code><em class="property"> = None</em><a class="headerlink" href="#filters.gbr.GBRT_CBR.selectedGenesIndexes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-filters.mannWhitney">
+<span id="filters-mannwhitney-module"></span><h2>filters.mannWhitney module<a class="headerlink" href="#module-filters.mannWhitney" title="Permalink to this headline">¶</a></h2>
+<p>Author: Víctor Sánchez Martín &lt;<a class="reference external" href="mailto:victorsm156548&#37;&#52;&#48;usal&#46;es">victorsm156548<span>&#64;</span>usal<span>&#46;</span>es</a>&gt;</p>
+<dl class="docutils">
+<dt>Python module in charge of two fundamental tasks:</dt>
+<dd><ol class="first last arabic simple">
+<li>Carry out a pre-filter of the genes that pass a value of 
+variance above the midpoint of the same</li>
+<li>Perform an independent filtering to present to the user, 
+using the appropriate cut-off point for the gene number entered.</li>
+</ol>
+</dd>
+</dl>
+<dl class="class">
+<dt id="filters.mannWhitney.Prefilter">
+<em class="property">class </em><code class="descclassname">filters.mannWhitney.</code><code class="descname">Prefilter</code><span class="sig-paren">(</span><em>n_components=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/mannWhitney.html#Prefilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.mannWhitney.Prefilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.TransformerMixin</span></code></p>
+<p>Improved Python implementation or the Mann-Whitney filter.</p>
+<dl class="docutils">
+<dt>selectedGenesIndexes: list</dt>
+<dd>List containing the n best genes according 
+to the Mann-Whitney filter combined with variance.</dd>
+<dt>selectedGenesIndexesPrefilter: list</dt>
+<dd>List containing the genes with a variance above the 
+midpoint, calculated from the genes that surpass the Mann-Whitney 
+test.</dd>
+<dt>X_filt: Numpy matrix</dt>
+<dd>Matrix with the resulting filtering genes.</dd>
+<dt>varianza: Numpy matrix</dt>
+<dd>Matrix with the variance of the genes that surpass the 
+test of Mann Whitney.</dd>
+</dl>
+<dl class="attribute">
+<dt id="filters.mannWhitney.Prefilter.X_filt">
+<code class="descname">X_filt</code><em class="property"> = None</em><a class="headerlink" href="#filters.mannWhitney.Prefilter.X_filt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="filters.mannWhitney.Prefilter.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/mannWhitney.html#Prefilter.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.mannWhitney.Prefilter.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the Mann-Whitney genes selection.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_genes]</span></dt>
+<dd>The training input samples.</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples]</span></dt>
+<dd>The target values.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="filters.mannWhitney.Prefilter.fit_transform">
+<code class="descname">fit_transform</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/mannWhitney.html#Prefilter.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.mannWhitney.Prefilter.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits Mann-Whitney, then reduces the input X to the selected genes.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_genes]</span></dt>
+<dd>The training input samples.</dd>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples]</span></dt>
+<dd>The target values.</dd>
+</dl>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, <a href="#id21"><span class="problematic" id="id22">n_genes_</span></a>]</span></dt>
+<dd>The input matrix X’s columns are reduced to the genes which were
+selected by Mann-Whitney.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="filters.mannWhitney.Prefilter.selectedGenesIndexes">
+<code class="descname">selectedGenesIndexes</code><em class="property"> = None</em><a class="headerlink" href="#filters.mannWhitney.Prefilter.selectedGenesIndexes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="filters.mannWhitney.Prefilter.selectedGenesIndexesPrefilter">
+<code class="descname">selectedGenesIndexesPrefilter</code><em class="property"> = None</em><a class="headerlink" href="#filters.mannWhitney.Prefilter.selectedGenesIndexesPrefilter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="filters.mannWhitney.Prefilter.transform">
+<code class="descname">transform</code><span class="sig-paren">(</span><em>X</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/mannWhitney.html#Prefilter.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.mannWhitney.Prefilter.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduces the input X to the genes selected by Mann-Whitney.</p>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, n_genes]</span></dt>
+<dd>The training input samples.</dd>
+</dl>
+<dl class="docutils">
+<dt>X <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = [n_samples, <a href="#id23"><span class="problematic" id="id24">n_genes_</span></a>]</span></dt>
+<dd>The input matrix X’s columns are reduced to the genes which were
+selected by Mann-Whitney.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="filters.mannWhitney.Prefilter.varianza">
+<code class="descname">varianza</code><em class="property"> = None</em><a class="headerlink" href="#filters.mannWhitney.Prefilter.varianza" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="filters.mannWhitney.mw">
+<code class="descclassname">filters.mannWhitney.</code><code class="descname">mw</code><span class="sig-paren">(</span><em>X</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/filters/mannWhitney.html#mw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#filters.mannWhitney.mw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statistical Prefilter Mann Whitney calculates the p-value 
+of all genes to subsequently stay with those with a p-value less than 0.05.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-filters">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-filters" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Víctor Sánchez Martín.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
