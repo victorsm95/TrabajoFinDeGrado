@@ -18,6 +18,8 @@ urlpatterns = [
 	url(r'^profile/imageDelete$', views.image_delete),
 	url(r'^shared$', views.home_shared),
 	url(r'^info$', views.info),
-	url(r'^contact$', views.contact)
+	url(r'^contact$', views.contact),
+	url(r'^delete_account$', views.user_delete)
+
 ]
 

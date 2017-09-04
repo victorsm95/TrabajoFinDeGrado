@@ -32,6 +32,7 @@
       <ul class="dropdown-menu">
         <li><a href="/profile">Profile</a></li>
         <li><a href="/accounts/logout">Logout</a></li>
+        <li><a href="/delete_account">Delete account</a></li>
       </ul>
     </li>
   </ul>
@@ -89,7 +90,7 @@
           <a class="list-group-item active">
 	    <div class="row">
 	      <div class="col-md-6">
-	        <h4 class="list-group-item-heading">Gradient-Boosting-Regressor</h4>
+	        <h4 class="list-group-item-heading">Gradient-Booested-Regression-Trees</h4>
 	        <h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
 	      </div>
 	      <div class="col-md-6" align="right" id="showButton">
@@ -99,7 +100,7 @@
     	  </a>
 	{% else %}
 	  <a class="list-group-item" href="/boards/analysis?filt=GBR&id_board_analysis={{ board_analysis.id_board }}">
-	    <h4 class="list-group-item-heading">Gradient-Boosting-Regressor</h4>
+	    <h4 class="list-group-item-heading">Gradient-Boosting-Regression-Trees</h4>
 	    <h5>Number of filtering genes: {{ board_analysis.n_genes_initial}}</h5>
 	  </a>
 	{% endif %}
@@ -142,7 +143,7 @@
 	    
 	  {% endif %}
 	  <div class="panel panel-default">
-	    <div class="panel-heading"><div class="row"><div class="col-md-8"><h5>{{ filt }} {{ n_genes }} genes selected</h5></div><div class="col-md-4" align="right"><a href="/boards/analysisRequestAdd?filt={{ filt }}&id_board_requestAdd={{ board_analysis.id_board }}">
+	    <div class="panel-heading"><div class="row"><div class="col-md-8"><h5>{{ n_genes }} genes selected</h5></div><div class="col-md-4" align="right"><a href="/boards/analysisRequestAdd?filt={{ filt }}&id_board_requestAdd={{ board_analysis.id_board }}">
 	      <button class="btn btn-success">Add gen</button>
 	    </a></div></div></div>
   	    <table class="table">
@@ -171,6 +172,7 @@
       <div id="example" class="parcoords" style="height:500px"></div>
       <p></p>
       <div align="right"><a href="/static/boardCSV/{{ board_analysis.id_board }}Filtered{{ filt }}.csv">Download Filtered File <span class="glyphicon glyphicon-download"></span></a></div>
+      <div align="left"><a href="/static/boardCSV/{{ board_analysis.id_board }}">Download Dataset <span class="glyphicon glyphicon-download"></span></a></div>
       <p></p>
       <p></p>
       <center><div id="grid"></div></center> 	
@@ -336,10 +338,10 @@
 	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, ordered from highest to lowest variance</strong><br>OY: Variance of each gene<br>OX: Genes sorted from highest to lowest variance</center>';
 	break;
       case 2:
-	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, ordered from highest to lowest rawweight GBR</strong><br>OY: Rawweight of each gene<br>OX: Genes sorted from highest to lowest variance rawweight</center>';
+	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, ordered from highest to lowest score GBRT</strong><br>OY: Normalized score of each gene<br>OX: Genes sorted from highest to lowest variance normalized score</center>';
 	break;
       case 3:
-	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, one being confirmed, two tentative and greater than two rejected, according to GBR filtering</strong><br>OY: Gene classification(1:confirmed, 2:tentative, >2:rejected)<br>OX: Highest ranked genes(confirmed > tentative > rejected)</center>';
+	document.getElementById("infoGraphic" + number.toString()).innerHTML = '<center><strong>Highest ranked genes, one being confirmed, two tentative and greater than two rejected, according to Boruta filtering</strong><br>OY: Gene classification(1:confirmed, 2:tentative, >2:rejected)<br>OX: Highest ranked genes(confirmed > tentative > rejected)</center>';
 	break;}
     graphic(number);}
 
@@ -373,7 +375,7 @@
         break;
 
       case 2:
-	var rawweights = ['Rawweights'];
+	var rawweights = ['Score'];
 	{% for element in rawweights %}
 	  rawweights.push('{{ element }}');
 	{% endfor %}
@@ -381,7 +383,7 @@
     	  bindto: '#chart2',
     	  data: {
      	    columns: [rawweights],
-      	    regions: {'Rawweights': [{'start': {{ n_genes_initial }} - 1}]}},
+      	    regions: {'Score': [{'start': {{ n_genes_initial }} - 1}]}},
 	  grid: {
             x: {
               show: true

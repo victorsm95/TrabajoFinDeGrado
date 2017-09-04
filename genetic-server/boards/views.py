@@ -921,44 +921,6 @@ def confirm(request):
 
 	return HttpResponseRedirect('/')
 
-# REENVIO DEL EMAIL AL USUARIO PARA QUE ACEPTE O NO UN BOARD COMPARTIDO SIN CONFIRMAR
-@login_required
-@require_http_methods(['GET'])
-def resend(request):
-	"""
-	Function responsible for sending the email to the user for acceptance or not
-	of an unconfirmed board.
-
-	Http Methods:
-	   * GET
-
-	Parameters
-	----------
-	
-	request: django.http.request
-	    Object request that contains all the information 
-	    regarding the HTTP request to be handled in the view function: 
-	    method, sessions, parameters, etc.
-	    Django reference:
-	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
-
-	Return
-	------
-	response: django.http.response
-	    Object through which the response to the http request is 
-	    handled by the view function, as well as all the necessary 
-	    and own information of the answer of the communication.
-	    Django reference:
-	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
-	"""
-	# Obtencion del board que aceptar o no
-	board = BoardShared.objects.get(id_board = request.GET['id_board'])
-	# Seguridad
-	if (request.user != board.user):
-			raise Http404
-	# A traves de una señal se envia un email al usuario, para que este lo acepte o no
-	board_signal_shared.send(sender = BoardShared, board=board)
-	return HttpResponseRedirect('/profile')
 
 # GUARDADO DEL ESTADO DE LAS COORDENADAS PARALELAS EN MONGO
 @login_required

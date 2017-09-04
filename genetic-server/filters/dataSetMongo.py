@@ -66,7 +66,7 @@ def saveDataSet(board, data):
 		if gene_names_unicos.count(name) == 0:
 			gene_names_unicos.append(name)
 			#Xcorregido[j,:] = X[i,:]
-			Xcorregido[j,:] = np.mean(X[gene_names == name,:], axis=0) #---> Media aritmetica (Muy inefciente)
+			Xcorregido[j,:] = np.mean(X[gene_names == name,:], axis=0) #---> Media aritmetica 
 			coll.insert_one(
  				{
 					'gene_name': name,
@@ -75,10 +75,12 @@ def saveDataSet(board, data):
 			)
 			j = j + 1
 		i = i + 1
-
+		
+	# Se eliminan las comillas de os nombres de los genes si es que esxiten
 	if gene_names_unicos[0].count('"') > 0:
 		for i in range(len(gene_names_unicos)):
 			gene_names_unicos[i] = 	gene_names_unicos[i].replace('"','')
+
 	#####  FILTRADO MANN-WHITNEY  #####
 	pref = Prefilter(n_components=board.n_genes_initial)
 	Xfiltered = pref.fit_transform(Xcorregido.T, y).T

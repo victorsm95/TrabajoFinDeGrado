@@ -28,12 +28,14 @@ from allauth.account.decorators import login_required
 # Base de datos no sql (MongoDB)
 from pymongo import MongoClient
 import pymongo
+from filters.dataSetMongo import deleteDataSet
 # Decoradores de Django para el manejo de metodos http
 from django.views.decorators.http import require_http_methods
 # Señales de django allauth
 from allauth.account.signals import password_changed
 # Recibir señales
 from django.dispatch import receiver
+
 
 # DEVUELVE LA PAGINA DE INICIO DE CADA USUARIO CON SUS BOARDS O BIEN EL INDEX DE LA APLICACION
 @require_http_methods(['GET'])
@@ -333,6 +335,47 @@ def image_delete(request):
 			profiles = Profile.objects.get(user = request.user)
 			profiles.image.delete()
 	return HttpResponseRedirect('/profile')
+
+# ELIMINACION DE LA CUENTA DE USUARIO
+@login_required
+@require_http_methods(['GET'])
+def user_delete(request):
+	"""
+	Function responsible for delete the user account.
+
+	Http Methods:
+	   * GET
+
+	Parameters
+	----------
+	
+	request: django.http.request
+	    Object request that contains all the information 
+	    regarding the HTTP request to be handled in the view function: 
+	    method, sessions, parameters, etc.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httprequest-objects
+
+	Return
+	------
+	response: django.http.response
+	    Object through which the response to the http request is 
+	    handled by the view function, as well as all the necessary 
+	    and own information of the answer of the communication.
+	    Django reference:
+	    https://docs.djangoproject.com/en/1.11/ref/request-response/#httpresponse-objects
+	"""
+	
+	for board_delete in Board.objects.filter(owner = request.user):
+		board_delete.dataFile.delete()
+		board_delete.dataFilteredMN.delete()
+		board_delete.dataFilteredGBR.delete()
+		board_delete.dataFilteredBoruta.delete()
+		deleteDataSet(board_delete.id_board)
+		board_delete.delete()
+
+	request.user.delete()
+	return HttpResponseRedirect('/')
 
 # ESTA FUNCION A LA ESCUCHA DE LA SEÑAL password_changed ENVIA UN CORREO AL USUARIO INFORMANDOLE DE QUE SU CONTRASEÑA HA SIDO CAMBIADA
 @receiver(password_changed)
